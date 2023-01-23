@@ -30,6 +30,7 @@
                     <th>Visibillity</th>
                     <th>Date of join</th>
                     <th>Action</th>
+                
                 </tr>
                 </thead>
                 <tbody>
@@ -54,6 +55,7 @@
                         <td><span class="badge badge-pill badge-danger">private</span></td>
                     @endif
                     <td>{{ date('d/m/Y', strtotime($host['created_at'])); }} </td>
+                  
                     <td> 
                         <a href="{{ url('/admin/host-details/'.$host['unique_id']) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
                         <a href="{{ url('/admin/host-delete/'.$host['unique_id']) }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a> 
@@ -69,4 +71,12 @@
         <!-- /.card -->
         </div>
     </div>
+    <script>
+    $(function() {
+        $('#toggle-two').bootstrapToggle({
+        on: 'Enabled',
+        off: 'Disabled'
+        });
+    })
+    </script>
 @endsection

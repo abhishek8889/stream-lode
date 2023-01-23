@@ -25,6 +25,10 @@
   <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.css') }}">
   <!-- summernote -->
   <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.css') }}">
+  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -198,18 +202,24 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
+
       <img src="{{ asset('AdminLTE-3.2.0/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">Stream Lode</span>
     </a>
 
+   
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="{{ asset('AdminLTE-3.2.0/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
+          @if(isset(auth()->user()->profile_image_url) || !empty(auth()->user()->profile_image_url))
+          <img src="{{ auth()->user()->profile_image_url }}" class="img-circle elevation-3" alt="User Image">
+          @else
+          <img src="{{ asset('Assets/images/default-avatar.jpg') }}" class="img-circle elevation-3" alt="User Image">
+          @endif
         </div>
-        @if(isset(auth()->user()->first_name))
+        @if(auth()->user()->first_name)
         <div class="info">
           <a href="#" class="d-block">{{ auth()->user()->first_name }}</a>
         </div>
@@ -253,7 +263,7 @@
             </ul>
           </li>
           <!-- membership tiers -->
-          <!-- <li class="nav-item ">
+          <li class="nav-item ">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
@@ -263,37 +273,19 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
+                <a href="{{ url('/admin/membership-list') }}" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Tier 1</p>
+                  <p>Membership list</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
+                <a href="{{ url('/admin/add-membership-tier') }}" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Tier 2</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Tier 3</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Tier 4</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Tier 5</p>
+                  <p>Add Membership Tier</p>
                 </a>
               </li>
             </ul>
-          </li> -->
+          </li>
           <!-- Account Details -->
           <li class="nav-item ">
             <a href="#" class="nav-link active">
@@ -305,7 +297,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
+                <a href="{{ url('/admin/general-settings') }}" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>General Settings</p>
                 </a>

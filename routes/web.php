@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashController;
-use App\Http\Controllers\Admin\UserListController;
+use App\Http\Controllers\Admin\settings\SettingsController;
+use App\Http\Controllers\Admin\membership\MembershipController;
 
+use App\Http\Controllers\Admin\users\HostController;
 use App\Http\Controllers\Hosts\HostDashController;
 use App\Http\Controllers\Hosts\HostAccountController;
 use App\Http\Controllers\Authentication\AuthenticationController;
@@ -35,15 +37,38 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(AdminDashController::class)->group(function(){
             Route::get('/dashboard','index')->name('admin-dashboard');
         });
-        Route::controller(UserListController::class)->group(function(){
+        Route::controller(HostController::class)->group(function(){
             Route::get('/host-list','hostList')->name('host-list');
         });
-        Route::controller(UserListController::class)->group(function(){
+        Route::controller(HostController::class)->group(function(){
             Route::get('/host-details/{id}','hostDetail')->name('host-details');
         });
-         Route::controller(UserListController::class)->group(function(){
+        Route::controller(HostController::class)->group(function(){
             Route::get('/host-delete/{id}','hostDelete');
         });
+        Route::controller(HostController::class)->group(function(){
+            Route::post('/host-generals-update','hostGeneralsUpdate');
+        });
+        Route::controller(SettingsController::class)->group(function(){
+            Route::get('/general-settings','index');
+        });
+        Route::controller(SettingsController::class)->group(function(){
+            Route::post('/admin-update','adminUpdate');
+        });
+        Route::controller(SettingsController::class)->group(function(){
+            Route::post('/admin-profile-update','addProfilePic');
+        });
+        // create membership
+        Route::controller(MembershipController::class)->group(function(){
+            Route::get('/membership-list','index');
+        });
+        Route::controller(MembershipController::class)->group(function(){
+            Route::get('/add-membership-tier','addMembershipTier');
+        });
+        Route::controller(MembershipController::class)->group(function(){
+            Route::post('/insert-membership-tier','addMembershipTierProc');
+        });
+        
     });
 });
 // Host Routes

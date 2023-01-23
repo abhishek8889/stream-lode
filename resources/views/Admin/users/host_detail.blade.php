@@ -293,8 +293,6 @@
                           3 Jan. 2014
                         </span>
                       </div>
-                      <!-- /.timeline-label -->
-                      <!-- timeline item -->
                       <div>
                         <i class="fas fa-camera bg-purple"></i>
 
@@ -311,69 +309,79 @@
                           </div>
                         </div>
                       </div>
-                      <!-- END timeline item -->
                       <div>
                         <i class="far fa-clock bg-gray"></i>
                       </div>
                     </div>
                   </div>
-                  <!-- /.tab-pane -->
-                    <!-- setting tab -->
                     <div class="tab-pane" id="settings">
-                        <form class="form-horizontal">
-                        <div class="form-group row">
-                            <label for="fname" class="col-sm-2 col-form-label">First Name</label>
-                            <div class="col-sm-10">
-                            <input type="text" class="form-control" id="fname" placeholder="First Name" name="first_name" value="{{ $host_detail['first_name'] }}" />
+                        <form action="{{ url('/admin/host-generals-update') }}" method="POST" class="form-horizontal">
+                        @csrf  
+                        <input type="hidden" value="{{ $host_detail['_id'] }} " name="id">
+                        <input type="hidden" value="{{ $host_detail['unique_id'] }} " name="unique_id">
+                          <div class="form-group row">
+                              <label for="fname" class="col-sm-2 col-form-label">First Name</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="fname" placeholder="First Name" name="first_name" value="{{ $host_detail['first_name'] }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="lname" class="col-sm-2 col-form-label">Last Name</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="lname" placeholder="Last Name" name="last_name" value="{{ $host_detail['last_name'] }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="email" class="col-sm-2 col-form-label">Email</label>
+                              <div class="col-sm-10">
+                              <input type="email" class="form-control" id="email" placeholder="Email" name="email" value="{{ $host_detail['email'] }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="phone" class="col-sm-2 col-form-label">Phone</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="phone" placeholder="Phone" name="phone" value="{{ $host_detail['phone'] }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="password" class="col-sm-2 col-form-label">New Password</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="password" placeholder="New Password" name="newPassword" value="" />
+                              <label for="password" class="text text-info">Fill only when you want to change host's password , otherwise keep it empty.</label>  
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="lname" class="col-sm-2 col-form-label">Last Name</label>
-                            <div class="col-sm-10">
-                            <input type="text" class="form-control" id="lname" placeholder="Last Name" name="last_name" value="{{ $host_detail['last_name'] }}" />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="email" class="col-sm-2 col-form-label">Email</label>
-                            <div class="col-sm-10">
-                            <input type="email" class="form-control" id="email" placeholder="Email" name="email" value="{{ $host_detail['email'] }}" />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="phone" class="col-sm-2 col-form-label">Phone</label>
-                            <div class="col-sm-10">
-                            <input type="text" class="form-control" id="phone" placeholder="Phone" name="phone" value="{{ $host_detail['phone'] }}" />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="hide_profile" class="col-sm-2 col-form-label">Hide Profile</label>
-                            <div class="col-sm-10">
-                                <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="customSwitches" name="hide_profile">
-                                <label class="custom-control-label" for="customSwitches">By enable it you will make host's profile private and it will not visible to public.</label>
-                                </div>
-                            </div>
-                        </div>
-                       
-                        
-                        <div class="form-group row">
-                            <div class="offset-sm-2 col-sm-10">
-                            <button type="submit" class="btn btn-danger">Update profile</button>
-                            </div>
-                        </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="confirmPassword" class="col-sm-2 col-form-label">Confirm Password</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="phone" placeholder="Confirm New Password" name="confirmNewPassword" value="" />
+                              <label for="password" class="text text-info">Fill only when you enter new password.</label>  
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="hide_profile" class="col-sm-2 col-form-label">Hide Profile</label>
+                              <div class="col-sm-10">
+                                  <div class="custom-control custom-switch">
+                                  @if($host_detail['public_visibility'] == 1)
+                                  <input type="checkbox" class="custom-control-input" id="customSwitches" name="hide_profile">
+                                  @else
+                                  <input type="checkbox" class="custom-control-input" id="customSwitches" name="hide_profile" checked>
+                                  @endif
+                                  <label class="custom-control-label" for="customSwitches">By enable it you will make host's profile private and it will not visible to public.</label>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <div class="offset-sm-2 col-sm-10">
+                              <button type="submit" class="btn btn-danger">Update host</button>
+                              </div>
+                          </div>
                         </form>
                     </div>
-                    <!-- setting tab end -->
-                  <!-- /.tab-pane -->
-                </div>
-                <!-- /.tab-content -->
-              </div><!-- /.card-body -->
+                  </div>
+              </div>
             </div>
-            <!-- /.card -->
           </div>
-          <!-- /.col -->
         </div>
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
 @endsection
