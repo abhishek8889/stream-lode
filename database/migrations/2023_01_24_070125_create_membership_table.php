@@ -15,6 +15,15 @@ return new class extends Migration
     {
         Schema::create('membership', function (Blueprint $table) {
             $table->id();
+            $table->string('mebership_tier_id');
+            $table->string('price_id');
+            $table->string('name');
+            $table->string('logo')->nullable();
+            $table->string('currency');
+            $table->string('type');
+            $table->string('interval')->nullable();
+            $table->amount('amount');
+            $table->integer('status');
             $table->timestamps();
         });
     }

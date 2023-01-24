@@ -10,6 +10,7 @@ use App\Http\Controllers\Hosts\HostDashController;
 use App\Http\Controllers\Hosts\HostAccountController;
 use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\Hosts\HostTagController;
+use App\Http\Controllers\Hosts\HostMembershipController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -68,6 +69,12 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MembershipController::class)->group(function(){
             Route::post('/insert-membership-tier','addMembershipTierProc');
         });
+        // Route::controller(MembershipController::class)->group(function(){
+        //     Route::get('/delete-membership-tier/{id}','deleteMembership'); //price can not be deleted in product 
+        // });
+        // Route::controller(MembershipController::class)->group(function(){
+        //     Route::get('/update-membership-tier/{id}','updateMembership'); 
+        // });
         
     });
 });
@@ -87,4 +94,11 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::post('/{id}/add-tags',[HostTagController::class,'addTags'])->name('add-tags');
     Route::post('/{id}/edit-tags',[HostTagController::class,'editTags'])->name('edit-tags');
     Route::post('/{id}/delete-tags',[HostTagController::class,'deleteTags'])->name('delete-tags');
+    
+    // membership 
+    Route::get('/{id}/membership',[HostMembershipController::class,'index'])->name('membership');
+    
+    Route::post('/{id}/subscribe',[HostMembershipController::class,'subscribe'])->name('subscribe');
+
+
 });

@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Tempusdominus Bootstrap 4 -->
@@ -53,6 +54,15 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Navbar Search -->
+      @if(!isset(auth()->user()->membership_id) || empty(auth()->user()->membership_id))
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{{ url('/'.auth()->user()->unique_id.'/membership') }}"  class="btn btn-warning text-white " data-toggle="tooltip" data-placement="bottom" title="Click this button and enjoy the hosting feature.">Get Membership <i class="fa fa-star-o" style="font-size:16px"></i></a>
+      </li>
+      @else
+      <li class="nav-item d-none d-sm-inline-block">
+        <button type="button"  class="btn btn-warning text-white " data-toggle="tooltip" data-placement="bottom" title="Click this button and enjoy the hosting feature.">Membership name<i class="fa fa-star-o" style="font-size:16px"></i></button>
+      </li>
+      @endif
       <li class="nav-item">
         <a class="nav-link" data-widget="navbar-search" href="#" role="button">
           <i class="fas fa-search"></i>
@@ -259,18 +269,32 @@
                   <p>Tags</p>
                 </a>
               </li>
-              <!-- <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Subscription Details</p>
-                </a>
-              </li> -->
+              
               <li class="nav-item">
                 <a href="{{ url( '/'.auth()->user()->unique_id.'/change-password') }}" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Change Password</p>
                 </a>
               </li>
+            </ul>
+          </li>
+          <!-- membership -->
+          <li class="nav-item ">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                Membership
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ url( '/'.auth()->user()->unique_id.'/general-settings') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Generals</p>
+                </a>
+              </li>
+              
             </ul>
           </li>
           <!-- Users -->

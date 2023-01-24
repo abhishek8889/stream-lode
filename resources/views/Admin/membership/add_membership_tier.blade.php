@@ -7,7 +7,7 @@
     </div>
     <!-- /.card-header -->
     <!-- form start -->
-    <form action="{{ url('/admin/insert-membership-tier') }}" method="POST" class="form-horizontal">
+    <form action="{{ url('/admin/insert-membership-tier') }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
         @csrf
         <div class="row">
             <div class="card-body col-md-6">
@@ -23,6 +23,16 @@
                         <input type="number" step="0.01" class="form-control" id="inputEmail3" placeholder="USD($)" name="price">
                     </div>
                 </div>
+                <!-- currency code -->
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-3 col-form-label">Currency code</label>
+                    <div class="col-sm-9">
+                        <select id="" class="form-control" id="inputEmail3" name="currency_code">
+                            <option value="usd">USD</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Membership Type</label>
                     <div class="col-sm-9">
@@ -33,14 +43,13 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Recurring Nature</label>
+                    <label for="inputEmail3" class="col-sm-3 col-form-label">Interval</label>
                     <div class="col-sm-9">
-                        <select id="" class="form-control" id="inputEmail3" name="recurring_nature">
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="6-month">6 Months</option>
-                            <option value="9-month">9 Months</option>
-                            <option value="1-year">Yearly</option>
+                        <select id="" class="form-control" id="inputEmail3" name="interval_time">
+                            <option value="month">Monthly</option>
+                            <!-- <option value="6 months">6 Months</option>
+                            <option value="9 months">9 Months</option>
+                            <option value="yearly">Yearly</option> -->
                         </select>
                     </div>
                 </div>
