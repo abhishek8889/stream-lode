@@ -2,6 +2,7 @@
 @section('content')
 <div class="container">
     <div class="row">
+  
         @if(isset($membership_details) || !empty($membership_details))
         @foreach($membership_details as $m)
         <div class="col-md-3">
@@ -26,11 +27,12 @@
                     @endif
                     <div class="price text-center">
                         <h3><b>${{ $m['amount'] }}</b></h3>
-                        <form action="{{ url(auth()->user()->unique_id.'/subscribe')}}" method="POST">
+                        <!-- <form action="{{ url(auth()->user()->unique_id.'/subscribe')}}" method="POST">
                             @csrf
-                            <input type="hidden" name="priceId" value="{{ $m['price_id'] }}" />
+                            <input type="hidden" name="plan" value="{{ $m }}">
                             <button type="submit">Subscribe</button>
-                        </form>
+                        </form> -->
+                        <a href="{{ url(auth()->user()->unique_id.'/subscribe/'.$m['slug']) }}" class="btn btn-primary">Subscribe</a>
                     </div>
                 </div>
             </div>

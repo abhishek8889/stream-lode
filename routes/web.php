@@ -98,7 +98,9 @@ Route::group(['middleware'=>['auth','Host']],function(){
     // membership 
     Route::get('/{id}/membership',[HostMembershipController::class,'index'])->name('membership');
     
-    Route::post('/{id}/subscribe',[HostMembershipController::class,'subscribe'])->name('subscribe');
+    Route::get('/{id}/subscribe/{slug}',[HostMembershipController::class,'subscribe'])->name('subscribe');
+    
+    Route::post('/{id}/create-subscription',[HostMembershipController::class,'createSubscription'])->name('create-subscription');
 
 
 });

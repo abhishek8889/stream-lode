@@ -60,7 +60,7 @@
       </li>
       @else
       <li class="nav-item d-none d-sm-inline-block">
-        <button type="button"  class="btn btn-warning text-white " data-toggle="tooltip" data-placement="bottom" title="Click this button and enjoy the hosting feature.">Membership name<i class="fa fa-star-o" style="font-size:16px"></i></button>
+        <button type="button"  class="btn btn-warning text-white " data-toggle="tooltip" data-placement="bottom" title="Want more features ?">{{ $membership_details['name'] }} <img src="{{ $membership_details['logo_url'] }}" alt="{{ $membership_details['logo_name'] }}" width="20px;"> </button>
       </li>
       @endif
       <li class="nav-item">
