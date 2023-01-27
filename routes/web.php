@@ -97,10 +97,12 @@ Route::group(['middleware'=>['auth','Host']],function(){
     
     // membership 
     Route::get('/{id}/membership',[HostMembershipController::class,'index'])->name('membership');
-    
+    Route::get('/{id}/membership-details',[HostMembershipController::class,'membershipDetail'])->name('membership-details');
+    Route::get('/{id}/upgrade-membership',[HostMembershipController::class,'membershipDetail'])->name('upgrade-membership');
+    Route::get('/{id}/get-invoice',[HostMembershipController::class,'getInvoice'])->name('get-invoice');
     Route::get('/{id}/subscribe/{slug}',[HostMembershipController::class,'subscribe'])->name('subscribe');
     
     Route::post('/{id}/create-subscription',[HostMembershipController::class,'createSubscription'])->name('create-subscription');
-
+   
 
 });

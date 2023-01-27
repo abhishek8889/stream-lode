@@ -17,7 +17,8 @@ class HostDashController extends Controller
             $membership_name = $membership_details['name'];
            
         }
-       
+        session()->forget('membership_details');
+        
         return view('Host.Dashboard.index',compact('membership_details'));
     }
 }

@@ -59,8 +59,11 @@
         <a href="{{ url('/'.auth()->user()->unique_id.'/membership') }}"  class="btn btn-warning text-white " data-toggle="tooltip" data-placement="bottom" title="Click this button and enjoy the hosting feature.">Get Membership <i class="fa fa-star-o" style="font-size:16px"></i></a>
       </li>
       @else
+      <?php  
+        $membership_details = App\Models\MembershipTier::Where('_id',auth()->user()->membership_id)->first();
+      ?>
       <li class="nav-item d-none d-sm-inline-block">
-        <button type="button"  class="btn btn-warning text-white " data-toggle="tooltip" data-placement="bottom" title="Want more features ?">{{ $membership_details['name'] }} <img src="{{ $membership_details['logo_url'] }}" alt="{{ $membership_details['logo_name'] }}" width="20px;"> </button>
+        <a href="{{ url('/'.auth()->user()->unique_id.'/membership-details') }}" class="btn btn-warning text-white " data-toggle="tooltip" data-placement="bottom" title="Want more features ?">{{ $membership_details['name'] }} <img src="{{ $membership_details['logo_url'] }}" alt="{{ $membership_details['logo_name'] }}" width="20px;"> </a>
       </li>
       @endif
       <li class="nav-item">
@@ -288,12 +291,22 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+            
+              @if(isset(auth()->user()->membership_id) || !empty(auth()->user()->membership_id))
               <li class="nav-item">
-                <a href="{{ url( '/'.auth()->user()->unique_id.'/general-settings') }}" class="nav-link active">
+                <a href="{{ url( '/'.auth()->user()->unique_id.'/membership-details') }}" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Generals</p>
+                  <p>membership details</p>
                 </a>
               </li>
+              @else
+              <li class="nav-item">
+                <a href="{{ url( '/'.auth()->user()->unique_id.'/membership') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>get membership</p>
+                </a>
+              </li>
+              @endif
               
             </ul>
           </li>

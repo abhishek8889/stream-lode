@@ -10,6 +10,7 @@ use Auth;
 use Stripe;
 use Stripe\StripeClient;
 use App\Models\PaymentMethods;
+use Carbon\Carbon;
 use DB;
 
 
@@ -17,8 +18,18 @@ class HostMembershipController extends Controller
 {
     public function index(){
         $membership_details = MembershipTier::all();
-        // dd($membership_details);
         return view('Host.membership.index',compact('membership_details'));
+    }
+
+    public function membershipDetail(){
+      $membership_tier_details = MembershipTier::Where('_id',auth()->user()->membership_id)->first();
+      $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+      $subscription_details = $stripe->subscriptions->retrieve(
+        auth()->user()->subscription_id,
+        []
+      );
+      dd($subscription_details);
+      return view('Host.membership.membership_details',compact('membership_tier_details'));
     }
 
     public function subscribe(Request $req,$id,$slug){
@@ -38,7 +49,9 @@ class HostMembershipController extends Controller
 
     public function createSubscription(Request $req){
         // return $req;
+        $current = Carbon::now()->format('Y,m,d');
         
+
         $membership = DB::table('membership')->find($req->membership_id) ;
         
         $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
@@ -79,6 +92,16 @@ class HostMembershipController extends Controller
             ],
           ]);
 
+        // ###################### Send Invoice ##################################
+
+        $invoice = $stripe->invoices->create([
+          'customer' => $customer->id,
+          'subscription' => $createMembership->id,
+          'collection_method' => 'send_invoice',
+          'days_until_due' => 2
+        ]);
+        dd($invoice);
+
         // ######################### customer data save  ##########################################
 
         $user = User::find(auth()->user()->id);
@@ -97,5 +120,13 @@ class HostMembershipController extends Controller
 
 
     return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you got ' . $membership['name'] . ' for a ' . $membership['interval']);
+    }
+    public function getInvoice(){
+      $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+      $invoice = $stripe->invoices->retrieve(
+        'in_1MUqM2SDpE15tSXhRTCOmjjD',
+        []
+      );
+      dd($invoice);
     }
 }

@@ -212,4 +212,6 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
+
 ];
