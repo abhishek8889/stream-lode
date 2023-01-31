@@ -5,10 +5,24 @@
         <div class="card-header">
             <h3 class="card-title">You have to pay ${{ $membership['amount'] }} for {{ $membership['name'] }} every {{ $membership['interval'] }}.</h3>
         </div>
-        <div class="" style="">
-            <form id="payment-form" action="{{ url(auth()->user()->unique_id.'/create-subscription') }}" method="POST">
+        <div>
+            <form action="{{ url(auth()->user()->unique_id.'/upgrade-to-new-subscription') }}" method="POST">
             @csrf
-            <input type="hidden" name="membership_id" value="{{ $membership['_id'] }}">
+
+            <input type="hidden" name="upgraded_membership_id" value="{{ $membership['_id'] }}">
+            <input type="hidden" name="payment_method" value="default"/>
+            <input type="radio" name="default_payment_method" value="" id=""/>
+       
+            <input type="submit" value="Upgrade Subscription">
+            </form>
+        </div>
+        <div>
+
+        </div>
+        <div class="" style="">
+            <form id="payment-form" action="{{ url(auth()->user()->unique_id.'/upgrade-to-new-subscription') }}" method="POST">
+            @csrf
+            <input type="hidden" name="upgraded_membership_id" value="{{ $membership['_id'] }}">
                 <div class="card-body">
                     <div class="form-group">
                     <label for="name">Name</label>
