@@ -310,6 +310,16 @@
               
             </ul>
           </li>
+          <!-- calendar -->
+          <li class="nav-item ">
+            <a href="{{ url('/'.auth()->user()->unique_id.'/calendar') }}" class="nav-link active">
+              <i class="nav-icon fas fa-calendar"></i>
+              <p>
+                Calendar
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
           <!-- Users -->
           <!-- <li class="nav-item ">
             <a href="#" class="nav-link active">

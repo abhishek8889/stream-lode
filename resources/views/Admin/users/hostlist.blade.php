@@ -26,7 +26,8 @@
                     <th>Unique ID</th>
                     <th>Profile</th>
                     <th>User</th>
-                    <th>email</th>
+                    <th>Email</th>
+                    <th>Membership</th>
                     <th>Visibillity</th>
                     <th>Date of join</th>
                     <th>Action</th>
@@ -47,8 +48,17 @@
                     <img src="{{ asset('Assets/images/default-avatar.jpg') }}" alt="default-image" class="rounded-circle" width="65px">
                     @endif
                    </td>
+
                     <td>{{ $host['first_name'].' '.$host['last_name'] }}</td>
+
                     <td>{{ $host['email'] }}</td>
+
+                    @if(isset($host['membership_id']) || !empty($host['membership_id']))
+                    <td>{{ $host['membership_id'] }}</td>
+                    @else
+                    <td><span class="badge badge-pill badge-secondary">No membership</span></td>
+                    @endif
+
                     @if($host['public_visibility'] == 1)
                         <td><span class="badge badge-pill badge-success">public</span></td>
                     @else

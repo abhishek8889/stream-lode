@@ -11,6 +11,7 @@ class HostController extends Controller
 {
     public function hostList(){
         $hosts = DB::table('users')->where('status', 1)->get();
+        
         return view('Admin.users.hostlist',compact('hosts'));
     }
     public function hostDetail(Request $req , $id){

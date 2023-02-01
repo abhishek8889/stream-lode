@@ -10,6 +10,7 @@ use Auth;
 use Stripe;
 use Stripe\StripeClient;
 use App\Models\PaymentMethods;
+use App\Models\MembershipPayments;
 use Carbon\Carbon;
 use DB;
 
@@ -49,6 +50,7 @@ class HostMembershipController extends Controller
     //////////////////////////// Create Subscription ////////////////////////////////////////
 
     public function createSubscription(Request $req){
+      // return $req;
         $current = Carbon::now()->format('Y,m,d');
 
         $membership = DB::table('membership')->find($req->membership_id) ;
@@ -91,6 +93,23 @@ class HostMembershipController extends Controller
             ],
           ]);
 
+          // ######################## Store data in membership payment table ###############################
+
+          $str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01235675854abcdefghjijklmnopqrst';
+          $random_order_number = substr(str_shuffle($str_result),0,7);
+
+          $membership_payment = new MembershipPayments;
+          $membership_payment->user_id = auth()->user()->id;
+          $membership_payment->inovice_id = $createMembership->latest_invoice;
+          $membership_payment->order_id = $random_order_number;
+          $membership_payment->membership_id = $req->membership_id;
+          $membership_payment->membership_total_amount = $createMembership->plan->amount / 100;
+          // $membership_payment->discount_coupon_name = null;
+          // $membership_payment->discount_percentage_amount = null;
+          $membership_payment->payment_amount = $createMembership->plan->amount / 100; // while we use discount then we fix this
+          $membership_payment->payment_status = $createMembership->status;
+          $membership_payment->save();
+
         // ###################### Send Invoice ##################################
 
         // $invoice = $stripe->invoices->create([
@@ -101,26 +120,26 @@ class HostMembershipController extends Controller
         // ]);
         // dd($invoice);
 
-        // ######################### customer data save  ##########################################
+        $user = User::find(auth()->user()->id);
+        $user->stripe_customer_id = $customer->id;
+        $user->subscription_id = $createMembership->id;
+        
+        // ######################### payment table data save  #######################################
+
+        $payementMethods = new PaymentMethods;
+        $payementMethods->user_id = auth()->user()->id;
+        $payementMethods->stripe_payment_method = $req->token;  
+        // $paymentMethods->brand = 
+        // $paymentMethods->ends_in =
+        $payementMethods->save();
+
         if($createMembership->status != 'incomplete'){
-          $user = User::find(auth()->user()->id);
-          $user->stripe_customer_id = $customer->id;
-          $user->subscription_id = $createMembership->id;
           $user->membership_id = $req->membership_id;
           $user->save();
-
-          // ######################### payment table data save  #######################################
-
-          $payementMethods = new PaymentMethods;
-          $payementMethods->user_id = auth()->user()->id;
-          $payementMethods->stripe_payment_method = $req->token;  
-          // $paymentMethods->brand = 
-          // $paymentMethods->ends_in =
-          $payementMethods->save();
-        
-        return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you got ' . $membership['name'] . ' for a ' . $membership['interval']);
-
+          return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you got ' . $membership['name'] . ' for a ' . $membership['interval']);
         }
+
+        $user->save();
 
         return redirect(url('/'.auth()->user()->unique_id))->with('error','Your payment is not done please waitfor confirmation');
     
@@ -170,7 +189,7 @@ class HostMembershipController extends Controller
     }
 
     public function upgradeSubscriptionProcess(Request $req){
-      // return $req;
+      return $req;
       $user = User::where('_id',auth()->user()->id)->first();
       $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
       $subscription = '';
@@ -178,7 +197,6 @@ class HostMembershipController extends Controller
       $payment_method = PaymentMethods::where('user_id',auth()->user()->id)->first()->value('stripe_payment_method');
      
       if($req->payment_method == 'default'){
-        dd($req);
         if(isset(auth()->user()->subscription_id) || !empty(auth()->user()->subscription_id)){
           $subscription = $stripe->subscriptions->retrieve(auth()->user()->subscription_id);
           // dd($subscription);

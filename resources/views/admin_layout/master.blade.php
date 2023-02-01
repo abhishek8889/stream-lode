@@ -46,7 +46,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Home</a>
+        <a href="{{ url('/admin/dashboard') }}" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
@@ -201,7 +201,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="{{ url('/admin/dashboard') }}" class="brand-link">
 
       <img src="{{ asset('AdminLTE-3.2.0/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">Stream Lode</span>
@@ -231,7 +231,7 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Dashboard -->
            <li class="nav-item ">
-            <a href="index.html" class="nav-link active">
+            <a href="{{ url('/admin/dashboard') }}" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -255,7 +255,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
+                <a href="{{ route('host-list') }}" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Guest</p>
                 </a>
@@ -286,6 +286,31 @@
               </li>
             </ul>
           </li>
+          <!-- payments -->
+          <li class="nav-item ">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fa-solid fa-money-bill "></i>
+              <p>
+                Payments
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('membership-payment-list') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Membership payments</p>
+                 
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Stream Payments</p>
+                </a>
+              </li>
+            </ul>
+          </li>
           <!-- Account Details -->
           <li class="nav-item ">
             <a href="#" class="nav-link active">
@@ -303,7 +328,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
+                <a href="#" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Change Password</p>
                 </a>

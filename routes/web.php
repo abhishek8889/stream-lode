@@ -4,13 +4,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashController;
 use App\Http\Controllers\Admin\settings\SettingsController;
 use App\Http\Controllers\Admin\membership\MembershipController;
+use App\Http\Controllers\Admin\membership\MembershipPayments;
 
 use App\Http\Controllers\Admin\users\HostController;
+
+
 use App\Http\Controllers\Hosts\HostDashController;
 use App\Http\Controllers\Hosts\HostAccountController;
 use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\Hosts\HostTagController;
 use App\Http\Controllers\Hosts\HostMembershipController;
+use App\Http\Controllers\Hosts\HostCalendar;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -75,16 +79,16 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         // Route::controller(MembershipController::class)->group(function(){
         //     Route::get('/update-membership-tier/{id}','updateMembership'); 
         // });
+        Route::controller(MembershipPayments::class)->group(function(){
+            Route::get('/membership-payment-list','membershipPaymentList')->name('membership-payment-list');
+        });
         
     });
 });
 // Host Routes
 Route::group(['middleware'=>['auth','Host']],function(){
-    // Route::group(['prefix' => 'host'],function(){
-        Route::controller(HostDashController::class)->group(function(){
-            Route::get('/{id}','index')->name('host-dashboard');
-        });
-    // });
+    Route::get('/{id}',[HostDashController::class,'index'])->name('host-dashboard');
+
     Route::get('/{id}/general-settings',[HostAccountController::class,'index'])->name('general-settings');
     Route::post('/{id}/add-user-meta',[HostAccountController::class,'addUserMeta'])->name('add-user-meta');
     Route::post('/{id}/add-profile-picture',[HostAccountController::class,'addProfilePic'])->name('add-profile-picture');
@@ -106,7 +110,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/upgrade-subscription/{slug}',[HostMembershipController::class,'upgradeSubscriptionDetail'])->name('upgrade-subscription');
     
     Route::post('/{id}/upgrade-to-new-subscription',[HostMembershipController::class,'upgradeSubscriptionProcess'])->name('upgrade-to-new-subscription');
-    
-    
+    Route::get('/{id}/calendar',[HostCalendar::class,'index'])->name('host-calendar');
+
 
 });

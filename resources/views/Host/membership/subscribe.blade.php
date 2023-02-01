@@ -30,7 +30,7 @@
 <script>
 
     const stripe = Stripe('{{ env('STRIPE_PUB_KEY') }}');
-    console.log(stripe);
+    // console.log(stripe);
     const elements= stripe.elements();
     const cardElement= elements.create('card');
     cardElement.mount('#card-elements');
@@ -56,7 +56,7 @@
    
         if(error) {
             cardBtn.disable = false
-            console.log(error);
+            // console.log(error);
         } else {
             let token = document.createElement('input')
             token.setAttribute('type', 'hidden')
