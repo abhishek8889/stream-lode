@@ -62,7 +62,8 @@ $(document).ready(function () {
                                         {
                                             id: data.id,
                                             title: title,
-                                            start: start
+                                            start: start,
+                                            status: status
                                         },true);
   
                                     calendar.fullCalendar('unselect');
@@ -72,15 +73,14 @@ $(document).ready(function () {
                     },
                     eventDrop: function (event, delta) {
                         var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm");
-                        var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm");
-  
+                        // var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm");
+                        // console.log(event.start);
                         $.ajax({
                             url: "{{ url(auth()->user()->unique_id.'/calendar-response') }}",
                             data: {
                                 title: event.title,
                                 start: start,
-                                end: end,
-                                id: event.id,
+                                id: event._id,
                                 type: 'update'
                             },
                             type: "POST",

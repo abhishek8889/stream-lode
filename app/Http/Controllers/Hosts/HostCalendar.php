@@ -48,6 +48,7 @@ class HostCalendar extends Controller
                 'id' => $data->id,
                 'title' => $data->title,
                 'start' => $data->start,
+                'status' => $data->status
               );
              
               return response()->json($event);
@@ -55,11 +56,12 @@ class HostCalendar extends Controller
   
            case 'update':
               $event = Appointments::find($request->id)->update([
-                  'title' => $request->title,
-                  'start' => $request->start,
-                  'end' => $request->end,
+                    'id' => $request->id,
+                    'title' => $request->title,
+                    'start' => $request->start,
+                  
               ]);
- 
+         
               return response()->json($event);
              break;
   
