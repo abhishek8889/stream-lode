@@ -87,13 +87,16 @@ Route::group(['middleware'=>['auth','Admin']],function(){
 });
 // Host Routes
 Route::group(['middleware'=>['auth','Host']],function(){
+
     Route::get('/{id}',[HostDashController::class,'index'])->name('host-dashboard');
 
+    // Account Details
     Route::get('/{id}/general-settings',[HostAccountController::class,'index'])->name('general-settings');
     Route::post('/{id}/add-user-meta',[HostAccountController::class,'addUserMeta'])->name('add-user-meta');
     Route::post('/{id}/add-profile-picture',[HostAccountController::class,'addProfilePic'])->name('add-profile-picture');
     Route::get('/{id}/change-password',[HostAccountController::class,'changePassword'])->name('change-password');
 
+    // Tags
     Route::get('/{id}/tags',[HostTagController::class,'index'])->name('tags');
     Route::post('/{id}/add-tags',[HostTagController::class,'addTags'])->name('add-tags');
     Route::post('/{id}/edit-tags',[HostTagController::class,'editTags'])->name('edit-tags');
@@ -108,9 +111,16 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::post('/{id}/create-subscription',[HostMembershipController::class,'createSubscription'])->name('create-subscription');
     Route::get('/{id}/upgrade-subscription',[HostMembershipController::class,'upgradeSubscription'])->name('upgrade-subscription');
     Route::get('/{id}/upgrade-subscription/{slug}',[HostMembershipController::class,'upgradeSubscriptionDetail'])->name('upgrade-subscription');
-    
     Route::post('/{id}/upgrade-to-new-subscription',[HostMembershipController::class,'upgradeSubscriptionProcess'])->name('upgrade-to-new-subscription');
-    Route::get('/{id}/calendar',[HostCalendar::class,'index'])->name('host-calendar');
+    
+    // Calendar
+    // Route::get('/{id}/calendar',[HostCalendar::class,'index'])->name('host-calendar');
+    // Route::post('/{id}/insert-schedule',[HostCalendar::class,'insertSchedule']); old
+      
+    Route::get('/{id}/calendar',[HostCalendar::class,'index']);
+    Route::post('/{id}/calendar-response',[HostCalendar::class,'ajax']);
+
+   
 
 
 });
