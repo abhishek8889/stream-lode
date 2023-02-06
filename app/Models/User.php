@@ -55,4 +55,5 @@ class User extends Authenticatable
     public function membershipDetails(){
         return $this->belongsTo(MembershipTier::class,'membership_id');
     }
+  
 }

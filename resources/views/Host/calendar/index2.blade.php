@@ -11,12 +11,12 @@
 $(document).ready(function () {
    
     // var SITEURL = "{{ url('/') }}";
-    var data = [
-        {
-            title:'my title',
-            start : '2015-02-13'
-        }
-    ]
+    // var data = [
+    //     {
+    //         title:'my title',
+    //         start : '2015-02-13'
+    //     }
+    // ]
     $.ajaxSetup({
         headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -26,12 +26,13 @@ $(document).ready(function () {
     var calendar = $('#calendar').fullCalendar({
                     editable: true,
                     events: "{{ url('/'.auth()->user()->unique_id.'/calendar') }}",
-                    displayEventTime: false,
+                    displayEventTime: true,
                     editable: true,
                     header:{
                         left:'prev,next today',
                         center:'title',
-                        right:'month,agendaWeek,agendaDay'
+                        // right:'month,agendaWeek,agendaDay'
+                        right:'month'
                     },
                     eventRender: function (event, element, view) {
                         if (event.allDay === 'true') {
@@ -42,7 +43,7 @@ $(document).ready(function () {
                     },
                     selectable: true,
                     selectHelper: true,
-                    select: function (start, end, allDay) {
+                    select: function (start, end ,allDay) {
                         var title = prompt('Event Title:');
                         if (title) {
                             var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm");
@@ -61,9 +62,10 @@ $(document).ready(function () {
                                     calendar.fullCalendar('renderEvent',
                                         {
                                             id: data.id,
-                                            title: title,
-                                            start: start,
-                                            status: status
+                                            title: data.title,
+                                            start: data.start,
+                                            end: data.end,
+                                            allDay: allDay
                                         },true);
   
                                     calendar.fullCalendar('unselect');
@@ -73,13 +75,14 @@ $(document).ready(function () {
                     },
                     eventDrop: function (event, delta) {
                         var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm");
-                        // var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm");
-                        // console.log(event.start);
+                        var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm");
+                        // console.log(delta);
                         $.ajax({
                             url: "{{ url(auth()->user()->unique_id.'/calendar-response') }}",
                             data: {
                                 title: event.title,
                                 start: start,
+                                end:end,
                                 id: event._id,
                                 type: 'update'
                             },
@@ -91,16 +94,17 @@ $(document).ready(function () {
                     },
                     eventClick: function (event) {
                         var deleteMsg = confirm("Do you really want to delete?");
+                        // console.log(event._id);
                         if (deleteMsg) {
                             $.ajax({
                                 type: "POST",
                                 url: "{{ url('/'.auth()->user()->unique_id.'/calendar-response') }}",
                                 data: {
-                                        id: event.id,
+                                        id: event._id,
                                         type: 'delete'
                                 },
                                 success: function (response) {
-                                    calendar.fullCalendar('removeEvents', event.id);
+                                    calendar.fullCalendar('removeEvents', event._id);
                                     displayMessage("Event Deleted Successfully");
                                 }
                             });

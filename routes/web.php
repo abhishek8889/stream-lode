@@ -1,6 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Front\FrontMembershipController;
+use App\Http\Controllers\Front\FrontAboutController;
+use App\Http\Controllers\Front\SearchHostController;
+
+
 use App\Http\Controllers\Admin\AdminDashController;
 use App\Http\Controllers\Admin\settings\SettingsController;
 use App\Http\Controllers\Admin\membership\MembershipController;
@@ -26,9 +33,9 @@ use App\Http\Controllers\Hosts\HostCalendar;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 // Authentication
 Route::get('login',[AuthenticationController::class,'login'])->name('login');
 Route::get('register',[AuthenticationController::class,'register'])->name('register');
@@ -36,6 +43,17 @@ Route::post('loginProc',[AuthenticationController::class,'loginProcess'])->name(
 Route::post('registerProc',[AuthenticationController::class,'registerProcess'])->name('registerProc');
 Route::post('/{id}/update-password',[AuthenticationController::class,'updatePassword'])->name('update-password');
 Route::get('logout',[AuthenticationController::class,'logout'])->name('logout');
+
+// Front Routes 
+Route::get('/',[HomeController::class,'index'])->name('/');
+Route::get('/membership',[FrontMembershipController::class,'index'])->name('membership');
+Route::get('/about-support',[FrontAboutController::class,'index'])->name('about-support');
+Route::get('/search-host',[SearchHostController::class,'index'])->name('search-host');
+Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
+
+
+
+
 // Admin Routes
 Route::group(['middleware'=>['auth','Admin']],function(){
     Route::group(['prefix' => 'admin'],function(){

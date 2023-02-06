@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/stylesheet.css">
+    <title>Streamlode</title>
+  </head>
+<body>
+<header class="site_header">
+  <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand" href="index.html"><img src="images/logo.png" alt="logo"></a>
+      
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="membership.html">Membership</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="About-support.html">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="search-host.html">Search Host</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="About-support.html">Support</a>
+          </li>
+        </ul>
+      </div>
+      <div class="form-inline my-2 my-lg-0 login button-col">
+          <a href="#" class="cta cta-yellow"> <i class="fa-regular fa-user"></i> Login </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="bar bar-1"></span>
+          <span class="bar bar-2"></span>
+          <span class="bar bar-3"></span>
+      </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<section class="top_banner inner_banner">
+  <div class="container-fluid">
+    <div class="inner-section">
+      <div class="row banner-content">
+        <div class="col-md-6 text_col">
+          <div class="banner-heading">
+            <h1>Select A <span class="blue">membership</span> level to meet your needs.</h1><span class="heading-pattern"><img src="images/star.png"></span>
+          </div>
+          <div class="banner-text">
+            <p>StreamLode can help you create an online platform that works for you, while being on a membership plan that meets your needs.</p><span class="text-pattern"><img src="images/text-star.png"></span>
+          </div>
+        </div>
+        <div class="col-md-6 media_col">
+          <div class="banner-media">
+            <image src="images/membership-baner.png" class="radius_top_50">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="choose-plan-section">
+  <div class="dark_navigation up">
+    <div class="container-fluid">
+      <div class="dark-nav">
+        <ul class="nav-list" id="filter-list">
+          <li class="nave-list-item active" id="all"><a href="#all" onclick="filterSelection('all')">All</a></li>
+          <li class="nave-list-item" id="standar-tier"><a href="#standar-tier" onclick="filterSelection('Standard_tier')">Standard Tier</a></li>
+          <li class="nave-list-item" id="premium-tier"><a href="#premium-tier" onclick="filterSelection('Premium_tier')">Premium Tier</a></li>
+          <li class="nave-list-item" id="group-tier"><a href="#group-tier" onclick="filterSelection('group_tier')">Group Tier</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="plans-section">
+    <div class="container-fluid">
+      <div class="section-head text-center">
+        <h2>Choose a plan to start with <span class="yellow">Stream</span><span class="blue">Lode</span></h2>
+      </div>
+      <div class="plans-wrapper">
+        <div class="row plans-row justify-content-center">
+          <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Sponsorship_tire">
+            <div class="pricing-box-wrapper">
+              <div class="pricing-box">
+                <div class="pricing-top">
+                  <div class="pricing-header">
+                    <h4>Sponsorship Tier</h4>
+                    <h3 class="price">
+                      $0.00 <span class="period">/ Month</span>
+                    </h3>
+                  </div>
+                  <div class="pricing-body">
+                    <ul class="access-list">
+                      <li> 6% commission per stream + stripe fee 2.9%</li>
+                      <li> $10 min charge per guest</li>
+                      <li>  Email notification before meeting</li>
+                      <li> Calender appointments - Outlook, Google maps, etc...</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="pricing-footer">
+                  <p><b>For a Sponsorship Tier, email <a href="mailto:Sales@StreamLode.com">Sales@StreamLode.com</a> about being a StreamLode Sponsor.</b></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Standard_tier">
+            <div class="pricing-box-wrapper">
+              <div class="pricing-box">
+                <div class="pricing-top">
+                  <div class="pricing-header">
+                    <h4>Standard Tier</h4>
+                    <h3 class="price">
+                      $9.99 <span class="period">/ Month</span>
+                    </h3>
+                  </div>
+                  <div class="pricing-body">
+                    <ul class="access-list">
+                      <li>10% commission per stream + stripe fee 2.9% </li>
+                      <li>$10 min charge per guest</li>
+                      <li>Chat window</li>
+                      <li>Email notification before meeting</li>
+                      <li>Calender appointments - Outlook, Google maps, etc...</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="pricing-footer">
+                  <a href="stripe-info.html" class="cta cta-yellow">Sign Up</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Premium_tier">
+            <div class="pricing-box-wrapper">
+              <div class="pricing-box">
+                <div class="pricing-top">
+                  <div class="pricing-header">
+                    <h4>Premium Tier</h4>
+                    <h3 class="price">
+                      $19.99 <span class="period">/ Month</span>
+                    </h3>
+                  </div>
+                  <div class="pricing-body">
+                    <ul class="access-list">
+                      <li> 6% commission per stream + stripe fee 2.9%</li>
+                      <li> $10 min charge per guest</li>
+                      <li>Chat window</li>
+                      <li>Email notification before meeting</li>
+                      <li>Calender appointments - Outlook, Google maps, etc...</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="pricing-footer">
+                  <a href="stripe-info.html" class="cta cta-yellow">Sign Up</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item group_tier">
+            <div class="pricing-box-wrapper">
+              <div class="pricing-box">
+                <div class="pricing-top">
+                  <div class="pricing-header">
+                    <h4>Standard group tier</h4>
+                    <h3 class="price">
+                      $49.99 <span class="period">/ Month</span>
+                    </h3>
+                  </div>
+                  <div class="pricing-body">
+                    <ul class="access-list">
+                      <li>Up to 6 hosts for this group</li>
+                      <li> 10% commission per stream + stripe fee 2.9%</li>
+                      <li>  $10 min charge per guest</li>
+                      <li>Chat window</li>
+                      <li>Email notification before meeting</li>
+                      <li>Calender appointments - Outlook, Google maps, etc...</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="pricing-footer">
+                  <a href="stripe-info.html" class="cta cta-yellow">Sign Up</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item group_tier">
+            <div class="pricing-box-wrapper">
+              <div class="pricing-box">
+                <div class="pricing-top">
+                  <div class="pricing-header">
+                    <h4>Premium Group Tier</h4>
+                    <h3 class="price">
+                      $59.99 <span class="period">/ Month</span>
+                    </h3>
+                  </div>
+                  <div class="pricing-body">
+                    <ul class="access-list">
+                      <li>Up to 6 hosts for this group</li>
+                      <li> 6% commission per stream + stripe fee 2.9%</li>
+                      <li>  $10 min charge per guest</li>
+                      <li>Chat window</li>
+                      <li>Email notification before meeting</li>
+                      <li>Calender appointments - Outlook, Google maps, etc...</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="pricing-footer">
+                  <a href="stripe-info.html" class="cta cta-yellow">Sign Up</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="rolling-section">
+  <div class="container-fluid">
+    <div class="inner-section text-center">
+    <div class="marquee">
+      <div class="marquee--inner">
+        <span class="marquee-span">
+          <h2>We Have <span class="image"><image src="images/marque-image.png"></span> <span class="yellow">A</span><span class="blue"> Great</span> Hosts For You!</h2>
+        </span>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<footer class="site_footer">
+  <div class="lets-talk">
+    <div class="container-fluid">
+      <div class="row lets-talk-row align-items-center">
+      <div class="col-md-8 text-col">
+        <h4>Have a question in mind?
+          Let's meet together!</h4>
+      </div>
+      <div class="col-md-4 button-col">
+        <a href="#" class="round-cta">
+                <span class="cta__text">Lets Talk</span>
+                <svg viewBox="-1 -1 202 102" preserveAspectRatio="none">
+                    <ellipse class="ellipse" cx="100" cy="50" rx="100" ry="50" stroke-width="1" stroke="currentColor" fill="none"></ellipse>
+                </svg>
+            </a>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class="footer-menu-section">
+    <div class="container-fluid">
+      <div class="footer-inner-wrapper">
+        <div class="row menu-row">
+          <div class="col-md-5 brand-col">
+            <a class="navbar-brand" href="index.html"><img src="images/logo.png" alt="logo"></a>
+          </div>
+          <div class="col-md-7 menu-col">
+            <ul>
+              <li><a href="membership.html" class="footer-link">Membership</a></li>
+              <li><a href="About-support.html" class="footer-link">About</a></li>
+              <li><a href="search-host.html" class="footer-link">Search Host</a></li>
+              <li><a href="About-support.html" class="footer-link">Support</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="social-address-footer">
+    <div class="container-fluid">
+      <div class="row">
+         <div class="col-md-5 address-col">
+           <div class="address-box">
+             <p><a href="mailto:info@streamlode.com">info@streamlode.com</a></p>
+           <p>621 Bingamon Road Independence, OH 44131</p>
+           </div>
+         </div>
+         <div class="col-md-7 social-col">
+           <h4>Follow Us:</h4>
+           <ul class="social-list">
+             <li><a href="#"> Facebook</a></li>
+             <li><a href="#"> Instagram</a></li>
+             <li><a href="#"> LinkedIn</a></li>
+             <li><a href="#"> Twitter</a></li>
+           </ul>
+         </div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-footer">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-5 text-col">
+          <p class="mb-0">© 2023 StreamLode  |  All Rights Reserved  |  <a href="#">Privacy Policy.</a></p>
+        </div>
+        <div class="col-md-7 image-col">
+          <img src="images/footer-pattern.png" alt="logo"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+<script src="js/custom.js"></script>
+</body>
+</html>
