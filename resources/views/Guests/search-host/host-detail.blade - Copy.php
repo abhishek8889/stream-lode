@@ -249,7 +249,7 @@
 
 <script>
          $(document).ready(function () {
-          let data = @json($available_host);
+          
 
           $.ajaxSetup({
               headers: {
@@ -259,7 +259,7 @@
           var isLoading = false;
           var calendar = $('#calendar').fullCalendar({
                             // editable: true,
-                            events: data,
+                            events: "{{ url('/details/'.$host_details['unique_id'] ) }}",
                             displayEventEnd: true,
                             // editable: true,
                             eventRender: function (event, element, view) {
@@ -312,7 +312,6 @@
                                                 console.log(data);
                                                 isLoading = false;
                                                 $("#calendarModal").modal('hide');
-                                                // console.log(data);
                                                   calendar.fullCalendar('renderEvent',
                                                     {
                                                         id: data.id,

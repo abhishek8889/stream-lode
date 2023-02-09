@@ -50,6 +50,7 @@ Route::get('/membership',[FrontMembershipController::class,'index'])->name('memb
 Route::get('/about-support',[FrontAboutController::class,'index'])->name('about-support');
 Route::get('/search-host',[SearchHostController::class,'index'])->name('search-host');
 Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
+Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 
 
 

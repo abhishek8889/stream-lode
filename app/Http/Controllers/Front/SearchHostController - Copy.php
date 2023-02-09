@@ -28,52 +28,52 @@ class SearchHostController extends Controller
         $host_data = User::where('unique_id',$unique_id)->first();
         $host_details = DB::table('users')->where('unique_id',$unique_id)->first();
         
-        //   Available Host
-        
-        $host_schedule = HostAvailablity::where('host_id',$host_data['_id'])->get(['title','start','end','status']);
-        $available_host = array();
+        if($req->ajax()) {
 
-        foreach($host_schedule as $schedule){
-            if($schedule->status == 1){
-                $available_host[] =  array(
-                    'id'       => $schedule['id'],
-                    'title'    =>  $schedule['title'],
-                    'start'    =>  $schedule['start'],
-                    'end'      =>  $schedule['end'],
-                    'status'   =>  $schedule['status'],
-                    'type'     =>  'available_host',
-                    'color'    =>  '#6294a7',
-                    'allDay'   =>  false,
-                );
-            } 
-        }
+            //   Available Host
+            
+            $host_schedule = HostAvailablity::where('host_id',$host_data['_id'])->get(['title','start','end','status']);
+            $available_host = array();
 
-        //  Host Meetings 
+            foreach($host_schedule as $schedule){
+                if($schedule->status == 1){
+                    $available_host[] =  array(
+                        'id'       => $schedule['id'],
+                        'title'    =>  $schedule['title'],
+                        'start'    =>  $schedule['start'],
+                        'end'      =>  $schedule['end'],
+                        'status'   =>  $schedule['status'],
+                        'type'     =>  'available_host',
+                        'color'    =>  '#6294a7',
+                        'allDay'   =>  false,
+                    );
+                } 
+            }
 
-        $host_appointments = HostAppointments::where('host_id',$host_data['_id'])->get(['start','end','status']);
+            //  Host Meetings 
 
-        foreach($host_appointments as $meetings){
-            if($schedule->status == 1){
-                $available_host[] =  array(
-                    'id'       =>  $meetings['id'],
-                    'start'    =>  $meetings['start'],
-                    'end'      =>  $meetings['end'],
-                    'status'   =>  $meetings['status'],
-                    'type'     =>  'schedule_meeting',
-                    'color'    =>  '#dd8585',
-                    'allDay'   =>  false,
-                );
-            } 
-        }
-        
-        // if($req->ajax()) {
-         
+            $host_appointments = HostAppointments::where('host_id',$host_data['_id'])->get(['start','end','status']);
+
+            foreach($host_appointments as $meetings){
+                if($schedule->status == 1){
+                    $available_host[] =  array(
+                        'id'       =>  $meetings['id'],
+                        'start'    =>  $meetings['start'],
+                        'end'      =>  $meetings['end'],
+                        'status'   =>  $meetings['status'],
+                        'type'     =>  'schedule_meeting',
+                        'color'    =>  '#dd8585',
+                        'allDay'   =>  false,
+                    );
+                } 
+            }
           
-        // }
+            return response()->json($available_host);
+        }
        
         // dd($available_host);
-        return view('Guests.search-host.host-detail',compact('host_details','available_host'));
-        // return view('Guests.search-host.host-detail',compact('host_details','available_host'));
+        return view('Guests.search-host.host-detail',compact('host_details'));
+        // return view('Guests.search-host.host-detail');
 
     }
 

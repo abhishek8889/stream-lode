@@ -26,7 +26,8 @@ $(document).ready(function () {
     var calendar = $('#calendar').fullCalendar({
                     editable: true,
                     events: "{{ url('/'.auth()->user()->unique_id.'/calendar') }}",
-                    displayEventTime: true,
+                    // displayEventTime: true,
+                    displayEventEnd: true,
                     editable: true,
                     header:{
                         left:'prev,next today',
@@ -120,6 +121,7 @@ $(document).ready(function () {
     Toastr Success Code
     --------------------------------------------
     --------------------------------------------*/
+    
     function displayMessage(message) {
         toastr.success(message, 'Event');
     } 
