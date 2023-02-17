@@ -1,8 +1,8 @@
 @extends('host_layout.master')
 @section('content')
+<!-- Where all list of subscription while we hit to upgrade membership -->
 <div class="container">
     <div class="row">
-  
         @if(isset($membership_details) || !empty($membership_details))
         @foreach($membership_details as $m)
         <div class="col-md-3">

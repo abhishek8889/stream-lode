@@ -20,7 +20,7 @@ class MembershipController extends Controller
         return view('Admin.membership.add_membership_tier');
     }
     public function addMembershipTierProc(Request $req){
-        // return $req->all();
+        // dd($req->all());
         $membership = new MembershipTier;
         $membership_logo_name = '';
         $membership_logo_url = '';
@@ -35,13 +35,14 @@ class MembershipController extends Controller
         // dd($membership_logo_url);
 
         $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+
         // Create product //////////////////////////////////
         $product = $stripe->products->create([
             'name' => $req->name,
             'description' => $req->description,
           ]);
-
         //  Create Price ///////////////////////////////////
+
         if($req->membership_type == 'recurring'){
             $price = $stripe->prices->create(
                 [
@@ -64,6 +65,7 @@ class MembershipController extends Controller
         $membership->membership_tier_id = $product->id;
         $membership->price_id = $price->id;
         $membership->name =  $req->name;
+        $membership->slug = $req->slug;
         $membership->logo_name =  $membership_logo_name;
         $membership->logo_url =   $membership_logo_url;
         $membership->currency = $req->currency_code;
@@ -74,12 +76,21 @@ class MembershipController extends Controller
             $membership->type = 'one-time';
         }
         $membership->amount = $req->price;
+        $membership->membership_features = $req->membership_fetaures;
         $membership->status = 1; // 1 by default 1 (active) & 0 (inactive)
-        $membership->description = $req->description;
+        if(!isset($req->description) || empty($req->description)){
+            $membership->description = '';
+        }else{
+            $membership->description = $req->description;
+        }
         $membership->save();
 
         return redirect(url('/admin/add-membership-tier'))->with('success','You have succesfully create a new membership tier');
     }
+
+
+
+
     // update stripe product 
     // public function updateMembership(Request $req , $id){
        

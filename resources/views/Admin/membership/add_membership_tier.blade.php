@@ -12,9 +12,15 @@
         <div class="row">
             <div class="card-body col-md-6">
                 <div class="form-group row">
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Name</label>
+                    <label for="name" class="col-sm-3 col-form-label">Name</label>
                     <div class="col-sm-9">
-                        <input type="name" class="form-control" id="inputEmail3" placeholder="Name" name="name">
+                        <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="slug" class="col-sm-3 col-form-label">Slug</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="slug" placeholder="Slug" name="slug">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -54,6 +60,14 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-3 col-form-label">Features</label>
+                    <div class="col-sm-9">
+                        <div class="btn btn-info" id="addFeatures"> Add features </div>
+                        <div class="" id="featureBox"></div>
+                    </div>
+                   
+                </div>
+                <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Description</label>
                     <div class="col-sm-9">
                         <textarea name="description" class="form-control" id="inputEmail3" id="" cols="10" rows="3"></textarea>
@@ -74,4 +88,29 @@
     </form>
 </div>
 </section>
+
+<script>
+    $("#addFeatures").on('click',function(){
+        newRowAdd =
+            '<div id="row"> <div class="input-group mt-3">' +
+            '<div class="input-group-prepend">' +
+            '<button class="btn btn-secondary" id="DeleteRow" type="button">' +
+            '<i class="fa-solid fa-xmark"></i> </button> </div>' +
+            '<input type="text" class="form-control m-input" name="membership_fetaures[]" value=""> </div> </div>';
+ 
+            $('#featureBox').append(newRowAdd);
+    });
+    $("body").on("click", "#DeleteRow", function () {
+            $(this).parents("#row").remove();
+        })
+        $(document).ready(function(){
+           $("#name").on('change',function(){
+            let name = $(this).val().toLowerCase();
+            let slug = name.replace(/ /g, "-");
+            $("#slug").val(slug);
+           });
+            
+        });
+       
+</script>
 @endsection

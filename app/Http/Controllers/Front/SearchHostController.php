@@ -9,7 +9,8 @@ use App\Models\User;
 use App\Models\HostAvailablity;
 use App\Models\HostAppointments;
 use Illuminate\Support\Facades\DB;
-use stdClass;
+
+use DateTime;
 
 class SearchHostController extends Controller
 {
@@ -29,41 +30,67 @@ class SearchHostController extends Controller
         $host_details = DB::table('users')->where('unique_id',$unique_id)->first();
         
         //   Available Host
-        
-        $host_schedule = HostAvailablity::where('host_id',$host_data['_id'])->get(['title','start','end','status']);
-        $available_host = array();
+        $today_date = date("Y-m-d H:m");
+       
+        $host_schedule = HostAvailablity::where([['host_id','=',$host_data['_id']],['start','>=',$today_date]])->get(['title','start','end','status']);
 
-        foreach($host_schedule as $schedule){
-            if($schedule->status == 1){
-                $available_host[] =  array(
-                    'id'       => $schedule['id'],
-                    'title'    =>  $schedule['title'],
-                    'start'    =>  $schedule['start'],
-                    'end'      =>  $schedule['end'],
-                    'status'   =>  $schedule['status'],
-                    'type'     =>  'available_host',
-                    'color'    =>  '#6294a7',
-                    'allDay'   =>  false,
-                );
-            } 
+        $available_host = array();
+        
+        if(isset($host_schedule) || !empty($host_schedule)){
+            foreach($host_schedule as $schedule){
+                $start_datetime = new DateTime($schedule['start']); 
+                $end_datetime = new DateTime($schedule['end']);
+               
+                $diff = $start_datetime->diff($end_datetime); 
+                $diff_in_hours = $diff->h;
+                $diff_in_minutes = $diff->i;
+                // dd($diff );
+                if(($schedule->status == 1) && (($diff_in_hours > 0 ) || ($diff_in_minutes >= 30))){
+                    $available_host[] =  array(
+                        'id'       => $schedule['id'],
+                        'title'    =>  $schedule['title'],
+                        'start'    =>  $schedule['start'],
+                        'end'      =>  $schedule['end'],
+                        'status'   =>  $schedule['status'],
+                        'type'     =>  'available_host',
+                        'color'    =>  '#6294a7',
+                        'allDay'   =>  false,
+                    );
+                }
+                if(($schedule['start'] == $schedule['end']) || (($diff_in_hours == 0) && ($diff_in_minutes < 30))){
+                    $available_host[] =  array(
+                        'id'       => $schedule['id'],
+                        'title'    =>  $schedule['title'],
+                        'start'    =>  $schedule['start'],
+                        'end'      =>  $schedule['end'],
+                        'status'   =>  $schedule['status'],
+                        'type'     =>  'duration_below_thirty',
+                        'color'    =>  '#EE4B2B',
+                        'allDay'   =>  false,
+                    );
+                }
+            }
         }
+
+     
 
         //  Host Meetings 
 
-        $host_appointments = HostAppointments::where('host_id',$host_data['_id'])->get(['start','end','status']);
-
-        foreach($host_appointments as $meetings){
-            if($schedule->status == 1){
-                $available_host[] =  array(
-                    'id'       =>  $meetings['id'],
-                    'start'    =>  $meetings['start'],
-                    'end'      =>  $meetings['end'],
-                    'status'   =>  $meetings['status'],
-                    'type'     =>  'schedule_meeting',
-                    'color'    =>  '#dd8585',
-                    'allDay'   =>  false,
-                );
-            } 
+        $host_appointments = HostAppointments::where([['host_id','=',$host_data['_id']],['start','>=',$today_date]])->get(['start','end','status']);
+        if(isset($host_appointments) || !empty($host_appointments)){
+            foreach($host_appointments as $meetings){
+                if($schedule->status == 1){
+                    $available_host[] =  array(
+                        'id'       =>  $meetings['id'],
+                        'start'    =>  $meetings['start'],
+                        'end'      =>  $meetings['end'],
+                        'status'   =>  $meetings['status'],
+                        'type'     =>  'schedule_meeting',
+                        'color'    =>  '#dd8585',
+                        'allDay'   =>  false,
+                    );
+                } 
+            }
         }
         
         // if($req->ajax()) {
@@ -74,7 +101,7 @@ class SearchHostController extends Controller
         // dd($available_host);
         return view('Guests.search-host.host-detail',compact('host_details','available_host'));
         // return view('Guests.search-host.host-detail',compact('host_details','available_host'));
-
+  
     }
 
     // Schedule meetings 
@@ -84,7 +111,6 @@ class SearchHostController extends Controller
         switch ($req->type) {
             case 'add':
                 //  Appointment data create
-               
                $newAppointment = new HostAppointments;
                 $newAppointment->host_available_id = $req->available_id;
                 $newAppointment->user_id = $req->user_id;
@@ -97,24 +123,35 @@ class SearchHostController extends Controller
                 $newAppointment->save();
                
                 //  Host availablity update
+                $meeting_end_time =  strtotime($req->end);
+                $updated_host_available_time =  date('Y-m-d H:i', strtotime('+30 minutes',$meeting_end_time));
 
-               $host_availablity =  HostAvailablity::where('_id',$req->available_id)->first();
-               $meeting_end_time =  strtotime($req->end);
-               $host_availablity->start = date('Y-m-d H:i', strtotime('+30 minutes',$meeting_end_time));
-               $host_availablity->update();
+                $host_availablity =  HostAvailablity::where('_id',$req->available_id)->first();
+
+                if($host_availablity->end > $updated_host_available_time){
+                    $host_availablity->start = $updated_host_available_time;
+                    $host_availablity->update();
+                }else{
+
+                    $host_availablity->start = date('Y-m-d H:i',$meeting_end_time);
+                    $host_availablity->update();
+                }
+
                 
-               $event = array(
-                 'id' => $newAppointment['id'],
-                 'start' => $newAppointment['start'],
-                 'end' => $newAppointment['end'],
-                 'status' => $newAppointment['status'],
-                 'type'     =>  'schedule_meeting',
-                 'color'    =>  '#dd8585',
-                 'allDay'   =>  false,
-               );
+                
+                $event = array(
+                    'id' => $newAppointment['id'],
+                    'start' => $newAppointment['start'],
+                    'end' => $newAppointment['end'],
+                    'status' => $newAppointment['status'],
+                    'type'     =>  'schedule_meeting',
+                    'color'    =>  '#dd8585',
+                    'allDay'   =>  false,
+                );
                
-            //    return $event;
+                //    return $event;
                return response()->json($event);
+
               break;
             }
     }

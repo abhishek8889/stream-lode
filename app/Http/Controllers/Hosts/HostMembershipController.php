@@ -10,7 +10,7 @@ use Auth;
 use Stripe;
 use Stripe\StripeClient;
 use App\Models\PaymentMethods;
-use App\Models\MembershipPayments;
+use App\Models\MembershipPaymentsData;
 use Carbon\Carbon;
 use DB;
 
@@ -74,9 +74,8 @@ class HostMembershipController extends Controller
              'state' => 'CA',
              'country' => 'US',
            ],
-          
           ]);
-
+          
         //   #################### Attach payments method with customer ##########################
 
         $paymentMethodAttachStatus = $stripe->paymentMethods->attach(
@@ -91,22 +90,25 @@ class HostMembershipController extends Controller
             'items' => [
               ['price' => $membership['price_id']],
             ],
+            // 'collection_method' => 'charge_automatically',
           ]);
 
+          // dd($createMembership);
           // ######################## Store data in membership payment table ###############################
 
           $str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01235675854abcdefghjijklmnopqrst';
           $random_order_number = substr(str_shuffle($str_result),0,7);
 
-          $membership_payment = new MembershipPayments;
+          $membership_payment = new MembershipPaymentsData;
           $membership_payment->user_id = auth()->user()->id;
           $membership_payment->inovice_id = $createMembership->latest_invoice;
+          $membership_payment->stripe_payment_method = $req->token; 
           $membership_payment->order_id = $random_order_number;
           $membership_payment->membership_id = $req->membership_id;
           $membership_payment->membership_total_amount = $createMembership->plan->amount / 100;
           // $membership_payment->discount_coupon_name = null;
           // $membership_payment->discount_percentage_amount = null;
-          $membership_payment->payment_amount = $createMembership->plan->amount / 100; // while we use discount then we fix this
+          $membership_payment->payment_amount = $createMembership->plan->amount / 100; // while we use discount then we fix this and diff beteween unused time charge and new charge from invoice 
           $membership_payment->payment_status = $createMembership->status;
           $membership_payment->save();
 
@@ -129,19 +131,23 @@ class HostMembershipController extends Controller
         $payementMethods = new PaymentMethods;
         $payementMethods->user_id = auth()->user()->id;
         $payementMethods->stripe_payment_method = $req->token;  
-        // $paymentMethods->brand = 
-        // $paymentMethods->ends_in =
+        $payementMethods->brand = $paymentMethodAttachStatus->card->brand;
+        $payementMethods->last_4 = $paymentMethodAttachStatus->card->last4;
+        $payementMethods->expire_month = $paymentMethodAttachStatus->card->exp_month;
+        $payementMethods->expire_year = $paymentMethodAttachStatus->card->exp_year;
         $payementMethods->save();
-
+          // dd($createMembership);
         if($createMembership->status != 'incomplete'){
           $user->membership_id = $req->membership_id;
           $user->save();
           return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you got ' . $membership['name'] . ' for a ' . $membership['interval']);
+        }else{
+          $user->membership_id = null;
         }
 
         $user->save();
 
-        return redirect(url('/'.auth()->user()->unique_id))->with('error','Your payment is not done please waitfor confirmation');
+        return redirect(url('/'.auth()->user()->unique_id))->with('error','Your payment is not done please wait for confirmation');
     
     }
 
@@ -156,66 +162,90 @@ class HostMembershipController extends Controller
     }
     ////////////////////////// card detials for update subscription ////////////////////////////
     public function upgradeSubscriptionDetail($id , $slug){
+        $user_id = '';
+        if(isset(auth()->user()->id) && !empty(auth()->user()->id)){
+          $user_id = auth()->user()->id;
+        }
+        $membership = MembershipTier::where('slug',$slug)->first();
+        $users_payment_methods =  PaymentMethods::where('user_id',$user_id)->get();
       
-      $membership = MembershipTier::where('slug',$slug)->first();
-      
-      //   if((isset(auth()->user()->membership_id) || !empty(auth()->user()->membership_id)) && (isset(auth()->user()->subscription_id) || !empty(auth()->user()->subscription_id)) && (isset(auth()->user()->stripe_customer_id) || !empty(auth()->user()->stripe_customer_id))){
-      //     $savePayementMethods = PaymentMethods::where('user_id',auth()->user()->id)->get();
-          
-      //     $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
-
-      //     // if customer want to add new card
-
-      //     $intent =  $stripe->setupIntents->create([
-      //       'payment_method_types' => ['card'],
-      //     ]);
-
-          //if customer want use existing card for the payment
-
-          // $stripe_payment_method =  $stripe->paymentMethods->all([
-          //   'customer' => auth()->user()->stripe_customer_id,
-          //   'type' => 'card',
-          // ]);
-        // }
         $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
 
-        #################### Create setupintent ##########################
+          #################### Create setupintent ##########################
 
         $intent =  $stripe->setupIntents->create([
             'payment_method_types' => ['card'],
-          ]);
+        ]);
           
-      return view('Host.membership.upgrade_subscription_detail',compact('membership','intent'));
+        return view('Host.membership.upgrade_subscription_detail',compact('membership','intent','users_payment_methods'));
     }
 
     public function upgradeSubscriptionProcess(Request $req){
-      return $req;
+
       $user = User::where('_id',auth()->user()->id)->first();
       $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
       $subscription = '';
       $membership_details = MembershipTier::where('_id',$req->upgraded_membership_id)->first();
-      $payment_method = PaymentMethods::where('user_id',auth()->user()->id)->first()->value('stripe_payment_method');
-     
+
+      $membership_payment = new MembershipPaymentsData;
+      $str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01235675854abcdefghjijklmnopqrst';
+      $random_order_number = substr(str_shuffle($str_result),0,7);
+
       if($req->payment_method == 'default'){
-        if(isset(auth()->user()->subscription_id) || !empty(auth()->user()->subscription_id)){
-          $subscription = $stripe->subscriptions->retrieve(auth()->user()->subscription_id);
-          // dd($subscription);
-          $subscription_update_response = $stripe->subscriptions->update(
-            $subscription->id,
-            [
-              'cancel_at_period_end' => false,
-              'proration_behavior' => 'always_invoice',
-              'items' => [
-                [
-                  'id' => $subscription->items->data[0]->id,
-                  'price' => $membership_details->price_id,
-                ],
-                
+        
+        $payment_method = PaymentMethods::where('_id',$req->default_payment_method)->get()->value(['stripe_payment_method']);
+        // return $req;
+       
+        if(isset(auth()->user()->subscription_id) && !empty(auth()->user()->subscription_id)){
+
+        //update customer and make this payment method as default payment method.
+        
+        $customer = $stripe->customers->update(
+          auth()->user()->stripe_customer_id,
+          [
+            'invoice_settings' => [
+            'default_payment_method' => $payment_method,
+            ],
+          ]
+        );
+        
+        // ################### update subscription  ##############################
+
+        $subscription = $stripe->subscriptions->retrieve(auth()->user()->subscription_id);
+        
+        $subscription_update_response = $stripe->subscriptions->update(
+          $subscription->id,
+          [
+            'cancel_at_period_end' => false,
+            'proration_behavior' => 'always_invoice',
+            'items' => [
+              [
+                'id' => $subscription->items->data[0]->id,
+                'price' => $membership_details->price_id,
               ],
-            ]
-          );
+              
+            ],
+          ]
+        );
+        // dd($subscription_update_response);
+
+        // ################# membership Payment data save ##########################
+
+        $membership_payment->user_id = auth()->user()->id;
+        $membership_payment->inovice_id = $subscription_update_response->latest_invoice;
+        $membership_payment->stripe_payment_method =  $payment_method;
+        $membership_payment->order_id = $random_order_number;
+        $membership_payment->membership_id = $req->upgraded_membership_id;
+        $membership_payment->membership_total_amount = $subscription_update_response->plan->amount / 100;
+        // $membership_payment->discount_coupon_name = null;
+        // $membership_payment->discount_percentage_amount = null;
+        $membership_payment->payment_amount = $subscription_update_response->plan->amount / 100; // while we use discount then we fix this and diff beteween unused time charge and new charge from invoice 
+        $membership_payment->payment_status = $subscription_update_response->status;
+        $membership_payment->save();
 
         }
+        // dd($subscription_update_response);
+       
         if($subscription_update_response->status == 'active'){
           $user->membership_id = $req->upgraded_membership_id;
           $user->subscription_id = $subscription_update_response->id;
@@ -248,15 +278,17 @@ class HostMembershipController extends Controller
             ],
           ]
         );
-        
+   
         // Save data as a new payment method for same user
 
-         $newPaymentDetail->user_id = auth()->user()->id;
-         $newPaymentDetail->stripe_payment_method = $req->token;
-         $newPaymentDetail->card_number = 'card_number';
-        //  $newPaymentDetail->brand = 
-        // $newPaymentDetail->ends_in = 
-         $newPaymentDetail->save();
+        $newPaymentDetail->user_id = auth()->user()->id;
+        $newPaymentDetail->stripe_payment_method = $req->token;
+        $newPaymentDetail->brand = $paymentMethodAttachStatus->card->brand;
+        $newPaymentDetail->last_4 = $paymentMethodAttachStatus->card->last4;
+        $newPaymentDetail->expire_month = $paymentMethodAttachStatus->card->exp_month;
+        $newPaymentDetail->expire_year = $paymentMethodAttachStatus->card->exp_year;
+
+        $newPaymentDetail->save();
 
         // Update Subscription
 
@@ -278,7 +310,21 @@ class HostMembershipController extends Controller
             ]
           );
 
+          //  ###########################  membership payment details save ##################
+
+          $membership_payment->user_id = auth()->user()->id;
+          $membership_payment->inovice_id = $subscription_update_response->latest_invoice;
+          $membership_payment->stripe_payment_method =  $req->token;
+          $membership_payment->order_id = $random_order_number;
+          $membership_payment->membership_id = $req->upgraded_membership_id;
+          $membership_payment->membership_total_amount = $subscription_update_response->plan->amount / 100;
+          // $membership_payment->discount_coupon_name = null;
+          // $membership_payment->discount_percentage_amount = null;
+          $membership_payment->payment_amount = $subscription_update_response->plan->amount / 100; // while we use discount then we fix this and diff beteween unused time charge and new charge from invoice 
+          $membership_payment->payment_status = $subscription_update_response->status;
+          $membership_payment->save();
         }
+
         if($subscription_update_response->status == 'active'){
 
           $user->membership_id = $req->upgraded_membership_id;
@@ -297,8 +343,6 @@ class HostMembershipController extends Controller
 
       
     }
-
-
 
     public function getInvoice(){
       $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );

@@ -3,6 +3,48 @@
 
 <div class="container">
     <h1>My Schedule</h1>
+    <!-- schedule metting Modal -->
+    <div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Enter your availabele time </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="calendarCloseBtn">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form id="availableHostForm" action="" >
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="time">Title</label>
+                  <input type="text" class="form-control" id="title" placeholder="Enter your Title" />
+                </div>
+                <?php 
+                    $today_date = date("Y-m-d H:i");
+                    $end_time_string = strtotime($today_date);
+                    $end_suggestion = date('Y-m-d H:i', strtotime('+30 minutes',$end_time_string));
+                    
+                ?>
+                <div class="form-group">
+                  <label for="time">Start time</label>
+                  
+                  <input type="datetime-local" class="form-control" id="start_time" placeholder="Meetimg time" value="{{ $today_date }}"/>
+                </div>
+
+                <div class="form-group">
+                  <label for="time">End time</label>
+                  <input type="datetime-local" class="form-control" id="end_time" placeholder="Meetimg time" value="{{ $end_suggestion }}"/>
+                </div>
+              </div>
+              <div class="modal-footer">
+                
+                <button type="submit" class="btn btn-primary">Schedule meeting</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- modal end -->
     <div id='calendar'></div>
 </div>
   
@@ -17,11 +59,13 @@ $(document).ready(function () {
     //         start : '2015-02-13'
     //     }
     // ]
+
     $.ajaxSetup({
         headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+    var isLoading = false;
 
     var calendar = $('#calendar').fullCalendar({
                     editable: true,
@@ -45,34 +89,49 @@ $(document).ready(function () {
                     selectable: true,
                     selectHelper: true,
                     select: function (start, end ,allDay) {
-                        var title = prompt('Event Title:');
-                        if (title) {
-                            var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm");
-                            var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm");
-                            $.ajax({
-                                url: "{{ url(auth()->user()->unique_id.'/calendar-response') }}",
-                                data: {
-                                    title: title,
-                                    start: start,
-                                    end: end,
-                                    type: 'add'
-                                },
-                                type: "POST",
-                                success: function (data) {
-                                    displayMessage("Event Created Successfully");
-                                    calendar.fullCalendar('renderEvent',
-                                        {
-                                            id: data.id,
-                                            title: data.title,
-                                            start: data.start,
-                                            end: data.end,
-                                            allDay: allDay
-                                        },true);
-  
-                                    calendar.fullCalendar('unselect');
-                                }
-                            });
-                        }
+                        // var title = prompt('Event Title:');
+                        $("#calendarModal").modal('show');
+                        $("#availableHostForm").on('submit',function(e){
+                            e.preventDefault();
+                            var title = $("#title").val();
+                            var start_time = $("#start_time").val();
+                            var end_time = $("#end_time").val();
+                           if(title != '' || title != 'undefined' || title != 'null' || start != '' || start != 'undefined' || start != 'null' || end != '' || end != 'undefined' || end != 'null'){
+                            if (!isLoading) {
+                                isLoading = true;
+                                $.ajax({
+                                    url: "{{ url(auth()->user()->unique_id.'/calendar-response') }}",
+                                    data: {
+                                        title: title,
+                                        start: start_time,
+                                        end: end_time,
+                                        type: 'add'
+                                    },
+                                    type: "POST",
+                                    success: function (data) {
+                                        isLoading = false;
+                                        $("#calendarModal").modal('hide');
+                                        if(data.error){
+                                            displayError(data.error);
+                                        }else{
+                                            displayMessage("Event created successfully.");
+                                            calendar.fullCalendar('renderEvent',
+                                            {
+                                                id: data.id,
+                                                title: data.title,
+                                                start: data.start,
+                                                end: data.end,
+                                                allDay: allDay
+                                            },true);
+    
+                                        calendar.fullCalendar('unselect');
+                                        }
+                                    }
+                                });
+                            }
+                           }
+                     
+                        });
                     },
                     eventDrop: function (event, delta) {
                         var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm");
@@ -89,7 +148,11 @@ $(document).ready(function () {
                             },
                             type: "POST",
                             success: function (response) {
-                                displayMessage("Event Updated Successfully");
+                                if(response.error){
+                                    displayError(response.error);
+                                }else{
+                                    displayMessage("Event Updated Successfully");
+                                }
                             }
                         });
                     },
@@ -124,6 +187,9 @@ $(document).ready(function () {
     
     function displayMessage(message) {
         toastr.success(message, 'Event');
+    } 
+    function displayError(message) {
+        toastr.error(message, 'Error');
     } 
     
 </script>

@@ -105,10 +105,10 @@ Route::group(['middleware'=>['auth','Admin']],function(){
     });
 });
 // Host Routes
+
 Route::group(['middleware'=>['auth','Host']],function(){
-
+ 
     Route::get('/{id}',[HostDashController::class,'index'])->name('host-dashboard');
-
     // Account Details
     Route::get('/{id}/general-settings',[HostAccountController::class,'index'])->name('general-settings');
     Route::post('/{id}/add-user-meta',[HostAccountController::class,'addUserMeta'])->name('add-user-meta');

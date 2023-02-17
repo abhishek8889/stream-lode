@@ -1,5 +1,6 @@
 @extends('host_layout.master')
 @section('content')
+<!-- Where we add card details after hit upgrade membership button  -->
 <div class="center">
     <div class="card card-primary col-md-6">
         <div class="card-header">
@@ -8,11 +9,18 @@
         <div>
             <form action="{{ url(auth()->user()->unique_id.'/upgrade-to-new-subscription') }}" method="POST">
             @csrf
-
-            <input type="hidden" name="upgraded_membership_id" value="{{ $membership['_id'] }}">
             <input type="hidden" name="payment_method" value="default"/>
-            <input type="radio" name="default_payment_method" value="" id=""/>
-       
+            <input type="hidden" name="upgraded_membership_id" value="{{ $membership['_id'] }}">
+            @if(!empty($users_payment_methods))
+            @foreach($users_payment_methods as $user_payment_method)
+            <div>
+                <label class="checkcontainer">
+                    <input type="radio" name="default_payment_method" value="{{ $user_payment_method['_id'] }}" />
+                    <span class="radiobtn">{{ $user_payment_method['brand'].' ends in '.$user_payment_method['last_4']  }}</span>
+                </label>
+            </div>
+            @endforeach
+            @endif
             <input type="submit" value="Upgrade Subscription">
             </form>
         </div>

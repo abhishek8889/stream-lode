@@ -8,4 +8,5 @@ class PaymentMethods extends Model
 {
     use HasFactory;
     protected $table = 'payment_methods';
+   
 }

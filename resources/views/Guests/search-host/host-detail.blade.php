@@ -3,7 +3,105 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert"></script>
+<style>
+  /*PRELOADING------------ */
+#overlayer {
+  display: none;
+  width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 99;
+    background: #2455a6e0;
+    top: 0px;
+    height: 100vh;
+}
+.loader {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  z-index:3;
+  border: 4px solid #Fff;
+  top: 50%;
+  animation: loader 2s infinite ease;
+  left: 0px;
+    right: 0px;
+    margin: auto;
+    transform: translateY(-50%);
+}
 
+.loader-inner {
+  vertical-align: top;
+  display: inline-block;
+  width: 100%;
+  background-color: #fff;
+  animation: loader-inner 2s infinite ease-in;
+}
+/* .loader-wrapper {
+  display: none;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 99;
+} */
+body.model-open{
+  overflow: hidden;
+}
+
+@keyframes loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  
+  25% {
+    transform: rotate(180deg);
+  }
+  
+  50% {
+    transform: rotate(180deg);
+  }
+  
+  75% {
+    transform: rotate(360deg);
+  }
+  
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-inner {
+  0% {
+    height: 0%;
+  }
+  
+  25% {
+    height: 0%;
+  }
+  
+  50% {
+    height: 100%;
+  }
+  
+  75% {
+    height: 100%;
+  }
+  
+  100% {
+    height: 0%;
+  }
+}
+</style>
+<!-- loader  -->
+
+
+<div id="overlayer">
+  <span class="loader">
+    <span class="loader-inner"></span>
+  </span>
+</div>
 <!-- #################### Host Details ################################# -->
 
 <div class="dark-banner dark">
@@ -104,7 +202,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Schedule metting with {{ $host_details['first_name'] }} </h5>
+              <h5 class="modal-title" id="exampleModalLongTitle">Schedule metting with {{ $host_details['first_name'] }} <span id="meeting_date"></span></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="calendarCloseBtn">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -122,11 +220,11 @@
                 </div>
                 <div class="form-group">
                   <label for="time">Meeting start time</label>
-                  <input type="datetime-local" class="form-control" id="start_time" placeholder="Meetimg time" value="10:00"/>
+                  <input type="datetime-local" class="form-control" id="start_time" placeholder="Meetimg time" value=""/>
                 </div>
                 <div class="form-group">
                   <label for="time">Meeting end time</label>
-                  <input type="datetime-local" class="form-control" id="end_time" placeholder="Meetimg time" value="10:00"/>
+                  <input type="datetime-local" class="form-control" id="end_time" placeholder="Meetimg time" value=""/>
                 </div>
               </div>
               <div class="modal-footer">
@@ -275,13 +373,19 @@
                               // $.each(event,function(key, value){
                               //   console.log(key + ' : ' + value);
                               // });
+                              // $.fullCalendar.formatDate(event.start, "MM/dd/YYYY")
+                              let start_date_on_banner = $.fullCalendar.formatDate(event.start, "DD-MMM-YYYY");
+
+                              $("span#meeting_date").html(start_date_on_banner);
+
                                 if(event.type == 'available_host'){
                                   $("#calendarModal").modal({
                                     backdrop : 'static',
                                     keyboard : false});
-                                    
+                                   
                                   $("#scheduleMeetingForm").on('submit',function(e){
                                     e.preventDefault();
+                                    $("#overlayer").fadeIn();
                                     let user_login_status = $("#user_login_status").val();
                                     let name = $("#name").val();
                                     let email = $("#email").val();
@@ -310,23 +414,37 @@
                                               },
                                               success: function (data) {
                                                 console.log(data);
-                                                isLoading = false;
                                                 $("#calendarModal").modal('hide');
-                                                // console.log(data);
-                                                  calendar.fullCalendar('renderEvent',
-                                                    {
-                                                        id: data.id,
-                                                        start : data.start,
-                                                        end: data.end,
-                                                        allDay: data.allDay
-                                                    },true);
-                                                calendar.fullCalendar('unselect');
-                                                // window.location.href="{{ url('/details/'.$host_details['unique_id']) }}";
-                                                displayMessage("Meeting Scheduled Successfully");
+                                                isLoading = false;
+                                                setTimeout(function(){
+                                                    location.reload();
+                                                    // $(".loader-wrapper").fadeOut('3000');
+                                                    $("#overlayer").fadeOut('3000');
+                                                  }
+                                                    , 3000);
+                                            
+                                                // // console.log(data);
+                                                //   calendar.fullCalendar('renderEvent',
+                                                //     {
+                                                //         id: data.id,
+                                                //         start : data.start,
+                                                //         end: data.end,
+                                                //         allDay: data.allDay
+                                                //     },true);
+                                                // calendar.fullCalendar('unselect');
+                                               
+                                                // displayMessage("Meeting Scheduled Successfully");
                                               }
                                         });
                                       }
                                     }
+                                  });
+                                }else if(event.type == 'duration_below_thirty'){
+                                  swal({
+                                      title: "Sorry !",
+                                      text: "Sorry host is not available.",
+                                      icon: "error",
+                                      button: "Dismiss",
                                   });
                                 }else{
                                   swal({
@@ -347,7 +465,9 @@
          function displayMessage(message) {
              toastr.success(message, 'Event');
          } 
-           
+       
+         
+        
       </script>
 
 @endsection

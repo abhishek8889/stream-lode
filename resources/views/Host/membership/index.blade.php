@@ -2,7 +2,6 @@
 @section('content')
 <div class="container">
     <div class="row">
-  
         @if(isset($membership_details) || !empty($membership_details))
         @foreach($membership_details as $m)
         <div class="col-md-3">

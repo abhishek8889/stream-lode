@@ -88,7 +88,7 @@
                   </div>
                 </div>
                 <div class="pricing-footer">
-                  <a href="stripe-info.html" class="cta cta-yellow">Sign Up</a>
+                  <a href="{{ route('register') }}" class="cta cta-yellow">Sign Up</a>
                 </div>
               </div>
             </div>
@@ -114,7 +114,7 @@
                   </div>
                 </div>
                 <div class="pricing-footer">
-                  <a href="stripe-info.html" class="cta cta-yellow">Sign Up</a>
+                  <a href="{{ route('register') }}" class="cta cta-yellow">Sign Up</a>
                 </div>
               </div>
             </div>
@@ -141,7 +141,7 @@
                   </div>
                 </div>
                 <div class="pricing-footer">
-                  <a href="stripe-info.html" class="cta cta-yellow">Sign Up</a>
+                  <a href="{{ route('register') }}" class="cta cta-yellow">Sign Up</a>
                 </div>
               </div>
             </div>
@@ -168,7 +168,7 @@
                   </div>
                 </div>
                 <div class="pricing-footer">
-                  <a href="stripe-info.html" class="cta cta-yellow">Sign Up</a>
+                  <a href="{{ route('register') }}" class="cta cta-yellow">Sign Up</a>
                 </div>
               </div>
             </div>

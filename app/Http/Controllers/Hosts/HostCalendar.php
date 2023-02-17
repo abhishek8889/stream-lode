@@ -29,11 +29,19 @@ class HostCalendar extends Controller
         switch ($request->type) {
            case 'add':
             // return $request;
+            $today_date = date("Y-m-d H:i");
+            $request_date = date('Y-m-d H:i', strtotime($request->start));
+            
+            if($today_date >  $request_date  ){
+              $message = array('error' => "you have to add meeting after ".$today_date);
+              return response()->json($message);
+            }
+           
               $data = HostAvailablity::create([
                     'host_id' => auth()->user()->id,
                     'title' => $request->title,
-                    'start' => $request->start,
-                    'end' => $request->end,
+                    'start' =>  date('Y-m-d H:i', strtotime($request->start)),
+                    'end' => date('Y-m-d H:i', strtotime($request->end)),
                     'status' => 1
               ]);
               $event = array(
@@ -49,6 +57,14 @@ class HostCalendar extends Controller
   
            case 'update':
             // return $request;
+            $today_date = date("Y-m-d H:i");
+            $request_date = date('Y-m-d H:i', strtotime($request->start));
+            
+            if($today_date >  $request_date  ){
+              $message = array('error' => "you have to add meeting after ".$today_date);
+              return response()->json($message);
+            }
+           
               $event = HostAvailablity::find($request->id)->update([
                     'id' => $request->id,
                     'title' => $request->title,
