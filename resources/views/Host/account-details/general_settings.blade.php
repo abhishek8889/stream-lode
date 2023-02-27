@@ -5,6 +5,9 @@
     padding-left: 2.25rem;
     padding-top: 6px;
 }
+.note-codable{
+  height: 900px;
+}
 </style>
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -36,7 +39,7 @@
               <!-- form start -->
                 <div class="card-body">
                   <div class="btn btn-danger float-right">Membership Type</div>
-                  <div class="col-md-6" >
+                  <div class="col-md-10" >
                     <div class="form-group row">
                       <form action="{{ url(auth()->user()->unique_id.'/add-profile-picture') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -87,37 +90,43 @@
                         @csrf
                         <input type="hidden" name="id" value="{{ auth()->user()->id }}">
                         <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-2 col-form-label">First Name</label>
-                          <div class="col-sm-10">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">First Name</label>
+                          <div class="col-sm-9">
                             <input type="text" class="form-control" id="inputEmail3" name="first_name" placeholder="first name" value="{{ isset(auth()->user()->first_name)?auth()->user()->first_name:''; }}">
                           </div>
                         </div>
                         <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-2 col-form-label">Last Name</label>
-                          <div class="col-sm-10">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Last Name</label>
+                          <div class="col-sm-9">
                             <input type="text" class="form-control" id="inputEmail3" name="last_name" placeholder="last name" value="{{ isset(auth()->user()->last_name)?auth()->user()->last_name:''; }}">
                           </div>
                         </div>
                         <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-2 col-form-label">Phone</label>
-                          <div class="col-sm-10">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Phone</label>
+                          <div class="col-sm-9">
                             <input type="number" class="form-control" id="inputEmail3" name="phone" placeholder="phone" value="{{ isset(auth()->user()->phone)?auth()->user()->phone:''; }}">
                           </div>
                         </div>
                         <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
-                          <div class="col-sm-10">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Email</label>
+                          <div class="col-sm-9">
                             <input type="email" class="form-control" id="inputEmail3" name="email" placeholder="Email" value="{{ isset(auth()->user()->email)?auth()->user()->email:''; }}">
                           </div>
                         </div>
                         <!-- hide profile -->
                         <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-2 col-form-label">Hide profile</label>
-                          <div class="col-sm-10">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Hide profile</label>
+                          <div class="col-sm-9">
                             <div class="custom-control custom-switch">
                               <input type="checkbox" class="custom-control-input" id="customSwitches" name="hide_profile" @if(auth()->user()->public_visibility == 1){{ " " }}@else{{ "checked" }}@endif  />
                               <label class="custom-control-label" for="customSwitches">By enable it you will make your profile private and it will not visible to public.</label>
                             </div>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="description" class="col-sm-3 col-form-label">Description</label>
+                          <div class="card-body col-sm-9">
+                            <textarea class="summernote" name="hostDescription">{{ isset(auth()->user()->description)?auth()->user()->description:''; }}</textarea>
                           </div>
                         </div>
                     </div>
@@ -133,4 +142,10 @@
             </div>
       </div>
     </section>
+ 
+  <script type="text/javascript">
+    $(document).ready(function() {
+    $('.summernote').summernote();
+    });
+  </script>
 @endsection

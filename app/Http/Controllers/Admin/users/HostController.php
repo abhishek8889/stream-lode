@@ -23,7 +23,7 @@ class HostController extends Controller
         return redirect('/admin/host-list')->with('success','User is deleted succesfully');
     }
     public function hostGeneralsUpdate(Request $req){
-        // return $req->all();
+        // dd($req->all());
         $host_id = $req->id;
         $host_unique_id = $req->unique_id;
         $user = User::find($host_id);
@@ -43,12 +43,13 @@ class HostController extends Controller
             $user->first_name = $req->first_name;
             $user->last_name = $req->last_name;
             $user->email = $req->email;
-            $user->phone = $req->phone;
+            // $user->phone = $req->phone;
             if(isset($req->hide_profile) || $req->hide_profile == "on"){
                 $user->public_visibility = 0; // public visibility 0 means private
             }else{
                 $user->public_visibility = 1; // public visibility 1 means public
             }
+            $user->description = $req->hostDescription;
             $user->update();
             return redirect('/admin/host-details/'.$host_unique_id)->with('success','Host '.$req->first_name . ' '. $req->last_name. 'updated succesfully.');
         }else{
@@ -61,6 +62,7 @@ class HostController extends Controller
             }else{
                 $user->public_visibility = 1; // public visibility 1 means public
             }
+            $user->description = $req->hostDescription;
             $user->update();
             return redirect('/admin/host-details/'.$host_unique_id)->with('success','Host '.$req->first_name . ' '. $req->last_name. 'updated succesfully.');
 

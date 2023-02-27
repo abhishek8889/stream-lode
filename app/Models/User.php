@@ -29,9 +29,11 @@ class User extends Authenticatable
         'profile_image_name',
         'profile_image_url',
         'phone',
+        'description',
         'public_visibility',
         'password',
-        'status'
+        'status',
+        'active_status'
     ];
 
     /**
@@ -55,5 +57,6 @@ class User extends Authenticatable
     public function membershipDetails(){
         return $this->belongsTo(MembershipTier::class,'membership_id');
     }
+    
   
 }

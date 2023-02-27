@@ -38,20 +38,25 @@
                     @forelse($membership_payments_list as $data)
                         <?php $membership_count++; ?>
                         <tr>
-                           <td>{{ $membership_count }}</td>
-                           <td>{{ $data->user['first_name']. ' ' .$data->user['last_name']  }}</td>
-                           <td>#{{ $data->user['unique_id'] }}</td>
+                           <td><b>{{ $membership_count }}</b></td>
+                           <td><b>{{ $data->user['first_name']. ' ' .$data->user['last_name']  }}</b></td>
+                           <td><b>#{{ $data->user['unique_id'] }}</b></td>
                             <?php 
                                 $membership_name = App\Models\MembershipTier::where('_id',$data->user['membership_id'])->get()->value('name');
                             ?>
                             
-                           <td class="text-uppercase text-dark"><b>{{ $membership_name }}</b></td>
-                           <td><span class="badge badge-danger"> {{ $data['payment_status'] }}</span></td>
+                           <td class="text-uppercase text-info"><b>{{ $membership_name }}</b></td>
+                            @if($data['payment_status'] == 'succesfull')
+                           <td><span class="badge badge-success"> {{ $data['payment_status'] }}</span></td>
+                           @else
+                           <td><span class="badge badge-danger"> {{ $data['payment_status'] }}</span></td>  
+                           @endif
+
                            <td><b>${{ $data['payment_amount'] }}</b></td>
                         
                            <td>{{ $data['created_at'] }}</td>
                            <td>
-                                <a href="#" class="btn btn-info"><i class="fa fa-eye"></i></a>
+                                <a href="{{ url('/admin/membership-payment-details/'.$data->user['unique_id']) }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
                            </td>
                         </tr>
                     @empty

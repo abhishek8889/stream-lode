@@ -22,6 +22,7 @@
   </div>
 </section>
 
+
 <section class="choose-plan-section">
   <div class="dark_navigation up">
     <div class="container-fluid">
@@ -42,7 +43,7 @@
       </div>
       <div class="plans-wrapper">
         <div class="row plans-row justify-content-center">
-          <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Sponsorship_tire">
+          <!-- <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Sponsorship_tire">
             <div class="pricing-box-wrapper">
               <div class="pricing-box">
                 <div class="pricing-top">
@@ -67,6 +68,7 @@
               </div>
             </div>
           </div>
+
           <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Standard_tier">
             <div class="pricing-box-wrapper">
               <div class="pricing-box">
@@ -88,7 +90,7 @@
                   </div>
                 </div>
                 <div class="pricing-footer">
-                  <a href="{{ route('register') }}" class="cta cta-yellow">Sign Up</a>
+                  <a href="" class="cta cta-yellow">Sign Up</a>
                 </div>
               </div>
             </div>
@@ -114,7 +116,7 @@
                   </div>
                 </div>
                 <div class="pricing-footer">
-                  <a href="{{ route('register') }}" class="cta cta-yellow">Sign Up</a>
+                  <a href="" class="cta cta-yellow">Sign Up</a>
                 </div>
               </div>
             </div>
@@ -141,7 +143,7 @@
                   </div>
                 </div>
                 <div class="pricing-footer">
-                  <a href="{{ route('register') }}" class="cta cta-yellow">Sign Up</a>
+                  <a href="" class="cta cta-yellow">Sign Up</a>
                 </div>
               </div>
             </div>
@@ -168,13 +170,47 @@
                   </div>
                 </div>
                 <div class="pricing-footer">
-                  <a href="{{ route('register') }}" class="cta cta-yellow">Sign Up</a>
+                  <a href="" class="cta cta-yellow">Sign Up</a>
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
-
+          
+          @foreach($subscription_list as $subscription)
+            <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Standard_tier">
+              <div class="pricing-box-wrapper">
+                <div class="pricing-box">
+                  <div class="pricing-top">
+                    <div class="pricing-header">
+                      <h4>{{ $subscription['name'] }}</h4>
+                      <h3 class="price">
+                        ${{ $subscription['amount'] }} <span class="period">/ {{ $subscription['interval'] }}</span>
+                      </h3>
+                    </div>
+                    <div class="pricing-body">
+                      <ul class="access-list">
+                        <?php 
+                          $features_list = json_decode($subscription['membership_features']); 
+                        ?>
+                        @foreach($features_list as $feature)
+                        <li>{{ $feature }}</li>
+                        @endforeach
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="pricing-footer">
+                    @if((int)$subscription['amount'] < 1)
+                    <p><b>For a Sponsorship Tier, email <a href="mailto:Sales@StreamLode.com">Sales@StreamLode.com</a> about being a StreamLode Sponsor.</b></p>
+                    @else
+                    <a href="{{ url('/membership-payment/'.$subscription['slug']) }}" class="cta cta-yellow">Sign Up</a>
+                    @endif
+                  </div>
+                </div>
+              </div>
+            </div>
+          @endforeach
+        
         </div>
       </div>
     </div>

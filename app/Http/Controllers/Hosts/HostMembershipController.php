@@ -44,7 +44,6 @@ class HostMembershipController extends Controller
             ]);
             
           return view('Host.membership.subscribe',compact('membership','intent'));
-       
     }
 
     //////////////////////////// Create Subscription ////////////////////////////////////////
@@ -227,7 +226,7 @@ class HostMembershipController extends Controller
             ],
           ]
         );
-        // dd($subscription_update_response);
+        dd($subscription_update_response);
 
         // ################# membership Payment data save ##########################
 
@@ -278,6 +277,7 @@ class HostMembershipController extends Controller
             ],
           ]
         );
+
    
         // Save data as a new payment method for same user
 
@@ -309,7 +309,7 @@ class HostMembershipController extends Controller
               ],
             ]
           );
-
+          // $subscription_update_response
           //  ###########################  membership payment details save ##################
 
           $membership_payment->user_id = auth()->user()->id;
@@ -347,7 +347,7 @@ class HostMembershipController extends Controller
     public function getInvoice(){
       $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
       $invoice = $stripe->invoices->retrieve(
-        'in_1MUqM2SDpE15tSXhRTCOmjjD',
+        'in_1MeGczSDpE15tSXhwtkQ5WUp',
         []
       );
       dd($invoice);

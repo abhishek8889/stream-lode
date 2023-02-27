@@ -15,6 +15,7 @@ class HostAccountController extends Controller
         return view('Host.account-details.general_settings',compact('user_meta'));
     }
     public function addUserMeta( Request $req ){
+        // dd($req);
         $user = User::find($req->id);
         $user->first_name = $req->first_name;
         $user->last_name = $req->last_name;
@@ -26,6 +27,7 @@ class HostAccountController extends Controller
             $public_visibility = 1;
         }
         $user->public_visibility = $public_visibility;
+        $user->description = $req->hostDescription;
         $user->update();
         return redirect('/'.auth()->user()->unique_id. '/general-settings')->with(['success'=>'Profile updated succesfully']);
     }

@@ -76,7 +76,7 @@ class MembershipController extends Controller
             $membership->type = 'one-time';
         }
         $membership->amount = $req->price;
-        $membership->membership_features = $req->membership_fetaures;
+        $membership->membership_features = json_encode($req->membership_fetaures);
         $membership->status = 1; // 1 by default 1 (active) & 0 (inactive)
         if(!isset($req->description) || empty($req->description)){
             $membership->description = '';

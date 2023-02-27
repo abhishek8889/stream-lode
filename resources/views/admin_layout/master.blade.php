@@ -234,7 +234,7 @@
           <!-- Dashboard -->
            <li class="nav-item ">
             <a href="{{ url('/admin/dashboard') }}" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-solid fa-house"></i>
               <p>
                 Dashboard
               </p>
@@ -257,7 +257,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('host-list') }}" class="nav-link active">
+                <a href="{{ route('guest-list') }}" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Guest</p>
                 </a>
@@ -267,7 +267,7 @@
           <!-- membership tiers -->
           <li class="nav-item ">
             <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fa-solid fa-users-viewfinder"></i>
               <p>
                 Membership Tiers
                 <i class="right fas fa-angle-left"></i>
@@ -284,6 +284,30 @@
                 <a href="{{ url('/admin/add-membership-tier') }}" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Membership Tier</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Discount Coupons  -->
+          <li class="nav-item ">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-solid fa-hand-holding-dollar"></i>
+              <p>
+                Discount Coupons
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('generate-discount') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Generate Coupon</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('discount-coupon-list') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Coupons List</p>
                 </a>
               </li>
             </ul>

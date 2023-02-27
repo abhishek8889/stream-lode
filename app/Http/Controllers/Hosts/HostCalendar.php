@@ -25,65 +25,69 @@ class HostCalendar extends Controller
     
     public function ajax(Request $request)
     {
-       
+      if(auth()->user()->active_status != 0 && !empty(auth()->user()->membership_id)){
         switch ($request->type) {
-           case 'add':
-            // return $request;
-            $today_date = date("Y-m-d H:i");
-            $request_date = date('Y-m-d H:i', strtotime($request->start));
+            case 'add':
+              // return $request;
+              $today_date = date("Y-m-d H:i");
+              $request_date = date('Y-m-d H:i', strtotime($request->start));
+              
+              if($today_date >  $request_date  ){
+                $message = array('error' => "you have to add meeting after ".$today_date);
+                return response()->json($message);
+              }
             
-            if($today_date >  $request_date  ){
-              $message = array('error' => "you have to add meeting after ".$today_date);
-              return response()->json($message);
-            }
-           
-              $data = HostAvailablity::create([
-                    'host_id' => auth()->user()->id,
-                    'title' => $request->title,
-                    'start' =>  date('Y-m-d H:i', strtotime($request->start)),
-                    'end' => date('Y-m-d H:i', strtotime($request->end)),
-                    'status' => 1
-              ]);
-              $event = array(
-                'id' => $data->id,
-                'title' => $data->title,
-                'start' => $data->start,
-                'end' => $data->end,
-                'status' => $data->status
-              );
-             
-              return response()->json($event);
-             break;
-  
-           case 'update':
-            // return $request;
-            $today_date = date("Y-m-d H:i");
-            $request_date = date('Y-m-d H:i', strtotime($request->start));
+                $data = HostAvailablity::create([
+                      'host_id' => auth()->user()->id,
+                      'title' => $request->title,
+                      'start' =>  date('Y-m-d H:i', strtotime($request->start)),
+                      'end' => date('Y-m-d H:i', strtotime($request->end)),
+                      'status' => 1
+                ]);
+                $event = array(
+                  'id' => $data->id,
+                  'title' => $data->title,
+                  'start' => $data->start,
+                  'end' => $data->end,
+                  'status' => $data->status
+                );
+              
+                return response()->json($event);
+              break;
+    
+            case 'update':
+              // return $request;
+              $today_date = date("Y-m-d H:i");
+              $request_date = date('Y-m-d H:i', strtotime($request->start));
+              
+              if($today_date >  $request_date  ){
+                $message = array('error' => "you have to add meeting after ".$today_date);
+                return response()->json($message);
+              }
             
-            if($today_date >  $request_date  ){
-              $message = array('error' => "you have to add meeting after ".$today_date);
-              return response()->json($message);
-            }
-           
-              $event = HostAvailablity::find($request->id)->update([
-                    'id' => $request->id,
-                    'title' => $request->title,
-                    'start' => $request->start,
-                    'end' => $request->end,
-              ]);
-         
-              return response()->json($event);
-             break;
-  
-           case 'delete':
-              $event = HostAvailablity::find($request->id)->delete();
-  
-              return response()->json($event);
-             break;
-             
-           default:
-             # code...
-             break;
+                $event = HostAvailablity::find($request->id)->update([
+                      'id' => $request->id,
+                      'title' => $request->title,
+                      'start' => $request->start,
+                      'end' => $request->end,
+                ]);
+          
+                return response()->json($event);
+              break;
+    
+            case 'delete':
+                $event = HostAvailablity::find($request->id)->delete();
+    
+                return response()->json($event);
+              break;
+              
+            default:
+              # code...
+              break;
         }
+      }else{
+        $message = array('error' => "Sorry but for schedule meeting you have to activate your account by paying invoice got in registered email.");
+        return response()->json($message);
+      }
     }
 }

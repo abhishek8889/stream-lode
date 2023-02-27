@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TestController;
 
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\FrontMembershipController;
@@ -14,6 +15,10 @@ use App\Http\Controllers\Admin\membership\MembershipController;
 use App\Http\Controllers\Admin\membership\MembershipPayments;
 
 use App\Http\Controllers\Admin\users\HostController;
+use App\Http\Controllers\Admin\users\GuestController;
+
+use App\Http\Controllers\Admin\discount\DiscountController;
+
 
 
 use App\Http\Controllers\Hosts\HostDashController;
@@ -22,6 +27,8 @@ use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\Hosts\HostTagController;
 use App\Http\Controllers\Hosts\HostMembershipController;
 use App\Http\Controllers\Hosts\HostCalendar;
+use Google\Service\ServiceConsumerManagement\Authentication;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,6 +43,13 @@ use App\Http\Controllers\Hosts\HostCalendar;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+Route::get('host-register-email',function(){
+    return view('Emails.host_registration');
+});
+
+Route::get('learn-area',[TestController::class,'index'])->name('learn-area');
+
+
 // Authentication
 Route::get('login',[AuthenticationController::class,'login'])->name('login');
 Route::get('register',[AuthenticationController::class,'register'])->name('register');
@@ -43,14 +57,20 @@ Route::post('loginProc',[AuthenticationController::class,'loginProcess'])->name(
 Route::post('registerProc',[AuthenticationController::class,'registerProcess'])->name('registerProc');
 Route::post('/{id}/update-password',[AuthenticationController::class,'updatePassword'])->name('update-password');
 Route::get('logout',[AuthenticationController::class,'logout'])->name('logout');
+// Route::get('testing',[AuthenticationController::class,'paymentStatus'])->name('testing');
 
 // Front Routes 
 Route::get('/',[HomeController::class,'index'])->name('/');
 Route::get('/membership',[FrontMembershipController::class,'index'])->name('membership');
+Route::get('/membership-payment/{slug}',[FrontMembershipController::class,'membershipPayment']);
+Route::get('/registration-status',[FrontMembershipController::class,'registrationResponse']);
+
+
 Route::get('/about-support',[FrontAboutController::class,'index'])->name('about-support');
 Route::get('/search-host',[SearchHostController::class,'index'])->name('search-host');
 Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
+
 
 
 
@@ -61,6 +81,7 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(AdminDashController::class)->group(function(){
             Route::get('/dashboard','index')->name('admin-dashboard');
         });
+        // Host list
         Route::controller(HostController::class)->group(function(){
             Route::get('/host-list','hostList')->name('host-list');
         });
@@ -73,6 +94,19 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(HostController::class)->group(function(){
             Route::post('/host-generals-update','hostGeneralsUpdate');
         });
+        // Guest list
+        Route::controller(GuestController::class)->group(function(){
+            Route::get('/guest-list','guestlist')->name('guest-list');
+        });
+        // Route::controller(GuestController::class)->group(function(){
+        //     Route::get('/host-details/{id}','hostDetail')->name('host-details');
+        // });
+        // Route::controller(GuestController::class)->group(function(){
+        //     Route::get('/host-delete/{id}','hostDelete');
+        // });
+        // Route::controller(GuestController::class)->group(function(){
+        //     Route::post('/host-generals-update','hostGeneralsUpdate');
+        // });
         Route::controller(SettingsController::class)->group(function(){
             Route::get('/general-settings','index');
         });
@@ -101,6 +135,24 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MembershipPayments::class)->group(function(){
             Route::get('/membership-payment-list','membershipPaymentList')->name('membership-payment-list');
         });
+        Route::controller(MembershipPayments::class)->group(function(){
+            Route::get('/membership-payment-details/{slug}','membershipPaymentDetails')->name('membership-payment-details');
+        });
+        Route::controller(MembershipPayments::class)->group(function(){
+            Route::get('/membership-payment-refund/{id}','refund');
+        });
+
+        // Discount 
+
+        Route::controller(DiscountController::class)->group(function(){
+            Route::get('/generate-discount','index')->name('generate-discount');
+        });
+        Route::controller(DiscountController::class)->group(function(){
+            Route::get('/discount-coupon-list','discountList')->name('discount-coupon-list');
+        });
+        Route::controller(DiscountController::class)->group(function(){
+            Route::post('/create-discount','createDiscount')->name('create-discount');
+        });
         
     });
 });
@@ -127,7 +179,8 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/upgrade-membership',[HostMembershipController::class,'membershipDetail'])->name('upgrade-membership');
     Route::get('/{id}/get-invoice',[HostMembershipController::class,'getInvoice'])->name('get-invoice');
     Route::get('/{id}/subscribe/{slug}',[HostMembershipController::class,'subscribe'])->name('subscribe');
-    Route::post('/{id}/create-subscription',[HostMembershipController::class,'createSubscription'])->name('create-subscription');
+    // Route::post('/{id}/create-subscription',[HostMembershipController::class,'createSubscription'])->name('create-subscription');
+    Route::post('create-subscription',[HostMembershipController::class,'createSubscription'])->name('create-subscription');
     Route::get('/{id}/upgrade-subscription',[HostMembershipController::class,'upgradeSubscription'])->name('upgrade-subscription');
     Route::get('/{id}/upgrade-subscription/{slug}',[HostMembershipController::class,'upgradeSubscriptionDetail'])->name('upgrade-subscription');
     Route::post('/{id}/upgrade-to-new-subscription',[HostMembershipController::class,'upgradeSubscriptionProcess'])->name('upgrade-to-new-subscription');
@@ -143,3 +196,5 @@ Route::group(['middleware'=>['auth','Host']],function(){
 
 
 });
+
+// Email Template 
