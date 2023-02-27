@@ -7,7 +7,7 @@ use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\FrontMembershipController;
 use App\Http\Controllers\Front\FrontAboutController;
 use App\Http\Controllers\Front\SearchHostController;
-
+use App\Http\Controllers\Front\ApplyDiscountController;
 
 use App\Http\Controllers\Admin\AdminDashController;
 use App\Http\Controllers\Admin\settings\SettingsController;
@@ -71,7 +71,7 @@ Route::get('/search-host',[SearchHostController::class,'index'])->name('search-h
 Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 
-
+Route::get('/coupon-for-host',[ApplyDiscountController::class,'couponForHost'])->name('coupon-for-host');
 
 
 

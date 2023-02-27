@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\PaymentMethods;
 use App\Models\MembershipPaymentsData;
 use App\Mail\HostRegisterMail;
+use App\Models\Discounts\AdminDiscount;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Hash;
@@ -82,8 +83,7 @@ class AuthenticationController extends Controller
 
                 $createSubscription = '';
                 if(!empty($user_id)){
-                    $createSubscription = $this->createSubscription($user_id,$req->membership_id,$name,$req->email,$req->token);
-                    // dd($createSubscription);
+                    $createSubscription = $this->createSubscription($user_id,$req->membership_id,$name,$req->email,$req->token,$req->coupon_code);
                     return redirect('registration-status')->with(['paymentStatus'=> $createSubscription[0]['paymentStatus'], 'message'=>$createSubscription[0]['response'],'membership_id' => $createSubscription[0]['membership_id']]);
                 }else{
                     return redirect()->back()->with('error','Sorry error in registration process please try again.');
@@ -91,11 +91,15 @@ class AuthenticationController extends Controller
             }
             return redirect('membership');
     }
-    public function createSubscription($user_id,$membership_id ,$name,$email,$token){
+    public function createSubscription($user_id,$membership_id ,$name,$email,$token,$coupon_code){
        
         try{
             // $current = Carbon::now()->format('Y,m,d');
-  
+            $stripe_coupon_id = '';
+            if($coupon_code != null){
+                $stripe_coupon_id = AdminDiscount::where('coupon_code',$coupon_code)->get()->value('stripe_coupon_id');
+            }
+            // dd($stripe_coupon_id);
           $membership = DB::table('membership')->find($membership_id) ;
           
           $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
@@ -132,16 +136,24 @@ class AuthenticationController extends Controller
               'items' => [
                 ['price' => $membership['price_id']],
               ],
+              'coupon' => $stripe_coupon_id,
             //   'collection_method' => 'charge_automatically',
             ]);
   
-            // dd($createMembership->latest_invoice);
+            // dd($createMembership);
             $invoice = $createMembership->latest_invoice;
             $payment_intent = '';
             $host_inovice_url = '';
             $host_invoice_pdf = '';
+            $subtotal = '';
+            $discount = '';
+            $total_excluding_discount = '';
             if(!empty($invoice)){
                $invoice_details =  $this->getInvoice($invoice);
+            //    dd($invoice_details);
+               $subtotal = (int)$invoice_details->subtotal / 100;
+               $discount = (int)$invoice_details->total_discount_amounts[0]->amount / 100;
+               $total_excluding_discount = (int)$invoice_details->total /100 ;
                 $payment_intent = $invoice_details->payment_intent;
                 $host_inovice_url = $invoice_details->hosted_invoice_url;
                 $host_invoice_pdf = $invoice_details->invoice_pdf;
@@ -177,9 +189,12 @@ class AuthenticationController extends Controller
             $membership_payment->order_id = $random_order_number;
             $membership_payment->membership_id = $membership_id;
             $membership_payment->membership_total_amount = $createMembership->plan->amount / 100;
-            // $membership_payment->discount_coupon_name = null;
-            // $membership_payment->discount_percentage_amount = null;
-            $membership_payment->payment_amount = $createMembership->plan->amount / 100; // while we use discount then we fix this and diff beteween unused time charge and new charge from invoice 
+            // prices starts
+            $membership_payment->discount_coupon_name = $coupon_code;
+            $membership_payment->subtotal = $subtotal;
+            $membership_payment->discount_amount = $discount ;
+            $membership_payment->total = $total_excluding_discount ;// while we use discount then we fix this and diff beteween unused time charge and new charge from invoice 
+            // prices end
             $membership_payment->payment_status = $createMembership->status;
             $membership_payment->save();
   

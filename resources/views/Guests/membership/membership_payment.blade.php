@@ -170,21 +170,22 @@
                         <div class="sub-text">
                           <h6>Subtotal</h6>
                         </div>
-                        <div class="sub-amt">
-                          $9.00
+                        <div class="sub-amt" subtotal="{{ $subscription_details['amount'] }}">
+                          ${{ $subscription_details['amount'] }}
                         </div>
                       </div>
                       <div class="coupon">
                         <a class="lab" href="javascript:void(0)">Apply coupon</a>
-                        <input type="text" class="coupon-code" id="coup-code" name="coupon-code"/>
+                        <input type="text" class="coupon-code" id="coup-code" name="coupon_code"/>
+                        <div id="discount_error" class="text text-danger"></div>
                       </div>
-                      
+                      <div class="sub-wrapper" id="discount_coloumn"></div>
                       <div class="sub-wrapper">
                         <div class="sub-text">
                           <h6>Total</h6>
                         </div>
-                        <div class="sub-amt">
-                          $9.00
+                        <div class="sub-amt" id="total-amt">
+                          ${{ $subscription_details['amount'] }}
                         </div>
                       </div>
                     </div>
@@ -260,6 +261,35 @@
 			
             form.submit();
         }
+    });
+
+
+    // ajax 
+
+    
+    $("#coup-code").on('change',function(){
+      let coupon_code = $(this).val();
+      let subtotal = $(".sub-amt").attr("subtotal");
+      if(coupon_code != ''){
+        $.ajax({
+          url: "{{ url('coupon-for-host') }}",
+          data: {subtotal,coupon_code},
+          type: "GET",
+          success: function (response) {
+            // console.log(response);
+              if(response.error){
+                  $("#discount_error").show();
+                  $("#discount_error").html(response.error);
+                  $("#discount_coloumn").hide();
+              }else{
+                  $("#discount_error").hide();
+                  $("#discount_coloumn").show();
+                  $("#discount_coloumn").html('<div class="sub-text"><h6>Discount</h6></div><div class="sub-amt">$'+ response.appllied_discount.toFixed(2) +'</div>');
+                  $("#total-amt").html('$'+response.total.toFixed(2));
+              }
+          }
+        });
+      }
     });
 </script>
 @endsection
