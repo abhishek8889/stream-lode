@@ -38,7 +38,7 @@
               <!-- /.card-header -->
               <!-- form start -->
                 <div class="card-body">
-                  <div class="btn btn-danger float-right">Membership Type</div>
+                  <!-- <div class="btn btn-danger float-right">Membership Type</div> -->
                   <div class="col-md-10" >
                     <div class="form-group row">
                       <form action="{{ url(auth()->user()->unique_id.'/add-profile-picture') }}" method="POST" enctype="multipart/form-data">
@@ -55,7 +55,7 @@
                             <img src="{{ asset('Assets/images/default-avatar.jpg') }}" alt="" width="100px" height="100px" style="border-radius:50%;">
                             @endif
                           <button type="button" class="btn btn-info ml-2" data-toggle="modal" data-target="#modal-default">
-                            Upload Profile
+                            Profile Picture
                           </button>
                           <div class="modal fade" id="modal-default" style="display: none;" aria-hidden="true">
                             <div class="modal-dialog">

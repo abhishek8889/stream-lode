@@ -128,7 +128,7 @@ class SearchHostController extends Controller
                 $newAppointment->save();
                 //  Host availablity update
                 $user = User::find($req->user_id);
-                 $host = User::find($req->host_id);
+                $host = User::find($req->host_id);
                 $uemail = $user->email;
                 $hostmail = $host->email;
                 
@@ -140,8 +140,8 @@ class SearchHostController extends Controller
                     'end' => $req->end,
                 ];
                 
-                    $mail = Mail::to($user)->send(new appoinmentsconfirmation($mailData));
-                    $hostmail = Mail::to($host)->send(new HostAppoinmentsMail($mailData));
+                $mail = Mail::to($uemail)->send(new appoinmentsconfirmation($mailData));
+                $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
                 $meeting_end_time =  strtotime($req->end);
                 $updated_host_available_time =  date('Y-m-d H:i', strtotime('+30 minutes',$meeting_end_time));
                 
@@ -152,12 +152,9 @@ class SearchHostController extends Controller
                     $host_availablity->start = $updated_host_available_time;
                     $host_availablity->update();
                 }else{
-
                     $host_availablity->start = date('Y-m-d H:i',$meeting_end_time);
                     $host_availablity->update();
                 }
-
-                
                 
                 $event = array(
                     'id' => $newAppointment['id'],
@@ -168,8 +165,6 @@ class SearchHostController extends Controller
                     'color'    =>  '#dd8585',
                     'allDay'   =>  false,
                 );
-                return response()->json($hosts);
-               
                 //    return $event;
                return response()->json($event);
 
@@ -199,8 +194,6 @@ class SearchHostController extends Controller
                     $host = $d->users;
                     array_push($hosts,$host);
                 }
-         
-            
             }
         }
         return response()->json($hosts);

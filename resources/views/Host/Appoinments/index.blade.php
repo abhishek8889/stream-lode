@@ -20,7 +20,7 @@
                 <table class="table table-head-fixed text-nowrap">
                   <thead>
                     <tr>
-                      <th>#</th>
+                      <th>Sr no.</th>
                       <th>Guest Name</th>
                       <th>Email</th>
                       <th>Start Time</th>
@@ -30,16 +30,20 @@
                   <?php $count = 0; ?>
                   <tbody>
                     @if($host_schedule)
-                    @foreach($host_schedule as $hs)
-                    <tr>
+                    @forelse ($host_schedule as $hs)
+                      <tr>
                         <?php $count = $count+1; ?>
-                      <td>{{$count}}</td>
-                      <td>{{$hs->guest_name}}</td>
-                      <td>{{$hs->guest_email}}</td>
-                      <td>{{$hs->start}}</td>
-                      <td>{{$hs->end}}</td>
-                    </tr>
-                    @endforeach
+                        <td>{{$count}}</td>
+                        <td>{{$hs->guest_name}}</td>
+                        <td>{{$hs->guest_email}}</td>
+                        <td>{{$hs->start}}</td>
+                        <td>{{$hs->end}}</td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td class="text text-bold text-danger">You have no appointments</td>
+                      </tr>
+                    @endforelse
                     @endif
                   </tbody>
                 </table>
