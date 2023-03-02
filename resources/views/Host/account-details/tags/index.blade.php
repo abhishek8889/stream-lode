@@ -49,7 +49,7 @@
               <!-- /.card-header -->
               <!-- form start -->
                 <div class="card-body">
-                  <div class="btn btn-danger float-right">Membership Type</div>
+                  <!-- <div class="btn btn-danger float-right">Membership Type</div> -->
                     <div class="col-md-8" >
                         <!-- form  -->
                         <div class="userform">
@@ -62,6 +62,9 @@
                                         <input type="text" class="form-control" id="inputEmail3" name="tag_name" placeholder="Tag name" >
                                         <button type="submit" class="btn btn-info ml-3">Generate</button>
                                     </div>
+                                    @error('tag_name')
+                                    <div class="text text-danger">{{ $message }}</div>
+                                    @enderror
                                   
                                 </div>
                             </form>

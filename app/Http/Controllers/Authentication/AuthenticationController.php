@@ -131,14 +131,31 @@ class AuthenticationController extends Controller
   
           //  #################### Create subscription ##########################
   
-          $createMembership =  $stripe->subscriptions->create([
-              'customer' => $customer->id,
-              'items' => [
-                ['price' => $membership['price_id']],
-              ],
-              'coupon' => $stripe_coupon_id,
-            //   'collection_method' => 'charge_automatically',
-            ]);
+        //   $createMembership =  $stripe->subscriptions->create([
+        //       'customer' => $customer->id,
+        //       'items' => [
+        //         ['price' => $membership['price_id']],
+        //       ],
+        //       'coupon' => $stripe_coupon_id,
+        //     //   'collection_method' => 'charge_automatically',
+        //     ]);
+        $createMembership = '';
+            if($coupon_code != null){
+                $createMembership =  $stripe->subscriptions->create([
+                    'customer' => $customer->id,
+                    'items' => [
+                      ['price' => $membership['price_id']],
+                    ],
+                    'coupon' => $stripe_coupon_id,
+                ]);
+            }else{
+                $createMembership =  $stripe->subscriptions->create([
+                    'customer' => $customer->id,
+                    'items' => [
+                      ['price' => $membership['price_id']],
+                    ]
+                ]);
+            }
   
             // dd($createMembership);
             $invoice = $createMembership->latest_invoice;
@@ -149,15 +166,15 @@ class AuthenticationController extends Controller
             $discount = '';
             $total_excluding_discount = '';
             if(!empty($invoice)){
-               $invoice_details =  $this->getInvoice($invoice);
-            //    dd($invoice_details);
-               $subtotal = (int)$invoice_details->subtotal / 100;
-               $discount = (int)$invoice_details->total_discount_amounts[0]->amount / 100;
-               $total_excluding_discount = (int)$invoice_details->total /100 ;
+                $invoice_details =  $this->getInvoice($invoice);
+                $subtotal = (int)$invoice_details->subtotal / 100;
+                $total_excluding_discount = (int)$invoice_details->total /100 ;
                 $payment_intent = $invoice_details->payment_intent;
                 $host_inovice_url = $invoice_details->hosted_invoice_url;
                 $host_invoice_pdf = $invoice_details->invoice_pdf;
-
+                if($coupon_code != null){
+                    $discount = (int)$invoice_details->total_discount_amounts[0]->amount / 100;
+                }
                 // send mail for user's email to get activation and payment done
 
                 $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf));

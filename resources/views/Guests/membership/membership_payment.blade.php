@@ -267,7 +267,7 @@
     // ajax 
 
     
-    $("#coup-code").on('change',function(){
+    $("#coup-code").on('keyup',function(){
       let coupon_code = $(this).val();
       let subtotal = $(".sub-amt").attr("subtotal");
       if(coupon_code != ''){

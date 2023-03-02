@@ -23,7 +23,6 @@
                     $today_date = date("Y-m-d H:i");
                     $end_time_string = strtotime($today_date);
                     $end_suggestion = date('Y-m-d H:i', strtotime('+30 minutes',$end_time_string));
-                    
                 ?>
                 <div class="form-group">
                   <label for="time">Start time</label>

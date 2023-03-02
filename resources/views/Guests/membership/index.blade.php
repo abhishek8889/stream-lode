@@ -39,7 +39,8 @@
   <div class="plans-section">
     <div class="container-fluid">
       <div class="section-head text-center">
-        <h2>Choose a plan to start with <span class="yellow">Stream</span><span class="blue">Lode</span></h2>
+        <!-- <h2>Choose a plan to start with <span class="yellow">Stream</span><span class="blue">Lode</span></h2> -->
+        <h2>Choose a plan to start with <br> <span class="yellow">Stream</span><span class="blue">Lode</span></h2>
       </div>
       <div class="plans-wrapper">
         <div class="row plans-row justify-content-center">
