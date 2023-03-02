@@ -8,7 +8,7 @@ use App\Http\Controllers\Front\FrontMembershipController;
 use App\Http\Controllers\Front\FrontAboutController;
 use App\Http\Controllers\Front\SearchHostController;
 use App\Http\Controllers\Front\ApplyDiscountController;
-
+use App\Http\Controllers\Front\MeetingController;
 use App\Http\Controllers\Admin\AdminDashController;
 use App\Http\Controllers\Admin\settings\SettingsController;
 use App\Http\Controllers\Admin\membership\MembershipController;
@@ -73,7 +73,8 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-
+//Meetings
+Route::get('/scheduledmeeting',[MeetingController::class,'index']);
 
 
 Route::get('/coupon-for-host',[ApplyDiscountController::class,'couponForHost'])->name('coupon-for-host');
