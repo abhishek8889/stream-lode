@@ -95,8 +95,14 @@ body.model-open{
 }
 </style>
 <!-- loader  -->
-
-
+<!-- <pre> -->
+<?php
+//  print_r($host_details);
+// print_r($available_host);
+$date = date('Y-m-d h:i');
+// echo $date;
+?>
+<!-- </pre> -->
 <div id="overlayer">
   <span class="loader">
     <span class="loader-inner"></span>
@@ -230,6 +236,7 @@ body.model-open{
                   <label for="time">Meeting start time</label>
                   <input type="datetime-local" class="form-control" id="start_time" placeholder="Meetimg time" value=""/>
                 </div>
+               
                 <div class="form-group">
                   <label for="time">Meeting end time</label>
                   <input type="datetime-local" class="form-control" id="end_time" placeholder="Meetimg time" value=""/>
@@ -390,7 +397,83 @@ body.model-open{
                                   $("#calendarModal").modal({
                                     backdrop : 'static',
                                     keyboard : false});
-                                   
+                                    var dt = new Date();
+                                    time = moment(dt).format("YYYY-MM-DD HH:mm");
+                                    if(time > event.start._i){
+                                      starttime = time;
+                                    }else{
+                                      starttime = event.start._i;
+                                    }
+                                    // console.log(starttime);
+                                    $('#start_time').val(starttime);
+                                    defaulttimestamp = moment(starttime, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
+                                    // console.log(defaulttimestamp);
+                                    $('#end_time').val(defaulttimestamp);
+                                    $('#start_time').change(function(){
+                                     startdate = $('#start_time').val();
+                                    //  console.log(startdate);
+                                     newDateTime = moment(startdate, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
+                                    // console.log(newDateTime);
+                                     let dateString_ = moment(startdate).format("YYYY-MM-DD HH:mm");
+                                    //  console.log(dateString_);
+                                    if(dateString_ < starttime){
+                                      swal({
+                                      title: "Sorry !",
+                                      text: "This timestap is not valid",
+                                      icon: "error",
+                                      button: "Dismiss",
+                                  });
+                                      $('#start_time').val(starttime);
+                                    }else{
+                                      $('#end_time').val(newDateTime);
+                                      $('#end_time').change(function(){
+                                        endtime = $(this).val();
+                                        let endtimeString_ = moment(endtime).format("YYYY-MM-DD HH:mm");
+                                        if(endtimeString_ < newDateTime){
+                                          swal({
+                                      title: "Sorry !",
+                                      text: "Minimum time interval is 30 minutes",
+                                      icon: "error",
+                                      button: "Dismiss",
+                                  });
+                                  $('#end_time').val(newDateTime);
+                                        }
+                                    if(endtimeString_ < starttime){
+                                      swal({
+                                      title: "Sorry !",
+                                      text: "This timestap is not valid",
+                                      icon: "error",
+                                      button: "Dismiss",
+                                  });
+                                  $('#end_time').val(newDateTime);
+                                    }
+                                      });
+                                    }
+                                    });
+                                    $('#end_time').change(function(){
+                                      let dateString = moment($(this).val()).format("YYYY-MM-DD HH:mm");
+                                      if(dateString < defaulttimestamp){
+                                        swal({
+                                      title: "Sorry !",
+                                      text: "This timestap is not valid",
+                                      icon: "error",
+                                      button: "Dismiss",
+                                  });
+                                  $('#end_time').val(newDateTime);
+                                      }
+                                      if(dateString > event.end._i){
+                                        swal({
+                                      title: "Sorry !",
+                                      text: "This timestap is not valid",
+                                      icon: "error",
+                                      button: "Dismiss",
+                                  });
+                                  $('#end_time').val(newDateTime);
+                                      }
+                                    });
+
+                                    
+                                  //  console.log(event.start._i);
                                   $("#scheduleMeetingForm").on('submit',function(e){
                                     e.preventDefault();
                                     $("#overlayer").fadeIn();
@@ -473,8 +556,11 @@ body.model-open{
          function displayMessage(message) {
              toastr.success(message, 'Event');
          } 
-       
-         
+       $(document).ready(function(){
+        var dt = new Date();
+        time = moment(dt).format("YYYY-MM-DD HH:mm");
+        console.log(time);
+       });
         
       </script>
 

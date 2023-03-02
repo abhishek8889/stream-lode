@@ -7,7 +7,7 @@
                 <div class="row">
                     <div class="col-12">
                     <h4>
-                        <!-- // -->
+                       
                         <i class="fas fa-edit"></i> Membership Payment Detail Page 
                         @if($membership_payments_details['payment_status'] == 'succesfull' )
                         <div class="btn btn-success ml-2">{{ $membership_payments_details['payment_status'] }}</div>
@@ -53,7 +53,10 @@
                     <b>Invoice #{{ $membership_payments_details['inovice_id'] }}</b><br>
                     <br>
                     <b>Order ID : </b> #{{ $membership_payments_details['order_id'] }} <br>
+                    @if($membership_payments_details['discount_coupon_name']) 
+                    <b>Discount code : </b> {{ $membership_payments_details['discount_coupon_name'] }} <br>  @endif
                     <b>Payment On : </b> {{ $membership_payments_details['created_at'] }} <br>
+
                     <div class="mt-1">
                     <b>Card : </b> <span class="text text-info font-weight-bold p-1"> {{ !empty($membership_payments_details->payments_method['brand'])?$membership_payments_details->payments_method['brand']:'';  }}</span> ends in <span>{{ !empty($membership_payments_details->payments_method['last_4'])?$membership_payments_details->payments_method['last_4']:''; }} </span>
                     </div>
@@ -80,13 +83,13 @@
                             <td>{{ '$'.$membership_payments_details['membership_total_amount'] }}</td>
                         </tr>
                         <tr>
-                            <th>Discount</th>
-                            <td>{{ isset($membership_payments_details['discount'])?'$'.$membership_payments_details['discount']:'$0'; }}</td>
-                        </tr>
+                            <th>Discount:</th>
+                            <td>${{ $membership_payments_details['discount_amount'] ?? 0 }}</td>
+                        </tr> 
                         
                         <tr>
                             <th>Total:</th>
-                            <td>{{ isset($membership_payments_details['payment_amount'])?'$'.$membership_payments_details['payment_amount']:'0'; }}</td>
+                            <td>${{ $membership_payments_details['total'] ?? 0 }}</td>
                         </tr>
                         </tbody></table>
                     </div>

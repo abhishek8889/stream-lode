@@ -8,4 +8,8 @@ class Tags extends Model
 {
     use HasFactory;
     protected $table = "tags";
+
+    public function users(){
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

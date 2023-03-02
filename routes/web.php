@@ -27,6 +27,7 @@ use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\Hosts\HostTagController;
 use App\Http\Controllers\Hosts\HostMembershipController;
 use App\Http\Controllers\Hosts\HostCalendar;
+use App\Http\Controllers\Hosts\AppoinmentsController;
 use Google\Service\ServiceConsumerManagement\Authentication;
 
 /*
@@ -70,6 +71,10 @@ Route::get('/about-support',[FrontAboutController::class,'index'])->name('about-
 Route::get('/search-host',[SearchHostController::class,'index'])->name('search-host');
 Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
+Route::post('/searchhost',[SearchHostController::class,'searchhost']);
+
+
+
 
 Route::get('/coupon-for-host',[ApplyDiscountController::class,'couponForHost'])->name('coupon-for-host');
 
@@ -193,7 +198,8 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::post('/{id}/calendar-response',[HostCalendar::class,'ajax']);
 
    
-
+    //Appoinments
+    Route::get('{id}/Appoinments',[AppoinmentsController::class,'index']);
 
 });
 

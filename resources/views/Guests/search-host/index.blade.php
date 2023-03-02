@@ -39,8 +39,8 @@
                 <a class="dropdown-item" href="#">Something else here</a>
               </div>
             </div>
-            <input type="search" class="form-control" placeholder="Write Your Keyword..">
-            <button type="submit" class="cta cta-yellow"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <input type="search" class="form-control" id="searchbox" placeholder="Write Your Keyword..">
+            <button type="submit" class="cta cta-yellow" id="searchbtn"><i class="fa-solid fa-magnifying-glass"></i></button>
           </div>
         </form>
       </div>
@@ -51,7 +51,7 @@
   <div class="container-fluid">
     <div class="host-filter">
       <div class="row align-items-center">
-        <div class="col-md-6">
+        <div class="col-md-6" id = "hostscount">
           @if(isset($hosts) || !empty($hosts))
           <p>Showing all {{ count($hosts) }} results</p>
           @else
@@ -60,12 +60,12 @@
         </div>
         <div class="col-md-6">
           <div class="search-filter">
-            <label>Search By: </label><select name="name1" id="cars">
-              <option value="name2">Name</option>
-  <option value="name2">Rodrigo Denson</option>
-  <option value="name3">William Hawkins</option>
-  
-</select>
+            <label>Search By: </label>
+        <select name="name1" id="searchcat">
+            <option value="1">Name</option>
+            <option value="2">Page Name</option>
+            <option value="3">Tag</option>
+        </select>
           </div>
         </div>
       </div>
@@ -138,4 +138,40 @@
   </div>
   </div>
 </section>
+<script>
+  $(document).ready(function(){
+    $('#searchbtn').click(function(e){
+      e.preventDefault();
+      data = $('#searchbox').val();
+      cat = $('#searchcat').val();
+      // console.log(cat);
+      // console.log(data);
+      $.ajax({
+        method: 'post',
+			  url: '{{url('searchhost')}}',
+			  dataType: 'json',
+			  data: {data:data, cat:cat ,_token: '{{csrf_token()}}'}, 
+        success: function(response)
+			{
+        // console.log(response);
+        divdata = [];
+        $.each(response, function(key,value){
+          if(value.profile_image_url){
+            img = value.profile_image_url;
+          }else{
+            img = '{{ asset('Assets/images/default-avatar.jpg') }}';
+          }
+        html = '<div class="col-lg-3 col-md-6 col-sm-6 host-col "><div class="host-box"><div class="box-up"><div class="image-box hover-zoom"><img src="'+img+'"></div><div class="box-body"><h3 class="host-name"><span class="yellow">'+value.first_name+'</span><span class="blue"> '+value.last_name+'</span></h3></div></div><div class="box-footer"><a href="{{ url('/details/') }}/'+value.unique_id+'">More info <i class="fa-solid fa-arrow-right"></i></a></div></div></div>';
+       
+        divdata.push(html);
+        });
+        $('#hostscount').html('Showing all '+divdata.length+' results');
+        // console.log(divdata.length);
+        $('.host-row').html(divdata);
+      }
+      });
+    });
+  });
+</script>
 @endsection
+

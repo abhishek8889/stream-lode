@@ -25,7 +25,7 @@ class HostDashController extends Controller
                 auth()->user()->subscription_id,
                 []
               );
-             
+            //  dd($subscription_details);
             if(!empty($subscription_details)){
                 $product_id = $subscription_details->plan->product;
                 if($subscription_details->status == 'active' && !empty($product_id)){

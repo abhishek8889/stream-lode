@@ -15,6 +15,9 @@ class HostTagController extends Controller
         return view('Host.account-details.tags.index',compact('tags'));
     }
     public function addTags(Request $req){
+        $req->validate([
+            'tag_name' =>'required'
+        ]);
         $tags = new Tags;
         $tags->user_id = $req->id;
         $tags->name = $req->tag_name;

@@ -32,7 +32,12 @@
                     </thead>
                  
                     <tbody>
-                    <?php 
+
+                    <?php
+                    // echo '<pre>';
+                    // print_r($membership_payments_list);
+                    // echo '</pre>';
+                    // die(); 
                         $membership_count = 0;
                     ?>
                     @forelse($membership_payments_list as $data)
@@ -52,7 +57,7 @@
                            <td><span class="badge badge-danger"> {{ $data['payment_status'] }}</span></td>  
                            @endif
 
-                           <td><b>${{ $data['payment_amount'] }}</b></td>
+                           <td><b>${{ $data['total'] }}</b></td>
                         
                            <td>{{ $data['created_at'] }}</td>
                            <td>

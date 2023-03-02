@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-
+use App\Models\Tags;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\appoinmentsconfirmation;
+use App\Mail\HostAppoinmentsMail;
 use App\Models\HostAvailablity;
 use App\Models\HostAppointments;
 use Illuminate\Support\Facades\DB;
@@ -16,9 +19,11 @@ class SearchHostController extends Controller
 {
     //
     public function index(){
-        $hosts = DB::table('users')->where('status',1)->get();
+        $hosts = DB::table('users')->where('status',1)->where('public_visibility',1)->get();
         // $tags = Tags::where('user_id','63c942d6aa1425079f0bae4c')->get();
         // dd($tags);
+        
+        
         return view('Guests.search-host.index',compact('hosts'));
     }
 
@@ -31,9 +36,9 @@ class SearchHostController extends Controller
         
         //   Available Host
         $today_date = date("Y-m-d H:m");
-       
-        $host_schedule = HostAvailablity::where([['host_id','=',$host_data['_id']],['start','>=',$today_date]])->get(['title','start','end','status']);
-
+    //    $date = "2023-02-28 14:30";
+        $host_schedule = HostAvailablity::where([['host_id','=',$host_data['_id']],['end','>=',$today_date]])->get(['title','start','end','status']);
+        
         $available_host = array();
         
         if(isset($host_schedule) || !empty($host_schedule)){
@@ -76,7 +81,7 @@ class SearchHostController extends Controller
 
         //  Host Meetings 
 
-        $host_appointments = HostAppointments::where([['host_id','=',$host_data['_id']],['start','>=',$today_date]])->get(['start','end','status']);
+        $host_appointments = HostAppointments::where([['host_id','=',$host_data['_id']],['end','>=',$today_date]])->get(['start','end','status']);
         if(isset($host_appointments) || !empty($host_appointments)){
             foreach($host_appointments as $meetings){
                 if($schedule->status == 1){
@@ -121,10 +126,25 @@ class SearchHostController extends Controller
                 $newAppointment->end = date('Y-m-d H:i', strtotime($req->end));
                 $newAppointment->status = $req->status;
                 $newAppointment->save();
-               
                 //  Host availablity update
+                $user = User::find($req->user_id);
+                 $host = User::find($req->host_id);
+                $uemail = $user->email;
+                $hostmail = $host->email;
+                
+                    
+                $mailData = [
+                    'hostname' => $user->first_name.' '.$user->last_name,
+                    'username' => $user->first_name.' '.$user->last_name,
+                    'start' => $req->start,
+                    'end' => $req->end,
+                ];
+                
+                    $mail = Mail::to($user)->send(new appoinmentsconfirmation($mailData));
+                    $hostmail = Mail::to($host)->send(new HostAppoinmentsMail($mailData));
                 $meeting_end_time =  strtotime($req->end);
                 $updated_host_available_time =  date('Y-m-d H:i', strtotime('+30 minutes',$meeting_end_time));
+                
 
                 $host_availablity =  HostAvailablity::where('_id',$req->available_id)->first();
 
@@ -148,6 +168,7 @@ class SearchHostController extends Controller
                     'color'    =>  '#dd8585',
                     'allDay'   =>  false,
                 );
+                return response()->json($hosts);
                
                 //    return $event;
                return response()->json($event);
@@ -155,4 +176,34 @@ class SearchHostController extends Controller
               break;
             }
     }
+    public function searchhost(Request $req){
+        if($req->data == null){
+            $hosts = DB::table('users')->where('status',1)->where('public_visibility',1)->get();
+        }else{
+            if($req->cat == 1){
+                $full_name = explode(" ", $req->data);
+                $count = count($full_name);
+                if($count < 2){
+                    $hosts = DB::table('users')->orWhere('first_name','like',$req->data.'%')->where('status',1)->where('public_visibility',1)->orWhere('last_name','like',$req->data.'%')->get();
+                }else{
+                    $hosts = DB::table('users')->orWhere([['first_name','like',$full_name[0]],['last_name','like',$full_name[1].'%']])->orWhere('first_name',$req->data)->where('status',1)->where('public_visibility',1)->get();
+                } 
+            }elseif($req->cat == 2){
+                $hosts = DB::table('users')->where('unique_id','like',$req->data.'%')->where('status',1)->where('public_visibility',1)->get();
+            }
+            elseif($req->cat == 3){
+               
+                $data = Tags::where('name','like',$req->data.'%')->with(['users' => function($response){ $response->where([['status',1],['public_visibility',1]]); }])->get();
+                $hosts = array();
+                foreach($data as $d){
+                    $host = $d->users;
+                    array_push($hosts,$host);
+                }
+         
+            
+            }
+        }
+        return response()->json($hosts);
+    }
+   
 }
