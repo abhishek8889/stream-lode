@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\users;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Message;
 use DB;
 use Hash;
 class HostController extends Controller
@@ -12,11 +13,14 @@ class HostController extends Controller
     public function hostList(){
         $hosts = DB::table('users')->where('status', 1)->get();
         
+        
         return view('Admin.users.hostlist',compact('hosts'));
     }
     public function hostDetail(Request $req , $id){
-        $host_detail = DB::table('users')->where('unique_id', $id)->first();
-        return view('Admin.users.host_detail',compact('host_detail'));
+        $host_detail = User::where('unique_id', $id)->first();
+       
+        $message = Message::where('reciever_id',$host_detail['_id'])->orderBy('created_at','asc')->get();
+        return view('Admin.users.host_detail',compact('host_detail','message'));
     }
     public function hostDelete($id){
         DB::table('users')->where('unique_id', $id)->delete();
@@ -67,5 +71,20 @@ class HostController extends Controller
             return redirect('/admin/host-details/'.$host_unique_id)->with('success','Host '.$req->first_name . ' '. $req->last_name. 'updated succesfully.');
 
         }
+    }
+    public function message(Request $req){
+
+        
+
+        $req->validate([
+            'message' => 'required'
+        ]);
+        $message = new Message();
+        $message->reciever_id = $req->reciever_id;
+        $message->sender_id = $req->sender_id;
+        $message->message = $req->message;
+        $message->status = 1;
+        $message->save();
+        return response()->json('message sent');
     }
 }

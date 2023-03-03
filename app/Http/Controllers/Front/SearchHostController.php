@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Tags;
+use App\Models\Message;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\appoinmentsconfirmation;
 use App\Mail\HostAppoinmentsMail;
@@ -129,8 +130,12 @@ class SearchHostController extends Controller
                 $newAppointment->save();
                 $user = User::find($req->user_id); 
             }else{
+                $req->validate([
+                    'email' => 'required|unique:users',
+                ]);
                 $name = $req->name;
-                $pass = $req->name.rand(1,100);
+                $namestr = str_replace(' ', '', $name);
+                $pass = substr($namestr, 0, 4).'@'.rand(100,999);
                 $password = Hash::make($pass);
                 $data = array(
                     'email' => $req->email,
@@ -143,7 +148,7 @@ class SearchHostController extends Controller
                 Auth::attempt($credentials);
                 $mailData = [
                     'email' => $req->email,
-                    'username' => $req->pass
+                    'password' => $pass
                 ];
                 $passwordmail = Mail::to($req->email)->send(new SendpasswordMail($mailData));
                 $newAppointment = new HostAppointments;
@@ -159,13 +164,8 @@ class SearchHostController extends Controller
                 $user = User::find($user->_id); 
             }
                 //  Host availablity update
-<<<<<<< HEAD
                 
-                 $host = User::find($req->host_id);
-=======
-                $user = User::find($req->user_id);
                 $host = User::find($req->host_id);
->>>>>>> 27bc63b2ab02fc6e4b95a5a1b93155738381cd5a
                 $uemail = $user->email;
                 $hostmail = $host->email;
                 
@@ -177,13 +177,8 @@ class SearchHostController extends Controller
                     'end' => $req->end,
                 ];
                 
-<<<<<<< HEAD
-                    $mail = Mail::to($uemail)->send(new appoinmentsconfirmation($mailData));
-                    $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
-=======
                 $mail = Mail::to($uemail)->send(new appoinmentsconfirmation($mailData));
                 $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
->>>>>>> 27bc63b2ab02fc6e4b95a5a1b93155738381cd5a
                 $meeting_end_time =  strtotime($req->end);
                 $updated_host_available_time =  date('Y-m-d H:i', strtotime('+30 minutes',$meeting_end_time));
                 
@@ -207,10 +202,6 @@ class SearchHostController extends Controller
                     'color'    =>  '#dd8585',
                     'allDay'   =>  false,
                 );
-<<<<<<< HEAD
-               
-=======
->>>>>>> 27bc63b2ab02fc6e4b95a5a1b93155738381cd5a
                 //    return $event;
                return response()->json($event);
 
@@ -245,5 +236,10 @@ class SearchHostController extends Controller
         return response()->json($hosts);
     }
 //   
+public function trycode(){
+    $sender_id = "63fc7d26b62598df920a9c02";
+    $data = User::with('message')->where('_id', '=', $sender_id)->get();
+        dd($data);
+}
 
 }

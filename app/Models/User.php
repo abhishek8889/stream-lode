@@ -57,6 +57,8 @@ class User extends Authenticatable
     public function membershipDetails(){
         return $this->belongsTo(MembershipTier::class,'membership_id');
     }
-    
+    public function message(){
+        return $this->hasMany(Message::class,'reciever_id','_id');
+    }
   
 }

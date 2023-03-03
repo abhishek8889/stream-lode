@@ -172,10 +172,10 @@ $date = date('Y-m-d h:i');
            <a href="mailto:{{ $host_details['email'] }}"><i class="fa-solid fa-envelope"></i> {{ $host_details['email'] }} </a>
          </div>
          <ul class="host-social-links">
-           <li><a href="#"><i class="fa-brands fa-facebook-f"></i></a></li>
-            <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
-           <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
-          <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li> 
+           <li><a href="{{ $host_details['facebook'] ?? '' }}"><i class="fa-brands fa-facebook-f"></i></a></li>
+            <li><a href="{{ $host_details['linkdin'] ?? '' }}"><i class="fa-brands fa-linkedin-in"></i></a></li>
+           <li><a href="{{ $host_details['instagram'] ?? '' }}"><i class="fa-brands fa-instagram"></i></a></li>
+          <li><a href="{{ $host_details['twitter'] ?? '' }}"><i class="fa-brands fa-twitter"></i></a></li> 
          </ul>
         </div>
       </div>
@@ -226,11 +226,11 @@ $date = date('Y-m-d h:i');
                 <input type="hidden" name="user_login_status" id="user_login_status" user_id="{{ isset(auth()->user()->id)?auth()->user()->id:''; }}" value="{{ isset(auth()->user()->id)?1:0; }}">
                 <div class="form-group">
                   <label for="name">Enter your name</label>
-                  <input type="text" class="form-control" id="name"  placeholder="Enter your name">
+                  <input type="text" class="form-control" id="name"  placeholder="Enter your name" value="{{ Auth::user()->first_name ?? '' }}">
                 </div>
                 <div class="form-group">
                   <label for="email">Enter your email</label>
-                  <input type="email" class="form-control" id="email"  placeholder="Enter your email">
+                  <input type="email" class="form-control" id="email"  placeholder="Enter your email" value="{{ Auth::user()->email ?? '' }}">
                 </div>
                 <div class="form-group">
                   <label for="time">Meeting start time</label>
@@ -525,7 +525,20 @@ $date = date('Y-m-d h:i');
                                                 // calendar.fullCalendar('unselect');
                                                
                                                 // displayMessage("Meeting Scheduled Successfully");
-                                              }
+                                              },
+                                              error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                                                isLoading = false;
+                                                $("#overlayer").fadeOut('3000');
+                                                // console.log(XMLHttpRequest.responseJSON.message);
+                                                // console.log(textStatus);
+                                                // console.log(errorThrown);
+                                                swal({
+                                                     title: "Error !",
+                                                     text: XMLHttpRequest.responseJSON.message,
+                                                     icon: "error",
+                                                     button: "Dismiss",
+                                                 });
+                                            }
                                         });
                                       
                                     }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\FrontMembershipController;
 use App\Http\Controllers\Front\FrontAboutController;
 use App\Http\Controllers\Front\SearchHostController;
+use App\Http\Controllers\Hosts\HostMessageController;
 use App\Http\Controllers\Front\ApplyDiscountController;
 use App\Http\Controllers\Front\MeetingController;
 use App\Http\Controllers\Admin\AdminDashController;
@@ -73,8 +74,11 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
+Route::get('/trycode',[SearchHostController::class,'trycode']);
+
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
+
 
 
 Route::get('/coupon-for-host',[ApplyDiscountController::class,'couponForHost'])->name('coupon-for-host');
@@ -99,6 +103,9 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         });
         Route::controller(HostController::class)->group(function(){
             Route::post('/host-generals-update','hostGeneralsUpdate');
+        });
+        Route::controller(HostController::class)->group(function(){
+            Route::post('/message','message');
         });
         // Guest list
         Route::controller(GuestController::class)->group(function(){
@@ -198,6 +205,8 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/calendar',[HostCalendar::class,'index']);
     Route::post('/{id}/calendar-response',[HostCalendar::class,'ajax']);
 
+    //hostMessage
+    Route::get('/{id}/message',[HostMessageController::class,'index']);
    
     //Appoinments
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index']);
