@@ -9,6 +9,9 @@ use App\Http\Controllers\Front\FrontAboutController;
 use App\Http\Controllers\Front\SearchHostController;
 use App\Http\Controllers\Front\ApplyDiscountController;
 use App\Http\Controllers\Front\MeetingController;
+use App\Http\Controllers\Front\VedioChatController;
+
+
 use App\Http\Controllers\Admin\AdminDashController;
 use App\Http\Controllers\Admin\settings\SettingsController;
 use App\Http\Controllers\Admin\membership\MembershipController;
@@ -40,6 +43,9 @@ use Google\Service\ServiceConsumerManagement\Authentication;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('vedio-call',[VedioChatController::class,'index']);
+Route::get('create-room',[VedioChatController::class,'createRoom']);
+Route::get('/vedio/{roomName}',[VedioChatController::class,'joinRoom']);
 
 // Route::get('/', function () {
 //     return view('welcome');
