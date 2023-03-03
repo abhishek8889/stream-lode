@@ -143,7 +143,7 @@ class SearchHostController extends Controller
                 Auth::attempt($credentials);
                 $mailData = [
                     'email' => $req->email,
-                    'username' => $req->pass
+                    'password' => $pass
                 ];
                 $passwordmail = Mail::to($req->email)->send(new SendpasswordMail($mailData));
                 $newAppointment = new HostAppointments;
@@ -159,13 +159,8 @@ class SearchHostController extends Controller
                 $user = User::find($user->_id); 
             }
                 //  Host availablity update
-<<<<<<< HEAD
-                
-                 $host = User::find($req->host_id);
-=======
-                $user = User::find($req->user_id);
+               
                 $host = User::find($req->host_id);
->>>>>>> 27bc63b2ab02fc6e4b95a5a1b93155738381cd5a
                 $uemail = $user->email;
                 $hostmail = $host->email;
                 
@@ -177,13 +172,8 @@ class SearchHostController extends Controller
                     'end' => $req->end,
                 ];
                 
-<<<<<<< HEAD
-                    $mail = Mail::to($uemail)->send(new appoinmentsconfirmation($mailData));
-                    $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
-=======
                 $mail = Mail::to($uemail)->send(new appoinmentsconfirmation($mailData));
                 $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
->>>>>>> 27bc63b2ab02fc6e4b95a5a1b93155738381cd5a
                 $meeting_end_time =  strtotime($req->end);
                 $updated_host_available_time =  date('Y-m-d H:i', strtotime('+30 minutes',$meeting_end_time));
                 
@@ -207,11 +197,7 @@ class SearchHostController extends Controller
                     'color'    =>  '#dd8585',
                     'allDay'   =>  false,
                 );
-<<<<<<< HEAD
-               
-=======
->>>>>>> 27bc63b2ab02fc6e4b95a5a1b93155738381cd5a
-                //    return $event;
+                
                return response()->json($event);
 
               break;

@@ -40,8 +40,17 @@
                             <img src="{{ asset('Assets/images/default-avatar.jpg') }}" alt="default-image" class="rounded-circle" width="65px">
                             @endif
                         </td>
-
-                        <td>{{ $guest['first_name'] . ' ' . $guest['last_name'] }}</td>
+                        <?php 
+                            $first_name = '';
+                            $last_name = '';
+                            if(isset($guest['first_name'])){
+                                $first_name = $guest['first_name'];
+                            }
+                            if(isset($guest['last_name'])){
+                                $first_name = $guest['last_name'];
+                            }
+                        ?>
+                        <td>{{$first_name . '' . $last_name}}</td>
                         <td>{{ $guest['email'] }}</td>
 
                         <?php 
