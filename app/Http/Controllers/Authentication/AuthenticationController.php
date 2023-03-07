@@ -290,7 +290,7 @@ class AuthenticationController extends Controller
         }
     }
     public function logout(){
-    Auth::logout();
-    return redirect('/')->with('success',"You have logged out succesfully");
+        Auth::logout();
+        return redirect('/')->with('success',"You have logged out succesfully");
     }
 }
