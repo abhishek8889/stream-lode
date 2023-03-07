@@ -54,9 +54,9 @@ class HostStreamController extends Controller
         $token->addGrant($videoGrant);
 
         // render token to string
-        // echo $token->toJWT();
-        
-        return redirect(auth()->user()->unique_id.'/join-room')->with('token',$token->toJWT());
+        $token_jwt = $token->toJWT();
+        dd($token_jwt. '\n room'. $room);
+        return redirect(auth()->user()->unique_id.'/join-room')->with('token',$token_jwt);
     }
     public function joinRoomView(){
         return view('Host.Appoinments.join_room');
