@@ -22,41 +22,28 @@ class HostStreamController extends Controller
         $twilioAccountSid = getenv('TWILIO_ACCOUNT_SID');
         $twilioApiKey = getenv('TWILIO_API_KEY');
         $twilioApiSecret = getenv('TWILIO_API_KEY_SECRET');
-        $twilioAuthToken = getenv("TWILIO_AUTH_TOKEN");
-
-        // Required for Video grant
+        // $twilioAuthToken = getenv("TWILIO_AUTH_TOKEN");
+        
         $roomName = $req->room_name;
-        // An identifier for your app - can be anything you'd like
         $identity = $req->identity;
+        // Create a new Access Token with Video grant
 
-        $twilio = new Client($twilioAccountSid, $twilioAuthToken);
-
-        $room = $twilio->video->v1->rooms->create([
-            "uniqueName" => $roomName,
-            "emptyRoomTimeout" => 30 , //set time out for the expiration of url 
-        ]);
-        // dd($room);
-
-        // Create access token, which we will serialize and send to the client
-        $token = new AccessToken(
+        $accessToken = new AccessToken(
             $twilioAccountSid,
             $twilioApiKey,
             $twilioApiSecret,
             3600,
             $identity
         );
-
-        // Create Video grant
         $videoGrant = new VideoGrant();
         $videoGrant->setRoom($roomName);
+        $accessToken->addGrant($videoGrant);
 
-        // Add grant to token
-        $token->addGrant($videoGrant);
-
-        // render token to string
-        $token_jwt = $token->toJWT();
-        dd($token_jwt. '\n room'. $room);
-        return redirect(auth()->user()->unique_id.'/join-room')->with('token',$token_jwt);
+        // Return the Access Token and room name as JSON
+        return response()->json([
+            'accessToken' => $accessToken->toJWT(),
+            'roomName' => $roomName
+        ]);
     }
     public function joinRoomView(){
         return view('Host.Appoinments.join_room');
