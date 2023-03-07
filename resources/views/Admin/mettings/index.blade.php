@@ -48,7 +48,7 @@
                               </div>
                               <div class="modal-body">
                               @foreach($u['appoinments'] as $up)
-                            <?php print_r($up); ?>
+                            
                               @endforeach
                               </div>
                               
