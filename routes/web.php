@@ -31,6 +31,8 @@ use App\Http\Controllers\Hosts\HostTagController;
 use App\Http\Controllers\Hosts\HostMembershipController;
 use App\Http\Controllers\Hosts\HostCalendar;
 use App\Http\Controllers\Hosts\AppoinmentsController;
+use App\Http\Controllers\Hosts\HostStreamController;
+
 use Google\Service\ServiceConsumerManagement\Authentication;
 
 /*
@@ -43,9 +45,9 @@ use Google\Service\ServiceConsumerManagement\Authentication;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('vedio-call',[VedioChatController::class,'index']);
-Route::get('create-room',[VedioChatController::class,'createRoom']);
-Route::get('/vedio/{roomName}',[VedioChatController::class,'joinRoom']);
+// Route::get('vedio-call',[VedioChatController::class,'index']);
+// Route::get('create-room',[VedioChatController::class,'createRoom']);
+// Route::get('/vedio/{roomName}',[VedioChatController::class,'joinRoom']);
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -203,10 +205,15 @@ Route::group(['middleware'=>['auth','Host']],function(){
       
     Route::get('/{id}/calendar',[HostCalendar::class,'index']);
     Route::post('/{id}/calendar-response',[HostCalendar::class,'ajax']);
-
-   
     //Appoinments
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index']);
+
+    //Vedio chat
+    Route::get('{id}/vedio-conference',[HostStreamController::class,'index']); 
+    Route::post('generate-token',[HostStreamController::class,'generateToken']); 
+    Route::get('{id}/join-room',[HostStreamController::class,'joinRoomView']); 
+
+    
 
 });
 
