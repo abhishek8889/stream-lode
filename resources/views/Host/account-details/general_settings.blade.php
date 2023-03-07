@@ -124,6 +124,30 @@
                           </div>
                         </div>
                         <div class="form-group row">
+                          <label for="Facebook" class="col-sm-3 col-form-label">Facebook link</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="Facebook" name="facebook" placeholder="Facebook" value="{{ Auth()->user()->facebook ?? '' }}">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="twitter" class="col-sm-3 col-form-label">Twitter link</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="twitter" name="twitter" placeholder="twitter" value="{{ Auth()->user()->twitter ?? '' }}">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="linkdin" class="col-sm-3 col-form-label">Linkdin link</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="linkdin" name="linkdin" placeholder="linkdin" value="{{ Auth()->user()->linkdin ?? '' }}">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="instagram" class="col-sm-3 col-form-label">Instagram link</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="instagram" name="instagram" placeholder="instagram" value="{{ Auth()->user()->instagram ?? '' }}">
+                          </div>
+                        </div>
+                        <div class="form-group row">
                           <label for="description" class="col-sm-3 col-form-label">Description</label>
                           <div class="card-body col-sm-9">
                             <textarea class="summernote" name="hostDescription">{{ isset(auth()->user()->description)?auth()->user()->description:''; }}</textarea>

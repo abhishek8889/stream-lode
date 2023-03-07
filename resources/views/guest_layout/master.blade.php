@@ -43,6 +43,13 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url('about-support') }}">Support</a>
           </li>
+          @if(Auth::check())
+          @if(Auth::user()->status == 0)
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url('scheduledmeeting') }}">Meeting</a>
+          </li>
+          @endif
+          @endif
         </ul>
       </div>
       <div class="form-inline my-2 my-lg-0 login button-col">

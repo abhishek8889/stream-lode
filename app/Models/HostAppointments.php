@@ -12,4 +12,8 @@ class HostAppointments extends Model
     protected $fillable = [
         'host_available_id','user_id','host_id', 'guest_name','guest_email','start','end','status',
     ];
+    public function user(){
+        return $this->belongsTo(User::class,'host_id');
+    }
+   
 }

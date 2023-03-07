@@ -90,7 +90,25 @@ $(document).ready(function () {
                     select: function (start, end ,allDay) {
                         // var title = prompt('Event Title:');
                         $("#calendarModal").modal('show');
-                        $("#availableHostForm").on('submit',function(e){
+                        
+                        let startdateString = moment(start._d).format("YYYY-MM-DD HH:mm");
+                        let enddateString = moment(start._d, "YYYY-MM-DD HH:mm").add(60, 'minutes').format('YYYY-MM-DD HH:mm');
+                        $('#start_time').val(startdateString);
+                        $('#end_time').val(enddateString);
+                        $('#end_time').change(function(){
+                            let starttime = moment($('#start_time').val()).format("YYYY-MM-DD HH:mm");
+                            let endtime = moment($(this).val()).format("YYYY-MM-DD HH:mm");
+                            if(starttime > endtime){
+                                swal({
+                                      title: "Sorry !",
+                                      text: "End time must be greater than starttime",
+                                      icon: "error",
+                                      button: "Dismiss",
+                                  });
+                                  $(this).val(enddateString);
+                            }
+                        })
+                       $("#availableHostForm").on('submit',function(e){
                             e.preventDefault();
                             var title = $("#title").val();
                             var start_time = $("#start_time").val();
@@ -192,4 +210,6 @@ $(document).ready(function () {
     } 
     
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert"></script>
 @endsection

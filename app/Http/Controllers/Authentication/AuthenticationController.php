@@ -8,12 +8,15 @@ use App\Models\User;
 use App\Models\PaymentMethods;
 use App\Models\MembershipPaymentsData;
 use App\Mail\HostRegisterMail;
+use App\Mail\ForgottenPassword;
 use App\Models\Discounts\AdminDiscount;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Hash;
 use Auth;
 use DB;
+use Session;
+use Illuminate\Support\Str;
 
 
 class AuthenticationController extends Controller
@@ -42,7 +45,7 @@ class AuthenticationController extends Controller
                 return false;
             }
         }else{
-            return 'there is an error';
+            return redirect('login')->with('error','Your email or password is wrong');
         }
     }
     public function registerProcess(request $req){
@@ -289,6 +292,63 @@ class AuthenticationController extends Controller
             return redirect('/'.auth()->user()->unique_id.'/change-password')->with('error','Your old password is not matched.');
         }
     }
+    public function forgottenPassword(){
+       
+        return view('Authentications.forgottenpassword');
+    }
+    public function newpassword($token){
+        $time = date('y-m-d h:i');
+        print_r(Session::get('time'));
+        // print_r($time);
+         if(Session::get('time') > $time){
+           Session::flush();
+         }
+        $email = request()->segment(2);
+        $token = request()->segment(3);
+        return view('Authentications.newpassword',compact('token','email'));
+    }
+
+    public function ForgottenProcess(Request $req){
+        if($req->email){
+        $find = User::where('email',$req->email)->first();
+       if($find){
+        $token = Str::random(64);
+        $set_time = date('y-m-d h:i'); 
+        $extra_time = Date("y-m-d h:i", strtotime("5 minutes", strtotime($set_time)));
+        Session::put('token', $token);
+        Session::put('time',$extra_time);
+        $mailData = [
+            'unique_id' => $find->unique_id,
+            'email' => $req->email,
+            'token' => $token
+        ];
+       $mail = Mail::to($req->email)->send(new ForgottenPassword($mailData));
+       return back()->with('success','check your email to regenrate your password');
+       }else{
+        return back()->with('error','There is no records of this email');
+       }
+    }
+    elseif($req->token){
+        if($req->token == Session::get('token')){
+            $req->validate([
+                'password' => 'min:6',
+                'cpassword' => 'required_with:password|same:password|min:6'
+            ]);
+            $password = Hash::make($req->password);
+           $update = User::where('email',$req->emaill)->update(['password' => $password]);
+           Session::flush();
+           return redirect('login')->with('success','successfully changed password');
+        }
+        else{
+            return back()->with('error','Session is timedout');
+        }
+    }
+    else{
+        return back();
+    }
+    
+    }
+
     public function logout(){
     Auth::logout();
     return redirect('/')->with('success',"You have logged out succesfully");
