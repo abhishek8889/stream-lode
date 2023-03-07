@@ -25,6 +25,7 @@
                       <th>Email</th>
                       <th>Start Time</th>
                       <th>End Time</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <?php $count = 0; ?>
@@ -38,6 +39,11 @@
                         <td>{{$hs->guest_email}}</td>
                         <td>{{$hs->start}}</td>
                         <td>{{$hs->end}}</td>
+                        <td>
+                          <a href="{{ url(auth()->user()->unique_id.'/vedio-conference') }}">
+                            <i class="fa fa-video-camera" aria-hidden="true"></i>
+                          </a>
+                        </td>
                       </tr>
                     @empty
                       <tr>

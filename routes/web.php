@@ -8,6 +8,9 @@ use App\Http\Controllers\Front\FrontMembershipController;
 use App\Http\Controllers\Front\FrontAboutController;
 use App\Http\Controllers\Front\SearchHostController;
 use App\Http\Controllers\Front\ApplyDiscountController;
+use App\Http\Controllers\Front\MeetingController;
+use App\Http\Controllers\Front\VedioChatController;
+
 
 use App\Http\Controllers\Admin\AdminDashController;
 use App\Http\Controllers\Admin\settings\SettingsController;
@@ -28,6 +31,8 @@ use App\Http\Controllers\Hosts\HostTagController;
 use App\Http\Controllers\Hosts\HostMembershipController;
 use App\Http\Controllers\Hosts\HostCalendar;
 use App\Http\Controllers\Hosts\AppoinmentsController;
+use App\Http\Controllers\Hosts\HostStreamController;
+
 use Google\Service\ServiceConsumerManagement\Authentication;
 
 /*
@@ -40,6 +45,9 @@ use Google\Service\ServiceConsumerManagement\Authentication;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Route::get('vedio-call',[VedioChatController::class,'index']);
+// Route::get('create-room',[VedioChatController::class,'createRoom']);
+// Route::get('/vedio/{roomName}',[VedioChatController::class,'joinRoom']);
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -73,7 +81,8 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-
+//Meetings
+Route::get('/scheduledmeeting',[MeetingController::class,'index']);
 
 
 Route::get('/coupon-for-host',[ApplyDiscountController::class,'couponForHost'])->name('coupon-for-host');
@@ -196,10 +205,15 @@ Route::group(['middleware'=>['auth','Host']],function(){
       
     Route::get('/{id}/calendar',[HostCalendar::class,'index']);
     Route::post('/{id}/calendar-response',[HostCalendar::class,'ajax']);
-
-   
     //Appoinments
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index']);
+
+    //Vedio chat
+    Route::get('{id}/vedio-conference',[HostStreamController::class,'index']); 
+    Route::post('generate-token',[HostStreamController::class,'generateToken']); 
+    Route::get('{id}/join-room',[HostStreamController::class,'joinRoomView']); 
+
+    
 
 });
 

@@ -451,16 +451,19 @@ $date = date('Y-m-d h:i');
                                     }
                                     });
                                     $('#end_time').change(function(){
+                                     startdate = $('#start_time').val();
+                                     newDateTime = moment(startdate, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
                                       let dateString = moment($(this).val()).format("YYYY-MM-DD HH:mm");
                                       if(dateString < defaulttimestamp){
                                         swal({
                                       title: "Sorry !",
-                                      text: "This timestap is not valid",
+                                      text: "Minimum time interval is 30",
                                       icon: "error",
                                       button: "Dismiss",
                                   });
                                   $('#end_time').val(newDateTime);
                                       }
+                                      // console.log(event.end._i)
                                       if(dateString > event.end._i){
                                         swal({
                                       title: "Sorry !",
@@ -468,7 +471,7 @@ $date = date('Y-m-d h:i');
                                       icon: "error",
                                       button: "Dismiss",
                                   });
-                                  $('#end_time').val(newDateTime);
+                                  $('#end_time').val(newdateTime);
                                       }
                                     });
 
@@ -477,16 +480,13 @@ $date = date('Y-m-d h:i');
                                   $("#scheduleMeetingForm").on('submit',function(e){
                                     e.preventDefault();
                                     $("#overlayer").fadeIn();
+                                    $("#calendarModal").modal('hide');
                                     let user_login_status = $("#user_login_status").val();
                                     let name = $("#name").val();
                                     let email = $("#email").val();
                                     let start_time = $("#start_time").val();
                                     let end_time = $("#end_time").val();
-                                  
-                                    if(user_login_status == 0){
-                                      $("#calendarModal").modal('hide');
-                                      $("#loginConfirmation").modal('toggle');
-                                    }else{
+                                  // console.log(name);
                                       if (!isLoading) {
                                         isLoading = true;
                                         $.ajax({
@@ -504,8 +504,8 @@ $date = date('Y-m-d h:i');
                                                       type : 'add',
                                               },
                                               success: function (data) {
-                                                console.log(data);
-                                                $("#calendarModal").modal('hide');
+                                                // console.log(data);
+                                                
                                                 isLoading = false;
                                                 setTimeout(function(){
                                                     location.reload();
@@ -527,7 +527,7 @@ $date = date('Y-m-d h:i');
                                                 // displayMessage("Meeting Scheduled Successfully");
                                               }
                                         });
-                                      }
+                                      
                                     }
                                   });
                                 }else if(event.type == 'duration_below_thirty'){
