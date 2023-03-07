@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\users\HostController;
 use App\Http\Controllers\Admin\users\GuestController;
 
 use App\Http\Controllers\Admin\discount\DiscountController;
+use App\Http\Controllers\Admin\mettings\MeetingsController;
 
 
 
@@ -60,6 +61,10 @@ Route::post('registerProc',[AuthenticationController::class,'registerProcess'])-
 Route::post('/{id}/update-password',[AuthenticationController::class,'updatePassword'])->name('update-password');
 Route::get('logout',[AuthenticationController::class,'logout'])->name('logout');
 // Route::get('testing',[AuthenticationController::class,'paymentStatus'])->name('testing');
+
+Route::get('forgotten-password',[AuthenticationController::class,'forgottenPassword']);
+Route::post('forgottenProc',[AuthenticationController::class,'ForgottenProcess']);
+Route::get('reset-password/{email}/{token}',[AuthenticationController::class,'newpassword']);
 
 // Front Routes 
 Route::get('/',[HomeController::class,'index'])->name('/');
@@ -166,6 +171,9 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(DiscountController::class)->group(function(){
             Route::post('/create-discount','createDiscount')->name('create-discount');
         });
+        Route::controller(MeetingsController::class)->group(function(){
+            Route::get('/meetings','index')->name('meetings');
+        });
         
     });
 });
@@ -207,6 +215,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
 
     //hostMessage
     Route::get('/{id}/message',[HostMessageController::class,'index']);
+    Route::post('host/updatemessage',[HostMessageController::class,'update']);
    
     //Appoinments
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index']);

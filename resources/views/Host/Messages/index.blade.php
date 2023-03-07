@@ -22,5 +22,21 @@
             </div>
     </div>
  </div>
+ <script> 
+$(document).ready(function(){
+   id = '{{Auth()->user()->id}}';
+  $.ajax({
+   method: 'post',
+   url: '{{ url('host/updatemessage') }}',
+   dataType: 'json',
+   data: {id:id ,  _token: '{{csrf_token()}}'},
+   success: function(response)
+                    { 
+                     // location.reload();
+                    }
+
+  });
+});
+</script>
 
 @endsection

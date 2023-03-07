@@ -41,8 +41,8 @@
                             @endif
                         </td>
 
-                        <td>{{ $guest['first_name'] . ' ' . $guest['last_name'] }}</td>
-                        <td>{{ $guest['email'] }}</td>
+                        <td>{{ $guest['first_name'] ?? '' . ' ' . $guest['last_name'] ?? '' }}</td>
+                        <td>{{ $guest['email'] ?? '' }}</td>
 
                         <?php 
                             $dateTimeObj = $guest['created_at']->toDateTime();

@@ -15,4 +15,5 @@ class HostAppointments extends Model
     public function user(){
         return $this->belongsTo(User::class,'host_id');
     }
+   
 }

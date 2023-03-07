@@ -114,7 +114,7 @@
                   {{ $messages[0]['users']['first_name'] ?? '' }}
                   <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
                 </h3>
-                <p class="text-sm">{{ count($messages) ?? 0 }} new Messages</p>
+                <p class="text-sm" id="count">{{ count($messages) ?? 0 }} new Messages</p>
                 <!-- <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p> -->
               </div>
             </div>
@@ -556,7 +556,7 @@
   		toastr.warning("{{ session('warning') }}");
 
   @endif
-
+  
 </script>
 </body>
 </html>

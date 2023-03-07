@@ -15,4 +15,13 @@ class HostMessageController extends Controller
         
        return view('Host.Messages.index',compact('messages'));
     }
+    public function update(Request $req){
+     $query = Message::where('reciever_id',$req->id)->get();
+     foreach($query as $q){
+        $update = Message::find($q->id);
+        $update->status = 0;
+        $update->update();
+     }
+     return response()->json('done');
+    }
 }
