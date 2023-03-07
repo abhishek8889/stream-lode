@@ -337,6 +337,16 @@
               </li>
             </ul>
           </li>
+          <!-- Post notification -->
+          <li class="nav-item ">
+            <a href="{{ route('postnotification') }}" class="nav-link active">
+            <i class="fa-solid fa-users"></i>
+              <p>
+                  Post Notice 
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
           <!-- Meetings -->
           <li class="nav-item ">
             <a href="{{ route('meetings') }}" class="nav-link active">

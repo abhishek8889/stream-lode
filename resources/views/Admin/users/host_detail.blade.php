@@ -48,9 +48,37 @@
                   </li>
                 </ul> -->
 
-                <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                <a href="#" class="btn btn-primary btn-block"  data-toggle="modal" data-target="#exampleModal"><b>Change Image</b></a>
+
               </div>
               <!-- /.card-body -->
+            </div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form action="{{ url('').'/'.$host_detail['unique_id'].'/add-profile-picture' }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div>
+                            <input type="hidden" name="id" value="{{ $host_detail['id'] }}">
+                            @if($host_detail['profile_image_name'])
+                            <input type="hidden" name="profile_exist" value="1">
+                            @endif
+                            <input type="file" name="profile_img">
+                          </div>
+                          <div  class="mt-1">
+                          <button class="btn" >Upload</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
             </div>
             <!-- /.card -->
 
@@ -137,6 +165,30 @@
                               <label for="phone" class="col-sm-2 col-form-label">Phone</label>
                               <div class="col-sm-10">
                               <input type="text" class="form-control" id="phone" placeholder="Phone" name="phone" value="{{ isset($host_detail['phone'])?$host_detail['phone']:''; }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="facebook" class="col-sm-2 col-form-label">Facebook</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="facebook" placeholder="facebook" name="facebook" value="{{ isset($host_detail['facebook'])?$host_detail['facebook']:''; }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="instagram" class="col-sm-2 col-form-label">Instagram</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="instagram" placeholder="instagram" name="instagram" value="{{ isset($host_detail['instagram'])?$host_detail['instagram']:''; }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="linkdin" class="col-sm-2 col-form-label">Linkdin</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="linkdin" placeholder="linkdin" name="linkdin" value="{{ isset($host_detail['linkdin'])?$host_detail['linkdin']:''; }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="twitter" class="col-sm-2 col-form-label">Twitter</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="twitter" placeholder="twitter" name="twitter" value="{{ isset($host_detail['twitter'])?$host_detail['twitter']:''; }}" />
                               </div>
                           </div>
                           <div class="form-group row">
@@ -244,11 +296,11 @@
                       console.log(response);
                       $('#messageinput').val('');
                       $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
-                      }
-
+                    }
         });
       });
     });
+
 
   </script>
 @endsection

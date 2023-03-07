@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\AdminDashController;
 use App\Http\Controllers\Admin\settings\SettingsController;
 use App\Http\Controllers\Admin\membership\MembershipController;
 use App\Http\Controllers\Admin\membership\MembershipPayments;
+use App\Http\Controllers\Admin\postnotification\PostNotificationController;
 
 use App\Http\Controllers\Admin\users\HostController;
 use App\Http\Controllers\Admin\users\GuestController;
@@ -174,6 +175,13 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MeetingsController::class)->group(function(){
             Route::get('/meetings','index')->name('meetings');
         });
+        Route::controller(PostNotificationController::class)->group(function(){
+            Route::get('/postnotice','index')->name('postnotification');
+        });
+        Route::controller(PostNotificationController::class)->group(function(){
+            Route::post('/sendnotice','sendmessage')->name('sendnotice');
+        });
+
         
     });
 });

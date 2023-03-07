@@ -91,7 +91,7 @@
         </div>
       </li>
       @php
-         $messages = App\Models\Message::where('reciever_id',Auth()->user()->id)->with('users')->where('status',1)->get();
+         $messages = App\Models\Message::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->orWhere([['type','=',1],['status','=',1]])->with('users')->get();
         
       @endphp
    
@@ -100,9 +100,9 @@
         
         <a class="nav-link" data-toggle="dropdown" href="#" >
           <i class="far fa-comments"></i>
-          <span class="badge badge-danger navbar-badge">{{ count($messages) ?? 0 }}</span>
+          <span class="badge1 badge badge-danger navbar-badge">{{ count($messages) ?? 0 }}</span>
         </a>
-        
+       
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <a href="{{ url('') }}/{{ Auth::user()->unique_id ?? '' }}/message" class="dropdown-item">
             <div class="media">

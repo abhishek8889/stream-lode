@@ -18,7 +18,7 @@ class HostController extends Controller
     }
     public function hostDetail(Request $req , $id){
         $host_detail = User::where('unique_id', $id)->first();
-       
+    //    dd($host_detail);
         $message = Message::where('reciever_id',$host_detail['_id'])->orderBy('created_at','asc')->get();
         return view('Admin.users.host_detail',compact('host_detail','message'));
     }
@@ -47,6 +47,11 @@ class HostController extends Controller
             $user->first_name = $req->first_name;
             $user->last_name = $req->last_name;
             $user->email = $req->email;
+            $user->instagram = $req->instagram;
+            $user->linkdin = $req->linkdin;
+            $user->twitter = $req->twitter;
+            $user->facebook = $req->facebook;
+
             // $user->phone = $req->phone;
             if(isset($req->hide_profile) || $req->hide_profile == "on"){
                 $user->public_visibility = 0; // public visibility 0 means private
@@ -61,6 +66,10 @@ class HostController extends Controller
             $user->last_name = $req->last_name;
             $user->email = $req->email;
             $user->phone = $req->phone;
+            $user->instagram = $req->instagram;
+            $user->linkdin = $req->linkdin;
+            $user->twitter = $req->twitter;
+            $user->facebook = $req->facebook;
             if(isset($req->hide_profile) || $req->hide_profile == "on"){
                 $user->public_visibility = 0; // public visibility 0 means private
             }else{
@@ -73,9 +82,6 @@ class HostController extends Controller
         }
     }
     public function message(Request $req){
-
-        
-
         $req->validate([
             'message' => 'required'
         ]);
@@ -87,4 +93,5 @@ class HostController extends Controller
         $message->save();
         return response()->json('message sent');
     }
+    
 }

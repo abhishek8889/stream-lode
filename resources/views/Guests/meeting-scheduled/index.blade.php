@@ -30,8 +30,12 @@ $time = date('Y-m-d H:i');
                                     <td>{{ $count }}</td>
                                     <td>{{ $ap->user['first_name'] }} {{ $ap->user['last_name'] }}</td>
                                     <td>{{ $ap->user['email'] }}</td>
-                                    <td>{{ $ap->start }}</td>
-                                    <td>{{ $ap->end }}</td>
+                                    <?php 
+                                    $sartdate = Date("M/d/Y h:i", strtotime("0 minutes", strtotime($ap->start)));
+                                    $enddate = Date("M/d/Y h:i", strtotime("0 minutes", strtotime($ap->end)));
+                                    ?>
+                                    <td>{{ $sartdate }}</td>
+                                    <td>{{ $enddate }}</td>
                                     <td>@if($time > $ap->end) done @else not done @endif </td>
                                 </tr>
                                @endforeach

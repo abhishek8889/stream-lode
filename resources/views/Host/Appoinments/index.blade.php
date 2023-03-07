@@ -1,10 +1,6 @@
 @extends('host_layout.master')
 @section('content')
-<pre>
-<?php
-//  print_r($host_schedule); 
-?>
-</pre>
+
 <div class="row">
           <div class="col-12">
             <div class="card">
@@ -36,8 +32,12 @@
                         <td>{{$count}}</td>
                         <td>{{$hs->guest_name}}</td>
                         <td>{{$hs->guest_email}}</td>
-                        <td>{{$hs->start}}</td>
-                        <td>{{$hs->end}}</td>
+                        <?php 
+                        $startdate =  Date("M/d/Y h:i", strtotime("0 minutes", strtotime($hs->start)));
+                        $enddate =  Date("M/d/Y h:i", strtotime("0 minutes", strtotime($hs->end)));
+                        ?>
+                        <td>{{$startdate}}</td>
+                        <td>{{$enddate}}</td>
                       </tr>
                     @empty
                       <tr>
