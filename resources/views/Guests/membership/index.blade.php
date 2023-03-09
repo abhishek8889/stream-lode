@@ -192,10 +192,15 @@
                     <div class="pricing-body">
                       <ul class="access-list">
                         <?php 
-                          $features_list = json_decode($subscription['membership_features']); 
+                          // $features_list = json_decode($subscription['membership_features']); 
                         ?>
-                        @foreach($features_list as $feature)
-                        <li>{{ $feature }}</li>
+                        @foreach($subscription['membership_features'] as $feature)
+                      <li>
+                        @php
+                        $data = App\Models\MembershipFeature::find($feature)->description;
+                        echo $data;
+                        @endphp
+                        </li>
                         @endforeach
                       </ul>
                     </div>

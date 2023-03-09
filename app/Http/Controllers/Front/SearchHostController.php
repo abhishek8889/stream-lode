@@ -237,18 +237,6 @@ class SearchHostController extends Controller
     }
 //   
 public function trycode(){
-    // $hosts = array();
-    // $tag = 'Growing';
-    // $data = Tags::where('name','like',$tag.'%')->with(['users' => function($response){ $response->where([['status',1],['public_visibility',1]]); }])->get();
-    // $hosts = array();
-    // foreach($data as $d){
-    //     $host = $d->users;
-    //     array_push($hosts,$host);
-    // }
-    // dd($hosts);
-    // echo '<pre>';
-    // print_r($data);
-    // echo '</pre>';
 }
 
 }

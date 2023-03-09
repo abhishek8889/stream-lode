@@ -286,6 +286,12 @@
                   <p>Add Membership Tier</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{ url('/admin/features') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Membership Feature</p>
+                </a>
+              </li>
             </ul>
           </li>
           <!-- Discount Coupons  -->

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\membership;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MembershipTier;
+use App\Models\MembershipFeature;
 use stripe;
 use File;
 use DB;
@@ -14,10 +15,15 @@ class MembershipController extends Controller
     //
     public function index(){
         $membership_details = DB::table('membership')->get();
+        // dd($membership_details);
         return view('Admin.membership.index',compact('membership_details'));
     }
     public function addMembershipTier(){
-        return view('Admin.membership.add_membership_tier');
+        $features = MembershipFeature::get();
+        // $data = MembershipTier::get();
+        // dd($data);
+        // echo $data[0]['membership_features'];
+        return view('Admin.membership.add_membership_tier',compact('features'));
     }
     public function addMembershipTierProc(Request $req){
         // dd($req->all());
@@ -76,7 +82,7 @@ class MembershipController extends Controller
             $membership->type = 'one-time';
         }
         $membership->amount = $req->price;
-        $membership->membership_features = json_encode($req->membership_fetaures);
+        $membership->membership_features = $req->membership_fetaures;
         $membership->status = 1; // 1 by default 1 (active) & 0 (inactive)
         if(!isset($req->description) || empty($req->description)){
             $membership->description = '';

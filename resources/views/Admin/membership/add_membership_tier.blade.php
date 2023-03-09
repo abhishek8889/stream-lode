@@ -61,11 +61,19 @@
                 </div>
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Features</label>
-                    <div class="col-sm-9">
-                        <div class="btn btn-info" id="addFeatures"> Add features </div>
-                        <div class="" id="featureBox"></div>
+                    <div class="col-sm-9" style="max-height: 161px; overflow: auto;">
+                        <!-- <div class="btn btn-info" id="addFeatures"> Add features </div>
+                        <div class="" id="featureBox"></div> -->
+                 
+                        @foreach($features as $f)
+                    <div>
+                        <input type="checkbox" name="membership_fetaures[]" id="feature{{ $f['id'] }}" value="{{ $f['id'] }}" multiple>
+                        <label for="feature{{ $f['id'] }}">{{ $f['feature_name'] }} </label>
+                        <button type="button" class="btn" data-toggle="popover" title="{{ $f['description'] }}" data-content="done" ><i class="fas fa-info-circle"></i></button>
                     </div>
+                        @endforeach
                    
+                    </div>
                 </div>
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Description</label>
@@ -90,19 +98,19 @@
 </section>
 
 <script>
-    $("#addFeatures").on('click',function(){
-        newRowAdd =
-            '<div id="row"> <div class="input-group mt-3">' +
-            '<div class="input-group-prepend">' +
-            '<button class="btn btn-secondary" id="DeleteRow" type="button">' +
-            '<i class="fa-solid fa-xmark"></i> </button> </div>' +
-            '<input type="text" class="form-control m-input" name="membership_fetaures[]" value=""> </div> </div>';
+    // $("#addFeatures").on('click',function(){
+    //     newRowAdd =
+    //         '<div id="row"> <div class="input-group mt-3">' +
+    //         '<div class="input-group-prepend">' +
+    //         '<button class="btn btn-secondary" id="DeleteRow" type="button">' +
+    //         '<i class="fa-solid fa-xmark"></i> </button> </div>' +
+    //         '<input type="text" class="form-control m-input" name="membership_fetaures[]" value=""> </div> </div>';
  
-            $('#featureBox').append(newRowAdd);
-    });
-    $("body").on("click", "#DeleteRow", function () {
-            $(this).parents("#row").remove();
-        })
+    //         $('#featureBox').append(newRowAdd);
+    // });
+    // $("body").on("click", "#DeleteRow", function () {
+    //         $(this).parents("#row").remove();
+    //     })
         $(document).ready(function(){
            $("#name").on('change',function(){
             let name = $(this).val().toLowerCase();

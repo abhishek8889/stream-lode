@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MembershipTier;
+use App\Models\MembershipFeature;
 class FrontMembershipController extends Controller
 {
     //
     public function index(){
         $subscription_list = MembershipTier::all();
         // $subscription_list = MembershipTier::where('slug','standard-group-tier')->get();
+        // dd();
         return view('Guests.membership.index',compact('subscription_list'));
     }
     public function membershipPayment(Request $req , $slug){

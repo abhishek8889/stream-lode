@@ -154,8 +154,12 @@
         success: function(response)
 			{
         // console.log(response);
+        var res = response.filter(function (el) {
+          return el != null && el != "";
+        });
+        // console.log(res);
         divdata = [];
-        $.each(response, function(key,value){
+        $.each(res, function(key,value){
           if(value.profile_image_url){
             img = value.profile_image_url;
           }else{

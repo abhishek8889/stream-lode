@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\AdminDashController;
 use App\Http\Controllers\Admin\settings\SettingsController;
 use App\Http\Controllers\Admin\membership\MembershipController;
 use App\Http\Controllers\Admin\membership\MembershipPayments;
+use App\Http\Controllers\Admin\membership\MembershipFeatureController;
 use App\Http\Controllers\Admin\postnotification\PostNotificationController;
 
 use App\Http\Controllers\Admin\users\HostController;
@@ -181,7 +182,16 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(PostNotificationController::class)->group(function(){
             Route::post('/sendnotice','sendmessage')->name('sendnotice');
         });
-
+        Route::controller(MembershipFeatureController::class)->group(function(){
+            Route::get('/features','index')->name('features');
+        });
+        Route::controller(MembershipFeatureController::class)->group(function(){
+            Route::post('/featureadd','featureadd')->name('featureadd');
+        });
+        Route::controller(MembershipFeatureController::class)->group(function(){
+            Route::post('/featureedit','edit')->name('featureedit');
+        });
+        
         
     });
 });
