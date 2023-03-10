@@ -94,27 +94,63 @@ class MembershipController extends Controller
         return redirect(url('/admin/add-membership-tier'))->with('success','You have succesfully create a new membership tier');
     }
 
+    public function edit($slug){
+        
+        $membership_data = MembershipTier::where('slug',$slug)->first();
+        $features = MembershipFeature::get();
+       
+        return view('Admin.membership.edit_membership_tier',compact('membership_data','features'));
 
+    }
+    // public function editproc(Request $req){
+    //     print_r($req->all());
+
+    // }
 
 
     // update stripe product 
-    // public function updateMembership(Request $req , $id){
-       
-        // $stripe = new \Stripe\StripeClient(
-        //     'sk_test_51LuGMOSDpE15tSXhfthTyVppfb3Y6snN8vGThKZXuUZ4xevUwRpSiTE5sFacZhfTESGQzO3pFrg73muuPHQRZvAa00dv6TTB8y'
-        //   );
+    public function updateMembership(Request $req){
+        // dd($req->all());
+        $req->validate([
+            'membership_fetaures' => 'required',
+            'description' => 'required'
+        ]);
+        $data = MembershipTier::find($req->id);
+        // print_r($data);
+        $data->membership_features = $req->membership_fetaures;
+        $data->description = $req->description;
+        
+        $data->update();
+        return back()->with('success','successfully updated data');
+
+    //    dd($req->all());
+    //    $membership_tier_id = MembershipTier::find($req->id)->membership_tier_id;
+    //    echo $membership_tier_id;
+    //     $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+        //   dd($stripe);
         //   $stripe->products->update(
         //     'prod_NEBnBQa9OtMGKf',
         //     ['metadata' => ['order_id' => '6735']]
         //   );
-    // }
-    // public function deleteMembership(Request $req , $id){
-    //     $membership_db = DB::table('membership')->where('_id',$id)->first();
-    //     $stripe_product_id = $membership_db['membership_tier_id'];
-    //     $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
-    //     $stripe->products->delete( $stripe_product_id,[]);
-    //     $membership_db->delete();
-    //     return redirect(url('/admin/membership-list'))->with('success','You have succesfully deleted membership tier.');
+    }
+    public function deleteMembership(Request $req , $id){
+        // echo $id;
+        $membership_db = MembershipTier::where('_id',$id)->first();
+        $stripe_product_id = $membership_db['membership_tier_id'];
+        $stripe_product_price_id = $membership_db['price_id'];
+        // dd($stripe_product_id);
+       
+        $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
 
-    // }
+        // Archiving price 
+
+        $price_status = $stripe->prices->update($stripe_product_price_id, ['active' => false]);
+     
+        // $delete_status = $stripe->products->delete( $stripe_product_id,[]);
+        // dd($delete_status);
+        $membership_db->status = 0;
+        $membership_db->update();
+        return redirect(url('/admin/membership-list'))->with('success','You have succesfully deactivate membership tier.');
+
+    }
 }

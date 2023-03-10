@@ -58,8 +58,7 @@
                            @endif
 
                            <td><b>${{ $data['total'] }}</b></td>
-                        
-                           <td>{{ $data['created_at'] }}</td>
+                          <td>{{ $data['created_at'] }}</td>
                            <td>
                                 <a href="{{ url('/admin/membership-payment-details/'.$data->user['unique_id']) }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
                            </td>

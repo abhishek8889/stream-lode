@@ -28,10 +28,10 @@
     <div class="container-fluid">
       <div class="dark-nav">
         <ul class="nav-list" id="filter-list">
-          <li class="nave-list-item active" id="all"><a href="#all" onclick="filterSelection('all')">All</a></li>
-          <li class="nave-list-item" id="standar-tier"><a href="#standar-tier" onclick="filterSelection('Standard_tier')">Standard Tier</a></li>
-          <li class="nave-list-item" id="premium-tier"><a href="#premium-tier" onclick="filterSelection('Premium_tier')">Premium Tier</a></li>
-          <li class="nave-list-item" id="group-tier"><a href="#group-tier" onclick="filterSelection('group_tier')">Group Tier</a></li>
+          <li class="nave-list-item" id="all"><a href="#all" onclick="filterSelection('all')">All</a></li>
+          <li class="nave-list-item" id="standar-tier"><a href="#standar-tier" onclick="filterSelection('Standard')">Standard Tier</a></li>
+          <li class="nave-list-item" id="premium-tier"><a href="#premium-tier" onclick="filterSelection('Premium')">Premium Tier</a></li>
+          <li class="nave-list-item" id="group-tier"><a href="#group-tier" onclick="filterSelection('Group')">Group Tier</a></li> 
         </ul>
       </div>
     </div>
@@ -179,7 +179,7 @@
 
           
           @foreach($subscription_list as $subscription)
-            <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Standard_tier">
+            <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item {{ $subscription['name'] ?? '' }}">
               <div class="pricing-box-wrapper">
                 <div class="pricing-box">
                   <div class="pricing-top">
@@ -194,7 +194,8 @@
                         <?php 
                           // $features_list = json_decode($subscription['membership_features']); 
                         ?>
-                        @foreach($subscription['membership_features'] as $feature)
+                      @if($subscription['membership_features']) 
+                       @foreach($subscription['membership_features'] as $feature)
                       <li>
                         @php
                         $data = App\Models\MembershipFeature::find($feature)->description;
@@ -202,6 +203,7 @@
                         @endphp
                         </li>
                         @endforeach
+                        @endif
                       </ul>
                     </div>
                   </div>
@@ -236,4 +238,10 @@
   </div>
   </div>
 </section>
+<script>
+  $('.nave-list-item').click(function(){
+    $('.nave-list-item').removeClass('active');
+    $(this).addClass('active');
+  });
+</script>
 @endsection

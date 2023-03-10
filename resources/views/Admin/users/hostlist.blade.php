@@ -67,7 +67,7 @@
                             $dateTimeObj = $host['created_at']->toDateTime();
                             $timeString = $dateTimeObj->format(DATE_RSS);
                             $time = strtotime($timeString.' UTC');
-                            $dateInLocal = date("Y-m-d (H:i)", $time);
+                            $dateInLocal = date("M/d/Y (H:i)", $time);
                         ?>
                         <td> {{ $dateInLocal }} </td>
                         <td> 

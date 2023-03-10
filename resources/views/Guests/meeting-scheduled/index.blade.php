@@ -36,7 +36,7 @@ $time = date('Y-m-d H:i');
                                     ?>
                                     <td>{{ $sartdate }}</td>
                                     <td>{{ $enddate }}</td>
-                                    <td>@if($time > $ap->end) done @else not done @endif </td>
+                                    <td>@if($time > $ap->end)<span class="badge badge-success"> done </span>@else <span class="badge badge-danger"> pending</span> @endif </td>
                                 </tr>
                                @endforeach
                             </tbody>

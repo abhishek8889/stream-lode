@@ -56,14 +56,15 @@
                            @if(!empty($membership['created_at']))
                            @foreach( $membership['created_at'] as $m)
                            <td>
-                                {{ date("d-m-Y", ((int)$m / 1000) ) }}
+                                {{ date("M/d/Y", ((int)$m / 1000) ) }}
                            </td>
                            @endforeach
                            @endif
 
                            <td>
-                                <a href="{{ url('admin/update-membership-tier/'.$membership['_id']) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
+                                <a href="{{ url('admin/edit-membership-tier/'.$membership['slug']) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
                                 <a href="{{ url('admin/delete-membership-tier/'.$membership['_id']) }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a>
+                                
                            </td>
                         </tr>
                         @endforeach

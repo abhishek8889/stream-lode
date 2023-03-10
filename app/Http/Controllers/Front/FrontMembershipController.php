@@ -10,7 +10,7 @@ class FrontMembershipController extends Controller
 {
     //
     public function index(){
-        $subscription_list = MembershipTier::all();
+        $subscription_list = MembershipTier::where('status',1)->get();
         // $subscription_list = MembershipTier::where('slug','standard-group-tier')->get();
         // dd();
         return view('Guests.membership.index',compact('subscription_list'));

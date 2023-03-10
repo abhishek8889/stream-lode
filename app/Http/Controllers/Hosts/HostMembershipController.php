@@ -154,7 +154,7 @@ class HostMembershipController extends Controller
 
     public function upgradeSubscription(Request $req ,$slug){
      
-      $membership_details = MembershipTier::all();
+      $membership_details = MembershipTier::where('status',1)->get();
       $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
       return view('Host.membership.upgrade_membership',compact('membership_details'));
 

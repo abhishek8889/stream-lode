@@ -3,7 +3,7 @@
 <div class="container">
 <div class="card direct-chat direct-chat-primary">
               <div class="card-header ui-sortable-handle" style="cursor: move;">
-                <h3 class="card-title">Send Notice</h3>
+                <h3 class="card-title">Send message to all host </h3>
 
                 <!-- <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="remove">
@@ -50,9 +50,23 @@
                 success: function(response)
                 {
                     $('#messageinput').val('');
+                    toastr.options =
+
+                  {
+
+                    "closeButton" : true,
+
+                    "progressBar" : true
+
+                      }
+
+                 toastr.success("Successfully send message to all hosts");
                 }
             });
            });
         });
+    </script>
+    <script>
+     
     </script>
 @endsection

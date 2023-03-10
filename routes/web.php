@@ -146,12 +146,18 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MembershipController::class)->group(function(){
             Route::post('/insert-membership-tier','addMembershipTierProc');
         });
+        Route::controller(MembershipController::class)->group(function(){
+            Route::get('/edit-membership-tier/{slug}','edit');
+        });
         // Route::controller(MembershipController::class)->group(function(){
-        //     Route::get('/delete-membership-tier/{id}','deleteMembership'); //price can not be deleted in product 
+        //     Route::post('/update-membership-tier','editproc')->name('update-membership-tier');
         // });
-        // Route::controller(MembershipController::class)->group(function(){
-        //     Route::get('/update-membership-tier/{id}','updateMembership'); 
-        // });
+        Route::controller(MembershipController::class)->group(function(){
+            Route::get('/delete-membership-tier/{id}','deleteMembership'); //price can not be deleted in product 
+        });
+        Route::controller(MembershipController::class)->group(function(){
+            Route::post('/update-membership-tier','updateMembership')->name('update-membership-tier'); 
+        });
         Route::controller(MembershipPayments::class)->group(function(){
             Route::get('/membership-payment-list','membershipPaymentList')->name('membership-payment-list');
         });
@@ -191,7 +197,6 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MembershipFeatureController::class)->group(function(){
             Route::post('/featureedit','edit')->name('featureedit');
         });
-        
         
     });
 });
