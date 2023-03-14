@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\membership;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MembershipFeature;
+use App\Models\MembershipTier;
 
 
 class MembershipFeatureController extends Controller
@@ -42,6 +43,18 @@ class MembershipFeatureController extends Controller
         }elseif($req->res == 0){
             $data = MembershipFeature::find($req->id);
             $data->delete();
+            $membership = MembershipTier::get();
+            foreach($membership as $m){
+                $id = MembershipTier::find($m['_id']);
+                $featureid = $id->membership_features;
+                // $id[] = $m['_id'];
+                if(($key = array_search($req->id, $featureid)) !== false) {
+                    unset($featureid[$key]);
+                }
+                $id->membership_features = $featureid;
+                $id->update();
+
+            }
             return response()->json('done');
         }
     }
