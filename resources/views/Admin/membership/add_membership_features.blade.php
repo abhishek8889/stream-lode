@@ -1,5 +1,6 @@
 @extends('admin_layout.master')
 @section('content')
+
 <div class="container col-6">
 
             <div class="card card-info">
@@ -102,7 +103,7 @@
                 $('.loader').hide();
               swal({
                     title: "Feature is deleted succesfully.",
-                    text: "Make sure you have to update your membership tier included this feature",
+                    text: "Membership feature deleted successfully",
                     icon: "success",
                     button: "Go back.",
                 }).then((value) => {
