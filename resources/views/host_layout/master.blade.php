@@ -91,7 +91,7 @@
         </div>
       </li>
       @php
-         $messages = App\Models\Message::where('reciever_id',Auth()->user()->id)->with('users')->where('status',1)->get();
+         $messages = App\Models\Message::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->orWhere([['type','=',1],['status','=',1]])->with('users')->get();
         
       @endphp
    
@@ -100,9 +100,9 @@
         
         <a class="nav-link" data-toggle="dropdown" href="#" >
           <i class="far fa-comments"></i>
-          <span class="badge badge-danger navbar-badge">{{ count($messages) ?? 0 }}</span>
+          <span class="badge1 badge badge-danger navbar-badge">{{ count($messages) ?? 0 }}</span>
         </a>
-        
+       
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <a href="{{ url('') }}/{{ Auth::user()->unique_id ?? '' }}/message" class="dropdown-item">
             <div class="media">
@@ -193,9 +193,9 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{ url(auth()->user()->unique_id.'/') }}" class="brand-link">
-      <img src="{{ asset('AdminLTE-3.2.0/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">Stream Lode</span>
+    <a href="{{ url(auth()->user()->unique_id.'/') }}" class="brand-link" style="height:57px;">
+      <img src="http://127.0.0.1:8000/streamlode-front-assets/images/logo.png" alt="AdminLTE Logo" class="brand-image" style="opacity: .8">
+    
     </a>
 
     <!-- Sidebar -->

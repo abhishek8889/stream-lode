@@ -63,5 +63,8 @@ class User extends Authenticatable
     public function appoinments(){
         return $this->hasMany(HostAppointments::class,'host_id','_id');
     }
+    public function payments(){
+        return $this->hasMany(MembershipPaymentsData::class,'user_id','_id');
+    }
   
 }

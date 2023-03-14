@@ -22,4 +22,9 @@ class MembershipTier extends Model
         'create_at',
         'update_at',
     ];
+
+    // public function membershipFeature(){
+    //     return $this->belongsTo(Membershipfeature::class,'');
+
+    // }
 }

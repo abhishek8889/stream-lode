@@ -298,9 +298,9 @@ class AuthenticationController extends Controller
     }
     public function newpassword($token){
         $time = date('y-m-d h:i');
-        print_r(Session::get('time'));
+        // print_r(Session::get('time'));
         // print_r($time);
-         if(Session::get('time') > $time){
+         if(Session::get('time') < $time){
            Session::flush();
          }
         $email = request()->segment(2);
@@ -320,7 +320,8 @@ class AuthenticationController extends Controller
         $mailData = [
             'unique_id' => $find->unique_id,
             'email' => $req->email,
-            'token' => $token
+            'token' => $token,
+            'expire' => $extra_time
         ];
        $mail = Mail::to($req->email)->send(new ForgottenPassword($mailData));
        return back()->with('success','check your email to regenrate your password');
@@ -330,6 +331,7 @@ class AuthenticationController extends Controller
     }
     elseif($req->token){
         if($req->token == Session::get('token')){
+            
             $req->validate([
                 'password' => 'min:6',
                 'cpassword' => 'required_with:password|same:password|min:6'

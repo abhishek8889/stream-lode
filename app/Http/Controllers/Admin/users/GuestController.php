@@ -11,7 +11,6 @@ class GuestController extends Controller
     //
     public function guestlist(){
         $guests = DB::table('users')->where('status', 0)->get();
-        // dd($guests);
         return view('Admin.users.guestlist',compact('guests'));
     }
 }

@@ -11,8 +11,7 @@ use Auth;
 class HostMessageController extends Controller
 {
     public function index(){
-        $messages = Message::where('reciever_id',Auth::user()->id)->get();
-        
+       $messages = Message::where('reciever_id',Auth::user()->id)->orWhere('type',1)->get();
        return view('Host.Messages.index',compact('messages'));
     }
     public function update(Request $req){

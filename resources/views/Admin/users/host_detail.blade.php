@@ -48,9 +48,37 @@
                   </li>
                 </ul> -->
 
-                <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                <a href="#" class="btn btn-primary btn-block"  data-toggle="modal" data-target="#exampleModal"><b>Change Image</b></a>
+
               </div>
               <!-- /.card-body -->
+            </div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form action="{{ url('').'/'.$host_detail['unique_id'].'/add-profile-picture' }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div>
+                            <input type="hidden" name="id" value="{{ $host_detail['id'] }}">
+                            @if($host_detail['profile_image_name'])
+                            <input type="hidden" name="profile_exist" value="1">
+                            @endif
+                            <input type="file" name="profile_img">
+                          </div>
+                          <div  class="mt-1">
+                          <button class="btn" >Upload</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
             </div>
             <!-- /.card -->
 
@@ -140,17 +168,41 @@
                               </div>
                           </div>
                           <div class="form-group row">
+                              <label for="facebook" class="col-sm-2 col-form-label">Facebook</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="facebook" placeholder="facebook" name="facebook" value="{{ isset($host_detail['facebook'])?$host_detail['facebook']:''; }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="instagram" class="col-sm-2 col-form-label">Instagram</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="instagram" placeholder="instagram" name="instagram" value="{{ isset($host_detail['instagram'])?$host_detail['instagram']:''; }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="linkdin" class="col-sm-2 col-form-label">Linkdin</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="linkdin" placeholder="linkdin" name="linkdin" value="{{ isset($host_detail['linkdin'])?$host_detail['linkdin']:''; }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label for="twitter" class="col-sm-2 col-form-label">Twitter</label>
+                              <div class="col-sm-10">
+                              <input type="text" class="form-control" id="twitter" placeholder="twitter" name="twitter" value="{{ isset($host_detail['twitter'])?$host_detail['twitter']:''; }}" />
+                              </div>
+                          </div>
+                          <div class="form-group row">
                               <label for="password" class="col-sm-2 col-form-label">New Password</label>
                               <div class="col-sm-10">
                               <input type="text" class="form-control" id="password" placeholder="New Password" name="newPassword" value="" />
-                              <label for="password" class="text text-info">Fill only when you want to change host's password , otherwise keep it empty.</label>  
+                              <label for="password" class="text text-info">Enter text here only when you want to enter a new password</label>  
                             </div>
                           </div>
                           <div class="form-group row">
                               <label for="confirmPassword" class="col-sm-2 col-form-label">Confirm Password</label>
                               <div class="col-sm-10">
                               <input type="text" class="form-control" id="phone" placeholder="Confirm New Password" name="confirmNewPassword" value="" />
-                              <label for="password" class="text text-info">Fill only when you enter new password.</label>  
+                              <label for="password" class="text text-info">Enter text here only when you want to enter a new password. This should match the text entered above.</label>  
                               </div>
                           </div>
                           <div class="form-group row">
@@ -174,7 +226,7 @@
                           </div>
                           <div class="form-group row">
                               <div class="offset-sm-2 col-sm-10">
-                              <button type="submit" class="btn btn-danger">Update host</button>
+                              <button type="submit" class="btn btn-danger">Update host information</button>
                               </div>
                           </div>
                         </form>
@@ -244,11 +296,11 @@
                       console.log(response);
                       $('#messageinput').val('');
                       $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
-                      }
-
+                    }
         });
       });
     });
+
 
   </script>
 @endsection

@@ -37,7 +37,7 @@
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="{{ asset('AdminLTE-3.2.0/dist/img/AdminLTELogo.png') }}" alt="AdminLTELogo" height="60" width="60">
+    <img class="animation__shake" src="{{ asset('Assets/site-logos/Stresmlode-logo.png') }}" alt="AdminLTELogo" height="80" width="220">
   </div>
 
   <!-- Navbar -->
@@ -203,10 +203,10 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{ url('/admin/dashboard') }}" class="brand-link">
+    <a href="{{ url('/admin/dashboard') }}" class="brand-link" style="height:57px;">
 
-      <img src="{{ asset('AdminLTE-3.2.0/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">Stream Lode</span>
+      <img src="http://127.0.0.1:8000/streamlode-front-assets/images/logo.png" alt="AdminLTE Logo" class="brand-image" height="80" width="220">
+     
     </a>
 
    
@@ -286,6 +286,12 @@
                   <p>Add Membership Tier</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{ url('/admin/features') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Membership Feature</p>
+                </a>
+              </li>
             </ul>
           </li>
           <!-- Discount Coupons  -->
@@ -337,10 +343,20 @@
               </li>
             </ul>
           </li>
+          <!-- Post notification -->
+          <li class="nav-item ">
+            <a href="{{ route('postnotification') }}" class="nav-link active">
+            <i class="fa-regular fa-message nav-icon"></i>
+              <p>
+                  Post Messages 
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
           <!-- Meetings -->
           <li class="nav-item ">
             <a href="{{ route('meetings') }}" class="nav-link active">
-            <i class="fa-solid fa-users"></i>
+            <i class="fa-solid fa-users nav-icon"></i>
               <p>
                  Meetings
                 <i class="right fas fa-angle-left"></i>

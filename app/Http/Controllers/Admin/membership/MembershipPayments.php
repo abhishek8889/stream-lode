@@ -12,10 +12,11 @@ use App\Models\User;
 class MembershipPayments extends Controller
 {
     public function membershipPaymentList(){
-
+    
         $membership_payments_list = MembershipPaymentsData::with(['user' => function($response){
             $response->select('first_name','last_name','membership_id','unique_id');
-        }])->orderBy('created_at','DSC')->get();
+        }])->orderBy('created_at','DSC')->select()->get();
+        // dd($membership_payments_list);
 
         // dd($membership_payments_list);
 
@@ -31,7 +32,8 @@ class MembershipPayments extends Controller
             $response->select('name','type','interval','amount','description');
         },'payments_method'=>function($response){
             $response->select('brand','last_4');
-        }])->orderBy('created_at','DSC')->first();
+        }])->orderBy('created_at','DSC')->get();
+        // dd($membership_payments_details);
        
         return view('Admin.payment-collection.membership_payment_detail',compact('membership_payments_details'));
     }
@@ -67,5 +69,17 @@ class MembershipPayments extends Controller
         }else{
             return redirect()->back()->with('error','Sorry there is some error in system.');
         }
+    }
+    public function search(Request $req){
+        $full_name = explode(" ", $req->val);
+                $count = count($full_name);
+                 if($count < 2){
+                    $hosts = User::orWhere('first_name','like',$req->val.'%')->where('status',1)->where('public_visibility',1)->orWhere('last_name','like',$req->val.'%')->with('payments','payments.membership_details')->get();
+                }else{
+                 $hosts = User::orWhere([['first_name','like',$full_name[0]],['last_name','like',$full_name[1].'%']])->orWhere('first_name',$req->val)->where('status',1)->where('public_visibility',1)->with('payments','payments.membership_details')->get();
+                 } 
+
+        return response()->json($hosts);
+
     }
 }

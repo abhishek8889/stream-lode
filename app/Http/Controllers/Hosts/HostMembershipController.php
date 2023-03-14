@@ -154,7 +154,7 @@ class HostMembershipController extends Controller
 
     public function upgradeSubscription(Request $req ,$slug){
      
-      $membership_details = MembershipTier::all();
+      $membership_details = MembershipTier::where('status',1)->get();
       $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
       return view('Host.membership.upgrade_membership',compact('membership_details'));
 
@@ -226,7 +226,7 @@ class HostMembershipController extends Controller
             ],
           ]
         );
-        dd($subscription_update_response);
+        // dd($subscription_update_response);
 
         // ################# membership Payment data save ##########################
 
@@ -351,6 +351,12 @@ class HostMembershipController extends Controller
         []
       );
       dd($invoice);
+    }
+
+    public function upgrade($id){
+        $subscription_list = MembershipTier::where('status',1)->get();
+        // dd($subscription_list);
+        return view('Host.membership.upgrade_membershipnew',compact('subscription_list'));
     }
     
 }

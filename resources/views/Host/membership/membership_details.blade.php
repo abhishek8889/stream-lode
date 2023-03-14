@@ -25,11 +25,7 @@
               </div>
                 <div class="card-body">
                     <div class="col-md-6">
-                        <div class="form-group row">
-                            @if(isset($membership_tier_details['logo_url']) || !empty($membership_tier_details['logo_url']))
-                            <img src="{{ $membership_tier_details['logo_url'] }}" alt="" width="100px" height="100px" >
-                            @endif
-                        </div>   
+                         
                         <div class="userform">
                             <div class="">
                                 <h2 class=""><b> {{$membership_tier_details['name']}}</b></h2>
@@ -44,13 +40,24 @@
                                 ?>
                                 <p class="text-muted"><b>valid upto: </b> {{ $is_expired }}</p>
 
-                                <p class="text-muted"><b>Features: </b> {{ $membership_tier_details['description'] }} </p>
-                            </div>
+                                
+                              @if($membership_tier_details['membership_features'])  <p class="text-muted"><b>Features: </b>@foreach($membership_tier_details['membership_features'] as $mt)
+                                @php
+                                $data = App\Models\MembershipFeature::find($mt);
+                                @endphp  
+                                @if($data)
+                                {{ $data['description'] ?? '' }},
+                                @endif
+                              @endforeach</p>
+                              @endif
+                              <p class="text-muted"><b>Description: </b> {{ $membership_tier_details['description'] }} </p>
+                            
+                              </div>
                         </div>
                     </div>
                     <div class="card-footer">
                     <a href="{{ url('/'.auth()->user()->unique_id) }}" class="btn btn-info">Go to dashboard</a>
-                    <a href="{{ url('/'.auth()->user()->unique_id.'/upgrade-subscription') }}" class="btn btn-danger">Upgrade Plan</a>
+                    <a href="{{ url('/'.auth()->user()->unique_id.'/upgrademembership') }}" class="btn btn-danger">Upgrade Plan</a>
                     </div>
                 </div>
             </div>

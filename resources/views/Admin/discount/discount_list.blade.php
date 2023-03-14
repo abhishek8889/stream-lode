@@ -23,6 +23,7 @@
                             <th>Sr. no</th>
                             <th>Name</th>
                             <th>Type</th>
+                            <th>Coupon code</th>
                             <th>Value</th>
                             <th>Durations</th>
                             <th>Status</th>
@@ -38,6 +39,7 @@
                            <td>{{ $x }}</td>
                            <td>{{ $discount->coupon_name }}</td>
                            <td>{{ $discount->discount_type }}</td>
+                           <td>{{ $discount->coupon_code }}</td>
                            @if( $discount->discount_type == 'amount_off' )
                            <td>{{ $discount->amount_off .'('. $discount->currency .')' }}</td>
                            @else

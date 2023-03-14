@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\AdminDashController;
 use App\Http\Controllers\Admin\settings\SettingsController;
 use App\Http\Controllers\Admin\membership\MembershipController;
 use App\Http\Controllers\Admin\membership\MembershipPayments;
+use App\Http\Controllers\Admin\membership\MembershipFeatureController;
+use App\Http\Controllers\Admin\postnotification\PostNotificationController;
 
 use App\Http\Controllers\Admin\users\HostController;
 use App\Http\Controllers\Admin\users\GuestController;
@@ -60,7 +62,7 @@ Route::get('host-register-email',function(){
 
 Route::get('learn-area',[TestController::class,'index'])->name('learn-area');
 
-
+// Route::group(['middleware'=>['auth','Guest']],function(){
 // Authentication
 Route::get('login',[AuthenticationController::class,'login'])->name('login');
 Route::get('register',[AuthenticationController::class,'register'])->name('register');
@@ -87,7 +89,7 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-Route::get('/trycode',[SearchHostController::class,'trycode']);
+// Route::get('/trycode',[SearchHostController::class,'trycode']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
@@ -96,7 +98,7 @@ Route::get('/scheduledmeeting',[MeetingController::class,'index']);
 
 Route::get('/coupon-for-host',[ApplyDiscountController::class,'couponForHost'])->name('coupon-for-host');
 
-
+// });
 
 // Admin Routes
 Route::group(['middleware'=>['auth','Admin']],function(){
@@ -152,12 +154,21 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MembershipController::class)->group(function(){
             Route::post('/insert-membership-tier','addMembershipTierProc');
         });
+        Route::controller(MembershipController::class)->group(function(){
+            Route::get('/edit-membership-tier/{slug}','edit');
+        });
         // Route::controller(MembershipController::class)->group(function(){
-        //     Route::get('/delete-membership-tier/{id}','deleteMembership'); //price can not be deleted in product 
+        //     Route::post('/update-membership-tier','editproc')->name('update-membership-tier');
         // });
-        // Route::controller(MembershipController::class)->group(function(){
-        //     Route::get('/update-membership-tier/{id}','updateMembership'); 
-        // });
+        Route::controller(MembershipController::class)->group(function(){
+            Route::get('/delete-membership-tier/{id}','deleteMembership'); //price can not be deleted in product 
+        });
+        Route::controller(MembershipController::class)->group(function(){
+            Route::get('/activate/{id}','activateMembership'); //price can not be deleted in product 
+        });
+        Route::controller(MembershipController::class)->group(function(){
+            Route::post('/update-membership-tier','updateMembership')->name('update-membership-tier'); 
+        });
         Route::controller(MembershipPayments::class)->group(function(){
             Route::get('/membership-payment-list','membershipPaymentList')->name('membership-payment-list');
         });
@@ -167,6 +178,11 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MembershipPayments::class)->group(function(){
             Route::get('/membership-payment-refund/{id}','refund');
         });
+        //search
+        Route::controller(MembershipPayments::class)->group(function(){
+            Route::post('/paymentsearch','search')->name('paymentsearch');
+        });
+    
 
         // Discount 
 
@@ -181,6 +197,21 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         });
         Route::controller(MeetingsController::class)->group(function(){
             Route::get('/meetings','index')->name('meetings');
+        });
+        Route::controller(PostNotificationController::class)->group(function(){
+            Route::get('/postnotice','index')->name('postnotification');
+        });
+        Route::controller(PostNotificationController::class)->group(function(){
+            Route::post('/sendnotice','sendmessage')->name('sendnotice');
+        });
+        Route::controller(MembershipFeatureController::class)->group(function(){
+            Route::get('/features','index')->name('features');
+        });
+        Route::controller(MembershipFeatureController::class)->group(function(){
+            Route::post('/featureadd','featureadd')->name('featureadd');
+        });
+        Route::controller(MembershipFeatureController::class)->group(function(){
+            Route::post('/featureedit','edit')->name('featureedit');
         });
         
     });
@@ -234,6 +265,9 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::post('generate-token',[HostStreamController::class,'generateToken']); 
     Route::get('{id}/join-room',[HostStreamController::class,'joinRoomView']); 
 
+
+    //upgrade membership
+    Route::get('{id}/upgrademembership',[HostMembershipController::class,'upgrade']);
 });
 
 // Email Template 
