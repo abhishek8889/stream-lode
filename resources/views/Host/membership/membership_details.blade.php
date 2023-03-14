@@ -43,11 +43,11 @@
                                 
                               @if($membership_tier_details['membership_features'])  <p class="text-muted"><b>Features: </b>@foreach($membership_tier_details['membership_features'] as $mt)
                                 @php
-                                $data = App\Models\MembershipFeature::find($mt)->description;
-                                echo $data;
-                                echo ',';
-                                @endphp
-                                    
+                                $data = App\Models\MembershipFeature::find($mt);
+                                @endphp  
+                                @if($data)
+                                {{ $data['description'] ?? '' }},
+                                @endif
                               @endforeach</p>
                               @endif
                               <p class="text-muted"><b>Description: </b> {{ $membership_tier_details['description'] }} </p>

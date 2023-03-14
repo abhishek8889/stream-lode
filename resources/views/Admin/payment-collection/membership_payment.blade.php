@@ -1,5 +1,6 @@
 @extends('admin_layout.master')
 @section('content')
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -7,9 +8,9 @@
                 <h3 class="card-title"><strong>Membership Payment List</strong></h3>
                 <div class="card-tools">
                     <div class="input-group input-group-sm" style="width: 150px;">
-                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search" id ="inputsearch">
                         <div class="input-group-append">
-                            <button type="submit" class="btn btn-default">
+                            <button type="submit" id="searchbtn" class="btn btn-default">
                             <i class="fas fa-search"></i>
                             </button>
                         </div>
@@ -57,7 +58,7 @@
                            <td><span class="badge badge-danger"> {{ $data['payment_status'] }}</span></td>  
                            @endif
 
-                           <td><b>${{ $data['total'] }}</b></td>
+                           <td><b>${{ $data['total'] ?? $data['membership_total_amount'] }}</b></td>
                           <td>{{ $data['created_at'] }}</td>
                            <td>
                                 <a href="{{ url('/admin/membership-payment-details/'.$data->user['unique_id']) }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
@@ -77,4 +78,27 @@
         </div>
     </div>
 </div>
+<!-- <script>
+    $(document).ready(function(){
+        $('#searchbtn').click(function(){
+            val = $('#inputsearch').val();
+            $.ajax({
+                method: 'post',
+                url: '{{ route('paymentsearch') }}',
+                data: { val:val , _token: '{{csrf_token()}}' },
+                dataType: 'json',
+                success: function(response){
+                    $.each(response, function(key,value){
+                    console.log(value.payments);
+                    // if(value.payments['payment_status'] = 'succesfull'){
+                    //     console.log('done payment');
+                    // }else{
+                    //     console.log('not done payments');
+                    // }
+                    });
+                }
+            });
+        })
+    });
+</script> -->
 @endsection

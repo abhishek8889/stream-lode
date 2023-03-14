@@ -84,16 +84,16 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body col-md-4">
+            <!-- <div class="card-body col-md-4">
                 <div class="form-group row">
                     <div class="col-sm-8">
                         <input type="file" class="form-control" id="inputEmail3" name="card_logo" />
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Add membership tier</button>
+            <button type="submit" class="btn btn-primary">Update membership tier</button>
         </div>
     </form>
 </div>

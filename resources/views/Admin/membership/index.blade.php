@@ -25,6 +25,7 @@
                             <th>Status</th>
                             <th>Created at</th>
                             <th>Action</th>
+                            
                         </tr>
                     </thead>
                  
@@ -63,9 +64,13 @@
 
                            <td>
                                 <a href="{{ url('admin/edit-membership-tier/'.$membership['slug']) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
+                                @if(!empty($membership['status']) || $membership['status'] == 1)
                                 <a href="{{ url('admin/delete-membership-tier/'.$membership['_id']) }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a>
-                                
+                               @else
+                               <a href="{{ url('admin/activate/'.$membership['_id']) }}" class="btn btn-success"> Activate</a>
+                                @endif
                            </td>
+                          
                         </tr>
                         @endforeach
                         @endif

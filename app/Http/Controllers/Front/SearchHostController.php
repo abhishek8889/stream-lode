@@ -237,6 +237,7 @@ class SearchHostController extends Controller
     }
 //   
 public function trycode(){
+    return back();
 }
 
 }

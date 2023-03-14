@@ -18,7 +18,6 @@
                     <tr>
                       <th>Sr no.</th>
                       <th>Guest Name</th>
-                      <th>Email</th>
                       <th>Start Time</th>
                       <th>End Time</th>
                     </tr>
@@ -31,7 +30,6 @@
                         <?php $count = $count+1; ?>
                         <td>{{$count}}</td>
                         <td>{{$hs->guest_name}}</td>
-                        <td>{{$hs->guest_email}}</td>
                         <?php 
                         $startdate =  Date("M/d/Y h:i", strtotime("0 minutes", strtotime($hs->start)));
                         $enddate =  Date("M/d/Y h:i", strtotime("0 minutes", strtotime($hs->end)));

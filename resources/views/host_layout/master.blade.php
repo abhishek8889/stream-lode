@@ -193,9 +193,9 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{ url(auth()->user()->unique_id.'/') }}" class="brand-link">
-      <img src="{{ asset('AdminLTE-3.2.0/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">Stream Lode</span>
+    <a href="{{ url(auth()->user()->unique_id.'/') }}" class="brand-link" style="height:57px;">
+      <img src="http://127.0.0.1:8000/streamlode-front-assets/images/logo.png" alt="AdminLTE Logo" class="brand-image" style="opacity: .8">
+    
     </a>
 
     <!-- Sidebar -->

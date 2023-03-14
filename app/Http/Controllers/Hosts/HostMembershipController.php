@@ -226,7 +226,7 @@ class HostMembershipController extends Controller
             ],
           ]
         );
-        dd($subscription_update_response);
+        // dd($subscription_update_response);
 
         // ################# membership Payment data save ##########################
 

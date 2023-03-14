@@ -24,6 +24,7 @@
                                     </div> 
                                     <div class="form-group">
                                         <button class="btn btn-success">Submit</button>
+                                       
                                     </div>                           
                                 </div>
                             </form>
@@ -101,7 +102,7 @@
                 $('.loader').hide();
               swal({
                     title: "Feature is deleted succesfully.",
-                    text: "Feature is deleted succesfully",
+                    text: "Make sure you have to update your membership tier included this feature",
                     icon: "success",
                     button: "Go back.",
                 }).then((value) => {
@@ -111,5 +112,6 @@
         });
         });
     });
+    
 </script>
 @endsection

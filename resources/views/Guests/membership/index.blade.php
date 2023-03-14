@@ -196,12 +196,19 @@
                         ?>
                       @if($subscription['membership_features']) 
                        @foreach($subscription['membership_features'] as $feature)
-                      <li>
+                      
                         @php
-                        $data = App\Models\MembershipFeature::find($feature)->description;
-                        echo $data;
+                        $data = App\Models\MembershipFeature::find($feature);
                         @endphp
+                       
+                        <?php 
+                        if($data){ ?>
+                        <li>
+                          {{ $data['description'] ?? '' }}
                         </li>
+                       <?php }
+                        ?>
+                       
                         @endforeach
                         @endif
                       </ul>

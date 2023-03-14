@@ -156,6 +156,9 @@ Route::group(['middleware'=>['auth','Admin']],function(){
             Route::get('/delete-membership-tier/{id}','deleteMembership'); //price can not be deleted in product 
         });
         Route::controller(MembershipController::class)->group(function(){
+            Route::get('/activate/{id}','activateMembership'); //price can not be deleted in product 
+        });
+        Route::controller(MembershipController::class)->group(function(){
             Route::post('/update-membership-tier','updateMembership')->name('update-membership-tier'); 
         });
         Route::controller(MembershipPayments::class)->group(function(){
@@ -167,6 +170,11 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MembershipPayments::class)->group(function(){
             Route::get('/membership-payment-refund/{id}','refund');
         });
+        //search
+        Route::controller(MembershipPayments::class)->group(function(){
+            Route::post('/paymentsearch','search')->name('paymentsearch');
+        });
+    
 
         // Discount 
 

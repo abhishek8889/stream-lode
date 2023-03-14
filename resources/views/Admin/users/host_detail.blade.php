@@ -195,14 +195,14 @@
                               <label for="password" class="col-sm-2 col-form-label">New Password</label>
                               <div class="col-sm-10">
                               <input type="text" class="form-control" id="password" placeholder="New Password" name="newPassword" value="" />
-                              <label for="password" class="text text-info">Fill only when you want to change host's password , otherwise keep it empty.</label>  
+                              <label for="password" class="text text-info">Enter text here only when you want to enter a new password</label>  
                             </div>
                           </div>
                           <div class="form-group row">
                               <label for="confirmPassword" class="col-sm-2 col-form-label">Confirm Password</label>
                               <div class="col-sm-10">
                               <input type="text" class="form-control" id="phone" placeholder="Confirm New Password" name="confirmNewPassword" value="" />
-                              <label for="password" class="text text-info">Fill only when you enter new password.</label>  
+                              <label for="password" class="text text-info">Enter text here only when you want to enter a new password. This should match the text entered above.</label>  
                               </div>
                           </div>
                           <div class="form-group row">
@@ -226,7 +226,7 @@
                           </div>
                           <div class="form-group row">
                               <div class="offset-sm-2 col-sm-10">
-                              <button type="submit" class="btn btn-danger">Update host</button>
+                              <button type="submit" class="btn btn-danger">Update host information</button>
                               </div>
                           </div>
                         </form>

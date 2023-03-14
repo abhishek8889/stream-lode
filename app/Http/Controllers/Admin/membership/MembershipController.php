@@ -28,16 +28,16 @@ class MembershipController extends Controller
     public function addMembershipTierProc(Request $req){
         // dd($req->all());
         $membership = new MembershipTier;
-        $membership_logo_name = '';
-        $membership_logo_url = '';
+        // $membership_logo_name = '';
+        // $membership_logo_url = '';
 
-        if($req->hasfile('card_logo')){
-            $file = $req->file('card_logo');
-            $name = time().rand(1,100).'.'.$file->extension();
-            $file->move(public_path().'/Assets/images/membership-logo/', $name);
-            $membership_logo_name = $name;
-            $membership_logo_url = asset('Assets/images/membership-logo/'.$name);
-        }
+        // if($req->hasfile('card_logo')){
+        //     $file = $req->file('card_logo');
+        //     $name = time().rand(1,100).'.'.$file->extension();
+        //     $file->move(public_path().'/Assets/images/membership-logo/', $name);
+        //     $membership_logo_name = $name;
+        //     $membership_logo_url = asset('Assets/images/membership-logo/'.$name);
+        // }
         // dd($membership_logo_url);
 
         $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
@@ -72,8 +72,8 @@ class MembershipController extends Controller
         $membership->price_id = $price->id;
         $membership->name =  $req->name;
         $membership->slug = $req->slug;
-        $membership->logo_name =  $membership_logo_name;
-        $membership->logo_url =   $membership_logo_url;
+        // $membership->logo_name =  $membership_logo_name;
+        // $membership->logo_url =   $membership_logo_url;
         $membership->currency = $req->currency_code;
         $membership->type = $req->membership_type;
         if($req->membership_type == 'recurring'){
@@ -151,6 +151,24 @@ class MembershipController extends Controller
         $membership_db->status = 0;
         $membership_db->update();
         return redirect(url('/admin/membership-list'))->with('success','You have succesfully deactivate membership tier.');
+
+    }
+    public function activateMembership(Request $req , $id){
+        $membership_db = MembershipTier::where('_id',$id)->first();
+        $stripe_product_id = $membership_db['membership_tier_id'];
+        $stripe_product_price_id = $membership_db['price_id'];
+        // dd($stripe_product_id);
+       
+        $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+
+        // Archiving price 
+        $price_status = $stripe->prices->update($stripe_product_price_id, ['active' => true]);
+     
+        // $delete_status = $stripe->products->delete( $stripe_product_id,[]);
+        // dd($delete_status);
+        $membership_db->status = 1;
+        $membership_db->update();
+        return redirect(url('/admin/membership-list'))->with('success','You have succesfully activate membership tier.');
 
     }
 }

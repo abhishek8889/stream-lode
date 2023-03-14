@@ -2,6 +2,7 @@
 @section('content')
 
             <div class="card-body table-responsive p-0">
+            @foreach($membership_payments_details as $membership_payments_details)
                 <div class="invoice p-3 mb-3">
                 <!-- title row -->
                 <div class="row">
@@ -14,7 +15,7 @@
                             @if($membership_payments_details['refund_status'] == 1)
                                 <a class="btn btn-primary ml-2 disabled" href="#">Refunded</a>            
                             @else
-                                <a class="btn btn-danger ml-2" href="{{ url('/admin/membership-payment-refund/'.$membership_payments_details['_id']) }}">Refund</a>            
+                                <a class="Refund btn btn-danger ml-2" href="#" url="{{ url('/admin/membership-payment-refund/'.$membership_payments_details['_id']) }}">Refund</a>            
                             @endif
                         @else
                         <div class="btn btn-danger ml-2">{{ $membership_payments_details['payment_status'] }}</div>
@@ -89,7 +90,7 @@
                         
                         <tr>
                             <th>Total:</th>
-                            <td>${{ $membership_payments_details['total'] ?? 0 }}</td>
+                            <td>${{ $membership_payments_details['total'] ?? $membership_payments_details['membership_total_amount'] }}</td>
                         </tr>
                         </tbody></table>
                     </div>
@@ -97,6 +98,28 @@
                     <!-- /.col -->
                 </div>
                 </div>
+                 @endforeach
             </div>
-       
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <script>
+        $(document).ready(function(){
+            $('.Refund').click(function(){
+                url = $(this).attr('url');
+                Swal.fire({
+                      title: 'Are you sure!',
+                      showCancelButton: true,
+                      confirmButtonText: 'yes',
+                      confirmButtonColor: '#008000',
+                      cancelButtonText: 'no',
+                      cancelButtonColor: '#d33',
+
+                    }).then((result) => {
+                      /* Read more about isConfirmed, isDenied below */
+                      if (result.isConfirmed) {
+                        window.location.href = url;
+                      } 
+                    })
+            })
+        })
+     </script>
 @endsection
