@@ -187,7 +187,7 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         // Discount 
 
         Route::controller(DiscountController::class)->group(function(){
-            Route::get('/generate-discount','index')->name('generate-discount');
+            Route::get('/generate-discount/{id?}','index')->name('generate-discount');
         });
         Route::controller(DiscountController::class)->group(function(){
             Route::get('/discount-coupon-list','discountList')->name('discount-coupon-list');
@@ -213,6 +213,10 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MembershipFeatureController::class)->group(function(){
             Route::post('/featureedit','edit')->name('featureedit');
         });
+        Route::controller(SettingsController::class)->group(function(){
+            Route::get('/changepassword','changepassword')->name('changepassword');
+        });
+        
         
     });
 });

@@ -110,7 +110,7 @@
     // });
     // $("body").on("click", "#DeleteRow", function () {
     //         $(this).parents("#row").remove();
-    //     })
+    //     })         
         $(document).ready(function(){
            $("#name").on('change',function(){
             let name = $(this).val().toLowerCase();

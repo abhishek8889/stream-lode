@@ -8,8 +8,9 @@ use App\Models\Discounts\AdminDiscount;
 
 class DiscountController extends Controller
 {
-    public function index(){
-        return view('Admin.discount.index');
+    public function index($id = null){
+        // echo $id;
+        return view('Admin.discount.index',compact('id'));
     }
     public function discountList(){
         $discount_list = AdminDiscount::paginate(8);

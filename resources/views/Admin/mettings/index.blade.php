@@ -2,6 +2,12 @@
 @section('content')
 
 <?php
+// foreach($user as $u){
+//   print_r($u[0]['first_name']);
+// echo '<br>';
+
+// }
+// die();
 //  dd($user);
  ?>
  <div class="container-fluid">
@@ -27,14 +33,14 @@
                     <?php $count = $count+1; ?>
                     <tr>
                       <td>{{ $count }}</td>
-                      <td>{{ $u['first_name'].' '.$u['last_name'] }}</td>
+                      <td>{{ $u[0]['first_name'] ?? ''.' '.$u[0]['last_name'] ?? '' }}</td>
                       <td>
-                        {{ $u['email'] }}
+                        {{ $u[0]['email'] ?? '' }}
                       </td>
                       <td>
-                        {{ $u['unique_id'] }}
+                        {{ $u[0]['unique_id'] ?? '' }}
                       </td>
-                      <td><span class="badge bg-danger"  data-toggle="modal" data-target="#exampleModal{{ $u['id'] }}">Appoinments</span></td>
+                      <td><span class="badge bg-danger"  data-toggle="modal" data-target="#exampleModal{{ $u[0]['id'] }}">Appoinments</span></td>
                     </tr>
 
                    
@@ -44,16 +50,16 @@
               </div>
               <!-- /.card-body -->
               <div class="card-footer clearfix">
-              {!! $user->withQueryString()->links('pagination::bootstrap-5') !!}
+              
               </div>
             </div>
  </div>
  @foreach($user as $u)
- <div class="modal fade bd-example-modal-lg" id="exampleModal{{ $u['id'] }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+ <div class="modal fade bd-example-modal-lg" id="exampleModal{{ $u[0]['id'] }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                           <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
                               <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">{{ $u['first_name' ?? ''].' '.$u['last_name'].' appoinments' }}</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">{{ $u[0]['first_name'] ?? ''.' '.$u[0]['last_name'] ?? ''.' appoinments' }}</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                                 </button>
@@ -72,7 +78,7 @@
                                             </thead>
 
                                             <tbody>
-                                                @forelse($u['appoinments'] as $ap)
+                                                @forelse($u[0]['appoinments'] as $ap)
                                                 <tr>
                                                 <td>{{ $ap['guest_name'] }}</td>
                                                 <td>{{$ap['guest_email']}}</td>

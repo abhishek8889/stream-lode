@@ -13,6 +13,7 @@
         <div class="row">
             <div class="card-body col-md-6">
                 <div class="form-group row">
+                    <input type="hidden" name="id" value="{{ $id ?? '' }}">
                     <label for="name" class="col-sm-3 col-form-label">Name</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" id="name" placeholder="Name" name="name">
