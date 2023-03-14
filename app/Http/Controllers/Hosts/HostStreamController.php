@@ -14,18 +14,25 @@ class HostStreamController extends Controller
     public function index(){
         return view('Host.Appoinments.vedio_chat');
     }
+    public function createRoom(){
+        $sid = getenv("TWILIO_ACCOUNT_SID");
+        $token = getenv("TWILIO_AUTH_TOKEN");
+        $twilio = new Client($sid, $token);
+        $room = $twilio->video->v1->rooms->create(["uniqueName" => "room_abhi7"]);
+        dd($room);
+    }
     public function generateToken(Request $req){
-        $req->validate([
-            'room_name' => 'required',
-            'identity' => 'required',
-        ]);
+        // $req->validate([
+        //     'room_name' => 'required',
+        //     'identity' => 'required',
+        // ]);
         $twilioAccountSid = getenv('TWILIO_ACCOUNT_SID');
         $twilioApiKey = getenv('TWILIO_API_KEY');
-        $twilioApiSecret = getenv('TWILIO_API_KEY_SECRET');
+        $twilioApiSecret = getenv('TWILIO_API_SECRET');
         // $twilioAuthToken = getenv("TWILIO_AUTH_TOKEN");
         
-        $roomName = $req->room_name;
-        $identity = $req->identity;
+        $roomName = 'room_abhi7';
+        $identity = 'abhishek';
         // Create a new Access Token with Video grant
 
         $accessToken = new AccessToken(

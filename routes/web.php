@@ -210,6 +210,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
 
     //Vedio chat
     Route::get('{id}/vedio-conference',[HostStreamController::class,'index']); 
+    Route::get('{id}/create-room',[HostStreamController::class,'createRoom']); 
     Route::post('generate-token',[HostStreamController::class,'generateToken']); 
     Route::get('{id}/join-room',[HostStreamController::class,'joinRoomView']); 
 
