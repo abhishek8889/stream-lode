@@ -21,6 +21,10 @@ class HostAccountController extends Controller
         $user->last_name = $req->last_name;
         $user->phone = $req->phone;
         $user->email = $req->email;
+        $user->facebook = $req->facebook;
+        $user->twitter = $req->twitter;
+        $user->instagram = $req->instagram;
+        $user->linkdin = $req->linkdin;
         if($req->hide_profile == "on"){ // public_visibility = 0 not visible to public
             $public_visibility = 0;
         }else{

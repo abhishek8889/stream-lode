@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Tags;
+use App\Models\Message;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\appoinmentsconfirmation;
 use App\Mail\HostAppoinmentsMail;
@@ -129,8 +130,12 @@ class SearchHostController extends Controller
                 $newAppointment->save();
                 $user = User::find($req->user_id); 
             }else{
+                $req->validate([
+                    'email' => 'required|unique:users',
+                ]);
                 $name = $req->name;
-                $pass = $req->name.rand(1,100);
+                $namestr = str_replace(' ', '', $name);
+                $pass = substr($namestr, 0, 4).'@'.rand(100,999);
                 $password = Hash::make($pass);
                 $data = array(
                     'email' => $req->email,
@@ -159,7 +164,7 @@ class SearchHostController extends Controller
                 $user = User::find($user->_id); 
             }
                 //  Host availablity update
-               
+                
                 $host = User::find($req->host_id);
                 $uemail = $user->email;
                 $hostmail = $host->email;
@@ -197,7 +202,7 @@ class SearchHostController extends Controller
                     'color'    =>  '#dd8585',
                     'allDay'   =>  false,
                 );
-                
+                //    return $event;
                return response()->json($event);
 
               break;
@@ -231,5 +236,19 @@ class SearchHostController extends Controller
         return response()->json($hosts);
     }
 //   
+public function trycode(){
+    // $hosts = array();
+    // $tag = 'Growing';
+    // $data = Tags::where('name','like',$tag.'%')->with(['users' => function($response){ $response->where([['status',1],['public_visibility',1]]); }])->get();
+    // $hosts = array();
+    // foreach($data as $d){
+    //     $host = $d->users;
+    //     array_push($hosts,$host);
+    // }
+    // dd($hosts);
+    // echo '<pre>';
+    // print_r($data);
+    // echo '</pre>';
+}
 
 }

@@ -105,13 +105,12 @@
                   <!-- <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Activity</a></li>
                   <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Timeline</a></li> -->
                   <li class="nav-item"><a class="nav-link active" href="#settings" data-toggle="tab">Settings</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Message</a></li>
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
                 <div class="tab-content">
-                  
-                  
-                    <div class="active tab-pane" id="settings">
+                    <div class="tab-pane active" id="settings">
                         <form action="{{ url('/admin/host-generals-update') }}" method="POST" class="form-horizontal">
                         @csrf  
                         <input type="hidden" value="{{ $host_detail['_id'] }} " name="id">
@@ -180,6 +179,43 @@
                           </div>
                         </form>
                     </div>
+                    <div class="tab-pane" id="timeline">
+                   
+                    <div class="card direct-chat direct-chat-primary">
+             
+              <div class="card-body">
+                <!-- Conversations are loaded here -->
+                <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse;">
+                  <div class="direct-chat-msg">
+                    @foreach($message as $m)
+                    <div class="direct-chat-text mt-1" style="margin: 0 0 0 0;">
+                    {{ $m['message'] }}
+                    </div>
+                    @endforeach
+                  </div>
+                </div>
+               
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                <form id="message" action="{{ url('admin/message') }}" method="post">
+                  @csrf
+                  <div class="input-group">
+                    <input type="hidden" name="reciever_id" value="{{ $host_detail['_id'] ?? '' }}">
+                    <input type="hidden" name="sender_id" value="{{ Auth() ->user()->id ?? '' }}">
+                    <input type="text" id ="messageinput" name="message" placeholder="Type Message ..." class="form-control">
+                    <span class="input-group-append">
+                      <button class="btn btn-primary">Send</button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-footer-->
+            </div>
+                </div>
+
+
+                    </div>
                   </div>
               </div>
             </div>
@@ -191,5 +227,28 @@
     $(document).ready(function() {
     $('.summernote').summernote();
     });
+
+    $(document).ready(function(){
+      $('#message').on('submit',function(e){
+        e.preventDefault();
+        formdata = new FormData(this);
+        $.ajax({
+          method: 'post',
+                    url: '{{url('/admin/message')}}',
+                    data: formdata,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success: function(response)
+                    {
+                      console.log(response);
+                      $('#messageinput').val('');
+                      $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
+                      }
+
+        });
+      });
+    });
+
   </script>
 @endsection

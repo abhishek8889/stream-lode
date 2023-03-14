@@ -1,6 +1,8 @@
 @extends('guest_layout.master')
 @section('content')
-
+<?php 
+$time = date('Y-m-d H:i');
+?>
 <div class="container-fluid mt-5" style="min-height: 249px;">
     <h3 class="text-center">Your Scheduled Meetings </h3>
         <div class="d-flex justify-content-center row">
@@ -16,6 +18,7 @@
                                     <th>Host Email</th>
                                     <th>Meeting Starting Time</th>
                                     <th>Meeting End Time</th>
+                                    <th>Status</th>
                                    
                                 </tr>
                             </thead>
@@ -29,6 +32,7 @@
                                     <td>{{ $ap->user['email'] }}</td>
                                     <td>{{ $ap->start }}</td>
                                     <td>{{ $ap->end }}</td>
+                                    <td>@if($time > $ap->end) done @else not done @endif </td>
                                 </tr>
                                @endforeach
                             </tbody>

@@ -337,6 +337,16 @@
               </li>
             </ul>
           </li>
+          <!-- Meetings -->
+          <li class="nav-item ">
+            <a href="{{ route('meetings') }}" class="nav-link active">
+            <i class="fa-solid fa-users"></i>
+              <p>
+                 Meetings
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
           <!-- Account Details -->
           <li class="nav-item ">
             <a href="#" class="nav-link active">

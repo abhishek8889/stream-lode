@@ -43,15 +43,15 @@
                         <?php 
                             $first_name = '';
                             $last_name = '';
-                            if(isset($guest['first_name'])){
+                            if(isset($guest['first_name'] ?? '')){
                                 $first_name = $guest['first_name'];
                             }
                             if(isset($guest['last_name'])){
-                                $first_name = $guest['last_name'];
+                                $first_name = $guest['last_name'] ?? '';
                             }
                         ?>
                         <td>{{$first_name . '' . $last_name}}</td>
-                        <td>{{ $guest['email'] }}</td>
+                        <td>{{ $guest['email'] ?? '' }}</td>
 
                         <?php 
                             $dateTimeObj = $guest['created_at']->toDateTime();
