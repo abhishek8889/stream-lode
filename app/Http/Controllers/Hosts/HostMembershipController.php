@@ -352,5 +352,11 @@ class HostMembershipController extends Controller
       );
       dd($invoice);
     }
+
+    public function upgrade($id){
+        $subscription_list = MembershipTier::where('status',1)->get();
+        // dd($subscription_list);
+        return view('Host.membership.upgrade_membershipnew',compact('subscription_list'));
+    }
     
 }

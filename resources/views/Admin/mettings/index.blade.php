@@ -77,8 +77,8 @@
                                                 <td>{{ $ap['guest_name'] }}</td>
                                                 <td>{{$ap['guest_email']}}</td>
                                                 <td>
-                                                    <?php $sartdate = Date("M/d/Y h:i", strtotime("0 minutes", strtotime($ap['start'])));
-                                                    $enddate = Date("M/d/Y h:i", strtotime("0 minutes", strtotime($ap['end'])));
+                                                    <?php $sartdate = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($ap['start'])));
+                                                    $enddate = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($ap['end'])));
                                                     ?>
                                                   {{ $sartdate }}  
                                                 </td>

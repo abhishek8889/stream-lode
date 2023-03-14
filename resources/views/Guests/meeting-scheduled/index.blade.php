@@ -31,8 +31,8 @@ $time = date('Y-m-d H:i');
                                     <td>{{ $ap->user['first_name'] }} {{ $ap->user['last_name'] }}</td>
                                     <td>{{ $ap->user['email'] }}</td>
                                     <?php 
-                                    $sartdate = Date("M/d/Y h:i", strtotime("0 minutes", strtotime($ap->start)));
-                                    $enddate = Date("M/d/Y h:i", strtotime("0 minutes", strtotime($ap->end)));
+                                    $sartdate = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($ap->start)));
+                                    $enddate = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($ap->end)));
                                     ?>
                                     <td>{{ $sartdate }}</td>
                                     <td>{{ $enddate }}</td>

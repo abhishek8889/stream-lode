@@ -57,7 +57,7 @@
                     </div>
                     <div class="card-footer">
                     <a href="{{ url('/'.auth()->user()->unique_id) }}" class="btn btn-info">Go to dashboard</a>
-                    <a href="{{ url('/'.auth()->user()->unique_id.'/upgrade-subscription') }}" class="btn btn-danger">Upgrade Plan</a>
+                    <a href="{{ url('/'.auth()->user()->unique_id.'/upgrademembership') }}" class="btn btn-danger">Upgrade Plan</a>
                     </div>
                 </div>
             </div>

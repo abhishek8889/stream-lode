@@ -80,7 +80,7 @@
         <div class="col-lg-3 col-md-6 col-sm-6 host-col ">
           <div class="host-box">
             <div class="box-up">
-              <div class="image-box hover-zoom">
+              <div class="image-box hover-zoom" style="max-height:293px;">
                 @if(isset($host['profile_image_url']) || !empty($host['profile_image_url'])) 
                 <img src="{{ $host['profile_image_url'] }}">
                 @else

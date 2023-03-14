@@ -54,7 +54,7 @@ Route::get('host-register-email',function(){
 
 Route::get('learn-area',[TestController::class,'index'])->name('learn-area');
 
-
+// Route::group(['middleware'=>['auth','Guest']],function(){
 // Authentication
 Route::get('login',[AuthenticationController::class,'login'])->name('login');
 Route::get('register',[AuthenticationController::class,'register'])->name('register');
@@ -81,7 +81,7 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-Route::get('/trycode',[SearchHostController::class,'trycode']);
+// Route::get('/trycode',[SearchHostController::class,'trycode']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
@@ -90,7 +90,7 @@ Route::get('/scheduledmeeting',[MeetingController::class,'index']);
 
 Route::get('/coupon-for-host',[ApplyDiscountController::class,'couponForHost'])->name('coupon-for-host');
 
-
+// });
 
 // Admin Routes
 Route::group(['middleware'=>['auth','Admin']],function(){
@@ -251,6 +251,9 @@ Route::group(['middleware'=>['auth','Host']],function(){
     //Appoinments
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index']);
 
+
+    //upgrade membership
+    Route::get('{id}/upgrademembership',[HostMembershipController::class,'upgrade']);
 });
 
 // Email Template 
