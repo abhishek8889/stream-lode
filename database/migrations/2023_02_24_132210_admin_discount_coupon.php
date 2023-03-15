@@ -36,5 +36,6 @@ return new class extends Migration
     public function down()
     {
         //
+        Schema::dropIfExists('admin_discount_coupon');
     }
 };

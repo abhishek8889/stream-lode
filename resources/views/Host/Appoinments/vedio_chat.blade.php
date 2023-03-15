@@ -1,8 +1,8 @@
 @extends('host_layout.master')
 @section('content')
-<h4>Generate token for vedio chat</h4>
+<h4>Create Room for Vediocall : </h4>
 <div class="container">
-    <form action="{{ url('generate-token') }}" method="POST">
+    <form action="{{ url('create-room') }}" method="POST">
         @csrf
         <label for="room_name">Room name</label> <br>
         <input type="text"  id="room_name" name="room_name" /> <br>

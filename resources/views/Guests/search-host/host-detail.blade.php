@@ -172,10 +172,10 @@ $date = date('Y-m-d h:i');
            <a href="mailto:{{ $host_details['email'] }}"><i class="fa-solid fa-envelope"></i> {{ $host_details['email'] }} </a>
          </div>
          <ul class="host-social-links">
-           <li><a href="{{ $host_details['facebook'] ?? '' }}"><i class="fa-brands fa-facebook-f"></i></a></li>
-            <li><a href="{{ $host_details['linkdin'] ?? '' }}"><i class="fa-brands fa-linkedin-in"></i></a></li>
-           <li><a href="{{ $host_details['instagram'] ?? '' }}"><i class="fa-brands fa-instagram"></i></a></li>
-          <li><a href="{{ $host_details['twitter'] ?? '' }}"><i class="fa-brands fa-twitter"></i></a></li> 
+            <li><a href="//{{ $host_details['facebook'] ?? '' }}"><i class="fa-brands fa-facebook-f"></i></a></li>
+            <li><a href="//{{ $host_details['linkdin'] ?? '' }}"><i class="fa-brands fa-linkedin-in"></i></a></li>
+            <li><a href="//{{ $host_details['instagram'] ?? '' }}"><i class="fa-brands fa-instagram"></i></a></li>
+            <li><a href="//{{ $host_details['twitter'] ?? '' }}"><i class="fa-brands fa-twitter"></i></a></li> 
          </ul>
         </div>
       </div>

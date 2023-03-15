@@ -36,6 +36,7 @@ use App\Http\Controllers\Hosts\HostMembershipController;
 use App\Http\Controllers\Hosts\HostCalendar;
 use App\Http\Controllers\Hosts\AppoinmentsController;
 use App\Http\Controllers\Hosts\HostStreamController;
+use App\Http\Controllers\Hosts\WebsocketController;
 
 use Google\Service\ServiceConsumerManagement\Authentication;
 
@@ -261,10 +262,12 @@ Route::group(['middleware'=>['auth','Host']],function(){
 
     //Vedio chat
     Route::get('{id}/vedio-conference',[HostStreamController::class,'index']); 
-    Route::get('{id}/create-room',[HostStreamController::class,'createRoom']); 
+    Route::post('create-room',[HostStreamController::class,'createRoom']); 
     Route::post('generate-token',[HostStreamController::class,'generateToken']); 
     Route::get('{id}/join-room',[HostStreamController::class,'joinRoomView']); 
 
+    // 
+    Route::get('{id}/websocket', [WebsocketController::class,'onOpen'])->name('websocket');
 
     //upgrade membership
     Route::get('{id}/upgrademembership',[HostMembershipController::class,'upgrade']);
