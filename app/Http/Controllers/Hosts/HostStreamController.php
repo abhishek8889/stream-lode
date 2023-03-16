@@ -63,11 +63,12 @@ class HostStreamController extends Controller
         $videoGrant->setRoom($roomName);
         $accessToken->addGrant($videoGrant);
 
+        dd($accessToken->toJWT());
         // return response()->json([
         //     'accessToken' => $accessToken->toJWT(),
         //     'roomName' => $roomName
         // ]);
-        return array('accessToken' =>  $accessToken->toJWT(), 'roomName' => $roomName );
+        return array('accessToken' =>  $accessToken, 'roomName' => $roomName );
     }
     public function joinRoomView(){
         return view('Host.Appoinments.join_room');
