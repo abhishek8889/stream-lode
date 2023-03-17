@@ -16,7 +16,7 @@ class EnsureHost
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!empty(auth()->user()->id) && auth()->user()->status == 1 || auth()->user()->status == 2 ){
+        if(!empty(auth()->user()->id) && auth()->user()->status == 1 ){
             return $next($request);
         }
         return redirect('login');

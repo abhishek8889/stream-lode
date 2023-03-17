@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
+@vite(['resources/css/app.css' , 'resources/js/app.js'])
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -91,50 +92,23 @@
         </div>
       </li>
       @php
-         $messages = App\Models\Message::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->orWhere([['type','=',1],['status','=',1]])->with('users')->get();
+         $messages = App\Models\Messages::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->orWhere([['type','=',1],['status','=',1]])->with('users')->get();
         
       @endphp
    
       <!-- Messages Dropdown Menu -->
-      <li class="nav-item dropdown">
-        
-        <a class="nav-link" data-toggle="dropdown" href="#" >
-          <i class="far fa-comments"></i>
-          <span class="badge1 badge badge-danger navbar-badge">{{ count($messages) ?? 0 }}</span>
-        </a>
-       
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <a href="{{ url('') }}/{{ Auth::user()->unique_id ?? '' }}/message" class="dropdown-item">
-            <div class="media">
-             
-              <img src="{{ $messages[0]['users']['profile_image_url'] ?? asset('AdminLTE-3.2.0/dist/img/user1-128x128.jpg') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-              
-              <div class="media-body">
-                <h3 class="dropdown-item-title">
-                  {{ $messages[0]['users']['first_name'] ?? '' }}
-                  <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                </h3>
-                <p class="text-sm" id="count">{{ count($messages) ?? 0 }} new Messages</p>
-                <!-- <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p> -->
-              </div>
-            </div>
-          </a>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-        </div>
-      </li>
+      
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">15</span>
+          <span class="badge badge-warning navbar-badge">{{ count($messages) ?? 0 }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <span class="dropdown-item dropdown-header">15 Notifications</span>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
+          <a href="{{ url('') }}/{{ Auth::user()->unique_id ?? '' }}/message" class="dropdown-item">
+            <i class="fas fa-envelope mr-2"></i> {{ count($messages) ?? 0 }} new messages
             <span class="float-right text-muted text-sm">3 mins</span>
           </a>
           <div class="dropdown-divider"></div>

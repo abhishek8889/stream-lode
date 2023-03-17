@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Admin\postnotification;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Message;
+use App\Models\Messages;
 class PostNotificationController extends Controller
 {
     public function index(){
-        $messages = Message::where('type','=',1)->with('users')->get();
+        $messages = Messages::where('type','=',1)->with('users')->get();
             // print_r($messages);
             // dd($messages);
         return view('Admin.postnotification.index',compact('messages'));

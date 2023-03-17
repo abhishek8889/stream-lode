@@ -1,6 +1,18 @@
 @extends('host_layout.master')
 @section('content')
-
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+            {{ Breadcrumbs::render('appoinments') }}
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
 <div class="row">
           <div class="col-12">
             <div class="card">
@@ -12,7 +24,7 @@
                 </div>
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0" style="height: 300px;">
+              <div class="card-body table-responsive p-0" style="height: 390px;">
                 <table class="table table-head-fixed text-nowrap">
                   <thead>
                     <tr>
@@ -20,6 +32,7 @@
                       <th>Guest Name</th>
                       <th>Start Time</th>
                       <th>End Time</th>
+                      <th>Message</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -31,23 +44,13 @@
                         <?php $count = $count+1; ?>
                         <td>{{$count}}</td>
                         <td>{{$hs->guest_name}}</td>
-<<<<<<< HEAD
-                        <td>{{$hs->guest_email}}</td>
-                        <td>{{$hs->start}}</td>
-                        <td>{{$hs->end}}</td>
-                        <td>
-                          <a href="{{ url(auth()->user()->unique_id.'/vedio-conference') }}">
-                            <i class="fa fa-video-camera" aria-hidden="true"></i>
-                          </a>
-                        </td>
-=======
                         <?php 
-                        $startdate =  Date("M/d/Y h:i", strtotime("0 minutes", strtotime($hs->start)));
-                        $enddate =  Date("M/d/Y h:i", strtotime("0 minutes", strtotime($hs->end)));
+                        $startdate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->start)));
+                        $enddate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->end)));
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
->>>>>>> 22c4bece91896ed7cf51094a81bf40b57569e6eb
+                        <td><a href="{{ url(Auth::user()->unique_id.'/hostmessage/'.$hs->_id) }}" class="btn btn-success">Messagebox</a></td>
                       </tr>
                     @empty
                       <tr>
@@ -63,4 +66,35 @@
             <!-- /.card -->
           </div>
 </div>
+
+<script>
+
+$(document).ready(function(){
+      $('#message').on('submit',function(e){
+        
+      //    if(message == ''){
+      //       alert('Please enter message')
+      //       return false;
+      //   }
+        // e.preventDefault();
+        // formdata = new FormData(this);
+        // console.log(formdata);
+      // //   console.log(formdata);
+      //   $.ajax({
+      //    method: 'post',
+      //    url: '{{url('send-message')}}',
+      //    data: formdata,
+      //    dataType: 'json',
+      //    contentType: false,
+      //    processData: false,
+      //    success: function(response)
+      //    {
+      //      // console.log(response);
+      //      $('#messageinput').val('');
+      //      // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
+      //    }
+      //   });
+      });
+    });
+</script>
 @endsection

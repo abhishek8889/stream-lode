@@ -58,13 +58,16 @@ class User extends Authenticatable
         return $this->belongsTo(MembershipTier::class,'membership_id');
     }
     public function message(){
-        return $this->hasMany(Message::class,'reciever_id','_id');
+        return $this->hasMany(Messages::class,'reciever_id','_id');
     }
     public function appoinments(){
         return $this->hasMany(HostAppointments::class,'host_id','_id');
     }
     public function payments(){
         return $this->hasMany(MembershipPaymentsData::class,'user_id','_id');
+    }
+    public function adminmessage(){
+        return $this->hasMany(Messages::class,'sender_id','_id')->where('status',1);
     }
   
 }

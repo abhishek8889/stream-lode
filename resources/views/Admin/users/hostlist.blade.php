@@ -1,7 +1,24 @@
 @extends('admin_layout.master')
 @section('content')
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Hosts</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v1</li> -->
+              {{ Breadcrumbs::render('host-list') }}
+            </ol> 
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="row">
         <div class="col-12">
+
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title"><b>Total Hosts : {{ count($hosts) }}</b></h3>
@@ -45,7 +62,8 @@
                             @endif
                         </td>
 
-                        <td>{{ $host['first_name'].' '.$host['last_name'] }}</td>
+                        <td>{{ $host['first_name'].' '.$host['last_name'] }} </td>
+
 
                         <td>{{ $host['email'] }}</td>
                     
@@ -71,7 +89,7 @@
                         ?>
                         <td> {{ $dateInLocal }} </td>
                         <td> 
-                            <a href="{{ url('/admin/host-details/'.$host['unique_id']) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
+                            <a href="{{ url('/admin/host-details/'.$host['unique_id']) }}" class="btn btn-info"><i class="fa fa-edit "></i><span class="badge badge-danger navbar-badge">{{ count($host['adminmessage']) }}</span></a>
                             <a href="{{ url('/admin/host-delete/'.$host['unique_id']) }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a> 
                         </td>
                     </tr>

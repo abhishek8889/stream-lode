@@ -43,7 +43,7 @@
                         <?php 
                             $first_name = '';
                             $last_name = '';
-                            if(isset($guest['first_name'] ?? '')){
+                            if(isset($guest['first_name'])){
                                 $first_name = $guest['first_name'];
                             }
                             if(isset($guest['last_name'])){

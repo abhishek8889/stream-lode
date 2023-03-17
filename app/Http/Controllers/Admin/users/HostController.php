@@ -5,21 +5,23 @@ namespace App\Http\Controllers\Admin\users;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Message;
+use App\Models\Messages;
+use App\Events\Message;
 use DB;
 use Hash;
+use Auth;
 class HostController extends Controller
 {
     public function hostList(){
-        $hosts = DB::table('users')->where('status', 1)->get();
-        
+        $hosts = User::where('status', 1)->with(['adminmessage' => function($response){ $response->where('reciever_id',Auth::user()->id); }])->get();
+        // dd($hosts);
         
         return view('Admin.users.hostlist',compact('hosts'));
     }
     public function hostDetail(Request $req , $id){
         $host_detail = User::where('unique_id', $id)->first();
     //    dd($host_detail);
-        $message = Message::where('reciever_id',$host_detail['_id'])->orderBy('created_at','asc')->get();
+    $message = Messages::where([['reciever_id',$host_detail['_id']],['sender_id',Auth::user()->id]])->orWhere([['reciever_id',Auth::user()->id],['sender_id',$host_detail['_id']]])->get();
         return view('Admin.users.host_detail',compact('host_detail','message'));
     }
     public function hostDelete($id){
@@ -82,16 +84,27 @@ class HostController extends Controller
         }
     }
     public function message(Request $req){
-        $req->validate([
-            'message' => 'required'
-        ]);
-        $message = new Message();
+        $sender_id = $req->sender_id;
+        $reciever_id = $req->reciever_id;
+        $username = $req->username;
+        $messages = $req->message;
+        event(new Message($username, $messages,$sender_id,$reciever_id));
+        $message = new Messages();
         $message->reciever_id = $req->reciever_id;
         $message->sender_id = $req->sender_id;
+        $message->username = $req->username;
         $message->message = $req->message;
         $message->status = 1;
         $message->save();
         return response()->json('message sent');
     }
-    
+    public function seenmessage(Request $req){
+        $update = Messages::where([['reciever_id',$req->sender_id],['sender_id',$req->reciever_id]])->get();
+        foreach($update as $u){
+            $res = Messages::find($u['_id']);
+            $res->status = 0;
+            $res->update();
+        }
+        return response()->json('done');
+    }
 }
