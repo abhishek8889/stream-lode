@@ -10,18 +10,16 @@
             @error('room_name')
                 <div class="text text-danger">{{ $message }}</div>
             @enderror
-            <label for="identity">Your identity</label> <br>
-            <input type="text"  class="form-control" id="identity" name="identity" /> <br>
-            @error('identity')
-                <div class="text text-danger">{{ $message }}</div>
-            @enderror
             <input type="submit" value="Generate" class="btn btn-warning"/>
         </form>
+        @if(Session::has('data'))
+        <?php $data = Session::get('data');  ?>
+        <div id="roomDetails"><span>Your room name is : </span> <span class="text text-primary">{{ $data['roomName'] }}</span></div>
+        <label for="roomDetails">This room name is required for join vedio call</label>
+        <a id="roomLink" class="meeting-link">{{$data['join_link']}}</a>
+        <label for="roomLink">Click this link to join or store this for future use</label>
+        @endif
     </div>
-
-   
-    <a class="btn btn-primary mt-5" href="{{ url(auth()->user()->unique_id.'/join-room') }}">join room</a>
-    
 </div>
 
 @endsection

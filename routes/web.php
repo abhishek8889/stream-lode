@@ -40,6 +40,8 @@ use App\Http\Controllers\Hosts\WebsocketController;
 
 use Google\Service\ServiceConsumerManagement\Authentication;
 
+use App\Http\Controllers\LiveStream\VedioCallController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,11 +59,17 @@ use Google\Service\ServiceConsumerManagement\Authentication;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+
+Route::get('/live-stream/{room_name}',[VedioCallController::class,'index']);
+Route::get('live-stream-token',[VedioCallController::class,'passToken']);
+
 Route::get('host-register-email',function(){
     return view('Emails.host_registration');
 });
 
 Route::get('learn-area',[TestController::class,'index'])->name('learn-area');
+Route::get('return-from-listener',[TestController::class,'returnFromListener']);
+Route::get('send-test-email-with-job',[TestController::class,'sendTestEmail']);
 
 // Route::group(['middleware'=>['auth','Guest']],function(){
 // Authentication

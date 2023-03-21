@@ -31,6 +31,7 @@ class User extends Authenticatable
         'phone',
         'description',
         'public_visibility',
+        'twilio_access_token',
         'password',
         'status',
         'active_status'

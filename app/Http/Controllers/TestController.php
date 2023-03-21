@@ -5,13 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use DB;
+use App\Events\SendNotifications;
+use App\Jobs\SendEmail;
 class TestController extends Controller
 {
     //
     public function index(){
-       $user = DB::table('users')
-                ->join('membership' , 'user.membership_id' , '=' ,'membership._id')->get('users.*', 'membership.*');
-                
-                dd($user);
+       $name = "Abhishek sharma";
+       $age = 21;
+       $data = ['name' => $name, 'age' => $age];
+       $event_status = event( new SendNotifications($data));
+    //    return $event_status;
+    }
+    public function returnFromListener(){
+      echo hello("Abhishek");
+    
+    }
+    public function sendTestEmail(){
+        $data  = "This is test data ";
+        $name = "Abhishek";
+        dispatch( new SendEmail($data,$name));
+        return "email sent succesfully";
     }
 }

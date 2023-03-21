@@ -30,6 +30,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
+<!-- Twilio css -->
+<link rel="stylesheet" href="{{ asset('twilio-assets/site.css') }}">
+<!-- Twilio ends -->
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -485,6 +488,17 @@
 
 <link rel="stylesheet" type="text/css"  href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+<!-- Twilio Llibraries -->
+
+<script src="//media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.min.js"></script>
+<script src="//sdk.twilio.com/js/video/releases/2.26.2/twilio-video.min.js"></script>
+<!-- <script src="//media.twiliocdn.com/sdk/js/video/releases/1.14.0/twilio-video.js"></script> -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<!-- <script src="{{ asset('twilio-assets/quickstart.js') }}"></script> -->
+
+
+<!-- Twilio ends -->
 <script>
 
   @if(Session::has('success'))
