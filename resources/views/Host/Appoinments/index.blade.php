@@ -30,10 +30,10 @@
                     <tr>
                       <th>Sr no.</th>
                       <th>Guest Name</th>
+                      <th>Email</th>
                       <th>Start Time</th>
                       <th>End Time</th>
                       <th>Message</th>
-                      <th></th>
                     </tr>
                   </thead>
                   <?php $count = 0; ?>
@@ -44,13 +44,14 @@
                         <?php $count = $count+1; ?>
                         <td>{{$count}}</td>
                         <td>{{$hs->guest_name}}</td>
+                        <td>{{$hs->guest_email}}</td>
                         <?php 
                         $startdate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->start)));
                         $enddate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->end)));
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
-                        <td><a href="{{ url(Auth::user()->unique_id.'/hostmessage/'.$hs->_id) }}" class="btn btn-success">Messagebox</a></td>
+                        <td><a href="{{ url(Auth::user()->unique_id.'/hostmessage/'.$hs->user_id) }}" class="btn btn-success">Messagebox<span class="badge badge-warning navbar-badge">{{ count($hs->usermessages) ?? 0 }}</span></a></td>
                       </tr>
                     @empty
                       <tr>
@@ -69,8 +70,8 @@
 
 <script>
 
-$(document).ready(function(){
-      $('#message').on('submit',function(e){
+// $(document).ready(function(){
+//       $('#message').on('submit',function(e){
         
       //    if(message == ''){
       //       alert('Please enter message')
@@ -94,7 +95,7 @@ $(document).ready(function(){
       //      // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
       //    }
       //   });
-      });
-    });
+    //   });
+    // });
 </script>
 @endsection

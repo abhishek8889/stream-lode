@@ -93,7 +93,8 @@
       </li>
       @php
          $messages = App\Models\Messages::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->orWhere([['type','=',1],['status','=',1]])->with('users')->get();
-        
+        $admin = App\Models\User::where('status',2)->first();
+       
       @endphp
    
       <!-- Messages Dropdown Menu -->
@@ -102,14 +103,15 @@
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">{{ count($messages) ?? 0 }}</span>
+          <input type="hidden" id="adminid" value="{{ $admin->id ?? '' }}">
+          <input type="hidden" id="hostauthid" value="{{Auth::user()->id}}">
+          <span class="badge badge-warning navbar-badge" id ="notificationcount">{{ count($messages) ?? 0 }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <span class="dropdown-item dropdown-header">15 Notifications</span>
           <div class="dropdown-divider"></div>
           <a href="{{ url('') }}/{{ Auth::user()->unique_id ?? '' }}/message" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> {{ count($messages) ?? 0 }} new messages
-            <span class="float-right text-muted text-sm">3 mins</span>
+            <i class="fas fa-envelope mr-2"></i><span id="messagecount">{{ count($messages) ?? 0 }}</span> new messages
           </a>
           <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item">

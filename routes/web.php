@@ -70,7 +70,7 @@ Route::get('host-register-email',function(){
 
 Route::get('learn-area',[TestController::class,'index'])->name('learn-area');
 
-// Route::group(['middleware'=>['auth','Guest']],function(){
+// Route::group(['middleware'=>['auth','guest']],function(){
 // Authentication
 Route::get('login',[AuthenticationController::class,'login'])->name('login');
 Route::get('register',[AuthenticationController::class,'register'])->name('register');
@@ -101,6 +101,9 @@ Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
+Route::get('/message/{id}',[MeetingController::class,'message']);
+Route::post('send-messages',[MeetingController::class,'send']);
+Route::post('messageseen',[MeetingController::class,'messageseen']);
 
 
 

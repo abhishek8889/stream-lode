@@ -18,13 +18,13 @@ class HostMessageController extends Controller
        return view('Host.Messages.index',compact('messages','admin'));
     }
     public function update(Request $req){
-     $query = Messages::where('reciever_id',$req->id)->get();
+     $query = Messages::where([['reciever_id',$req->sender_id],['sender_id',$req->reciever_id],['status',1]])->get();
      foreach($query as $q){
         $update = Messages::find($q->id);
         $update->status = 0;
         $update->update();
      }
-     return response()->json('done');
+     return response()->json($query);
     }
     public function message(Request $req){
       $sender_id = $req->sender_id;

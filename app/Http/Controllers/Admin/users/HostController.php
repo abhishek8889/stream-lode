@@ -99,12 +99,12 @@ class HostController extends Controller
         return response()->json('message sent');
     }
     public function seenmessage(Request $req){
-        $update = Messages::where([['reciever_id',$req->sender_id],['sender_id',$req->reciever_id]])->get();
+        $update = Messages::where([['reciever_id',$req->sender_id],['sender_id',$req->reciever_id],['status',1]])->get();
         foreach($update as $u){
             $res = Messages::find($u['_id']);
             $res->status = 0;
             $res->update();
         }
-        return response()->json('done');
+        return response()->json($update);
     }
 }

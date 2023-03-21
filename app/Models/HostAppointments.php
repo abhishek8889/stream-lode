@@ -15,5 +15,11 @@ class HostAppointments extends Model
     public function user(){
         return $this->belongsTo(User::class,'host_id');
     }
+    public function messages(){
+        return $this->hasMany(Messages::class,'sender_id','host_id');
+    }
+    public function usermessages(){
+        return $this->hasMany(Messages::class,'sender_id','user_id');
+    }
    
 }

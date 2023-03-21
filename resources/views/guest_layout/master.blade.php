@@ -18,7 +18,7 @@
     
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script src="https://media.twiliocdn.com/sdk/js/video/v1/twilio-video.min.js"></script>
-
+    @vite(['resources/css/app.css' , 'resources/js/guestapp.js'])
 
 
 
@@ -52,7 +52,27 @@
           </li>
           @endif
           @endif
-        </ul>
+          @if(Auth::check())
+          @php
+        $message = App\Models\Messages::where([['status',1],['reciever_id',Auth::user()->id]])->get();
+          @endphp
+          <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+          <i class="far fa-bell"></i><span class="badge badge-warning navbar-badge messagecount">{{ count($message) ?? 0 }}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+         <input type="hidden" id="authid" value="{{Auth::user()->id}}">
+          <a href="{{url('scheduledmeeting')}}" class="dropdown-item">
+            <i class="fas fa-envelope mr-2"></i> <span class="messagecount" >{{ count($message) ?? 0 }}</span> new messages
+          </a>
+          <div class="dropdown-divider"></div>
+          
+          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+        </div>
+      </li>
+      @endif
+      </ul>
+       
       </div>
       <div class="form-inline my-2 my-lg-0 login button-col">
         @if(isset(auth()->user()->id) || !empty(auth()->user()->id))

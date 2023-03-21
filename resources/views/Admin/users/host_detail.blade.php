@@ -2,7 +2,6 @@
 @section('content')
 
 <section class="content-header">
-  
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
@@ -274,7 +273,6 @@
         </div>
       </div>
     </section>
-    
     <script type="text/javascript">
     $(document).ready(function() {
     $('.summernote').summernote();
@@ -282,7 +280,7 @@
 
     $(document).ready(function(){
       $('#message').on('submit',function(e){
-        if(message == ''){
+        if($('#messageinput').val() == ''){
             alert('Please enter message')
             return false;
         }
@@ -308,8 +306,6 @@
     $(document).ready(function(){
      sender_id = $('#sender_id').val();
      reciever_id = $('#reciever_id').val();
-      // console.log(sender_id);
-      // console.log(reciever_id);
       $.ajax({
           method: 'post',
                     url: '{{url('/admin/messageseen')}}',
@@ -317,8 +313,11 @@
                     dataType: 'json',
                     success: function(response)
                     {
-                      // console.log(response);
-                      
+                    let messagecount = parseInt(response.length);
+                    let notificationcount = parseInt($('#notificationcount').html());
+                    let messagecount1 = parseInt($('#messagecount').html());
+                    $('#messagecount').html(notificationcount-messagecount);
+                    $('#notificationcount').html(messagecount1-messagecount);
                     }
         });
     });

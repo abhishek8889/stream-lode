@@ -32,15 +32,21 @@
  </div>
  <script> 
 $(document).ready(function(){
-   id = '{{Auth()->user()->id}}';
+  reciever_id = $('#reciever_id').val();
+   sender_id = $('#sender_id').val()
+  //  console.log(sender_id+reciever_id);
   $.ajax({
    method: 'post',
    url: '{{ url('host/updatemessage') }}',
    dataType: 'json',
-   data: {id:id ,  _token: '{{csrf_token()}}'},
+   data: {reciever_id:reciever_id ,sender_id:sender_id, _token: '{{csrf_token()}}'},
    success: function(response)
                     { 
-                     // location.reload();
+                    let messagecount = parseInt(response.length);
+                    let notificationcount = parseInt($('#notificationcount').html());
+                    let messagecount1 = parseInt($('#messagecount').html());
+                    $('#messagecount').html(notificationcount-messagecount);
+                    $('#notificationcount').html(messagecount1-messagecount);
                     }
 
   });
@@ -48,7 +54,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
       $('#message').on('submit',function(e){
-         if(message == ''){
+         if($('#messageinput').val() == ''){
             alert('Please enter message')
             return false;
         }

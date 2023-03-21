@@ -21,6 +21,7 @@
                 <form action="{{ route('sendnotice') }}" id="messageform" method="post">
                     @csrf
                   <div class="input-group">
+                    <input type="hidden" name="username" value="{{Auth::user()->first_name}}">
                     <input type="hidden" name="sender_id" value="{{ Auth()->user()->id }}">
                     <input type="text" name="message" id="messageinput" placeholder="Type Message ..." class="form-control">
                     <span class="input-group-append">
@@ -49,6 +50,7 @@
                 processData: false,
                 success: function(response)
                 {
+                  // console.log(response);
                     $('#messageinput').val('');
                     toastr.options =
 
