@@ -27,7 +27,7 @@ class MeetingController extends Controller
     public function send(Request $req){
       $sender_id = $req->sender_id;
       $reciever_id = $req->reciever_id;
-      $username = $req->username;
+      $username = Auth::user();
       $messages = $req->message;
       event(new Message($username, $messages,$sender_id,$reciever_id));
       $message = new Messages();

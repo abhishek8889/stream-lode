@@ -10,6 +10,7 @@ use App\Events\Message;
 use DB;
 use Hash;
 use Auth;
+use File;
 class HostController extends Controller
 {
     public function hostList(){
@@ -83,10 +84,45 @@ class HostController extends Controller
 
         }
     }
+    public function profileimage(Request $req){
+        $req->validate([
+            'profile_img' => 'required',
+        ],
+        [
+            'profile_img.required' => 'You have to choose any image before upload.',
+        ]);
+        $user = User::find($req->id);
+        if($req->profile_exist == '1'){
+            if($req->hasfile('profile_img')){
+                $destination = public_path().'/Assets/images/user-profile-images/'. auth()->user()->profile_image_name;
+                if(File::exists($destination)){
+                    File::delete($destination);
+                }
+                $file = $req->file('profile_img');
+                $name = time().rand(1,100).'.'.$file->extension();
+                $file->move(public_path().'/Assets/images/user-profile-images/', $name);
+                $user->profile_image_name = $name;
+                $user->profile_image_url = asset('Assets/images/user-profile-images/'.$name);
+                $user->update();
+            }
+            return back()->with('success','Profile picture uploaded succesfully.');
+        }else{
+            if($req->hasfile('profile_img')){
+                $file = $req->file('profile_img');
+                $name = time().rand(1,100).'.'.$file->extension();
+                $file->move(public_path().'/Assets/images/user-profile-images/', $name);
+                $user->profile_image_name = $name;
+                $user->profile_image_url = asset('Assets/images/user-profile-images/'.$name);
+                $user->save();
+            }
+            return back()->with('success','New profile picture added succesfully.');
+        }
+    }
     public function message(Request $req){
+        $username = Auth::user();
         $sender_id = $req->sender_id;
         $reciever_id = $req->reciever_id;
-        $username = $req->username;
+        // $username = $req->username;
         $messages = $req->message;
         event(new Message($username, $messages,$sender_id,$reciever_id));
         $message = new Messages();

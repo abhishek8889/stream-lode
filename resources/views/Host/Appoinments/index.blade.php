@@ -33,7 +33,6 @@
                       <th>Email</th>
                       <th>Start Time</th>
                       <th>End Time</th>
-                      <th>Message</th>
                     </tr>
                   </thead>
                   <?php $count = 0; ?>
@@ -51,7 +50,6 @@
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
-                        <td><a href="{{ url(Auth::user()->unique_id.'/hostmessage/'.$hs->user_id) }}" class="btn btn-success">Messagebox<span class="badge badge-warning navbar-badge">{{ count($hs->usermessages) ?? 0 }}</span></a></td>
                       </tr>
                     @empty
                       <tr>

@@ -54,20 +54,29 @@
           @endif
           @if(Auth::check())
           @php
-        $message = App\Models\Messages::where([['status',1],['reciever_id',Auth::user()->id]])->get();
-          @endphp
+        $messagess = App\Models\Messages::where([['status',1],['reciever_id',Auth::user()->id]])->get();
+        $mnotification = App\Models\Messages::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->distinct('sender_id')->get()->toArray();
+          
+        @endphp
           <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
-          <i class="far fa-bell"></i><span class="badge badge-warning navbar-badge messagecount">{{ count($message) ?? 0 }}</span>
+          <i class="far fa-bell"></i><span class="badge badge-warning navbar-badge messagecount">{{ count($messagess) ?? 0 }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
          <input type="hidden" id="authid" value="{{Auth::user()->id}}">
-          <a href="{{url('scheduledmeeting')}}" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> <span class="messagecount" >{{ count($message) ?? 0 }}</span> new messages
+         @foreach($mnotification as $m)
+        @php
+        $user = App\Models\User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id',Auth()->user()->id); })->first();
+        @endphp
+          <a href="{{ url('message/'.$user['unique_id']) }}" class="dropdown-item">
+            <div class="media">
+              <div class="media-body">
+                <p class="text-sm"><b>{{ count($user['adminmessage']) ?? '' }} new message from {{ $user['first_name'] ?? '' }}</b></p>
+              </div>
+            </div>
           </a>
           <div class="dropdown-divider"></div>
-          
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+        @endforeach
         </div>
       </li>
       @endif

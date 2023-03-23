@@ -97,7 +97,7 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-// Route::get('/trycode',[SearchHostController::class,'trycode']);
+Route::get('/trycode',[SearchHostController::class,'trycode']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
@@ -131,6 +131,9 @@ Route::group(['middleware'=>['auth','Admin']],function(){
             Route::post('/host-generals-update','hostGeneralsUpdate');
         });
         Route::controller(HostController::class)->group(function(){
+            Route::post('/host-image-update','profileimage');
+        });
+        Route::controller(HostController::class)->group(function(){
             Route::post('/message','message');
         });
         Route::controller(HostController::class)->group(function(){
@@ -140,15 +143,15 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(GuestController::class)->group(function(){
             Route::get('/guest-list','guestlist')->name('guest-list');
         });
-        // Route::controller(GuestController::class)->group(function(){
-        //     Route::get('/host-details/{id}','hostDetail')->name('host-details');
-        // });
+        Route::controller(GuestController::class)->group(function(){
+            Route::get('/guest-details/{id}','hostdetail')->name('host-details');
+        });
         // Route::controller(GuestController::class)->group(function(){
         //     Route::get('/host-delete/{id}','hostDelete');
         // });
-        // Route::controller(GuestController::class)->group(function(){
-        //     Route::post('/host-generals-update','hostGeneralsUpdate');
-        // });
+        Route::controller(GuestController::class)->group(function(){
+            Route::post('/guest-generals-update','update')->name('guest-generals-update');
+        });
         Route::controller(SettingsController::class)->group(function(){
             Route::get('/general-settings','index')->name('admin-general-setting');
         });
@@ -201,7 +204,13 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         // Discount 
 
         Route::controller(DiscountController::class)->group(function(){
-            Route::get('/generate-discount/{id?}','index')->name('generate-discount');
+            Route::get('/generate-discount/','index')->name('generate-discount');
+        });
+        Route::controller(DiscountController::class)->group(function(){
+            Route::get('/update-discount/{id}','update')->name('update-discount');
+        });
+        Route::controller(DiscountController::class)->group(function(){
+            Route::get('/delete-discount/{id}','delete')->name('delete-discount');
         });
         Route::controller(DiscountController::class)->group(function(){
             Route::get('/discount-coupon-list','discountList')->name('discount-coupon-list');
@@ -271,7 +280,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::post('/{id}/calendar-response',[HostCalendar::class,'ajax']);
 
     //hostMessage
-    Route::get('/{id}/message',[HostMessageController::class,'index']);
+    Route::get('/{id}/message/{uid?}',[HostMessageController::class,'index']);
     Route::get('/{id}/hostmessage/{uid}',[HostMessageController::class,'hostmessage']);
     Route::post('send-message',[HostMessageController::class,'message']);
 

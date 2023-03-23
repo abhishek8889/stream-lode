@@ -68,8 +68,8 @@
                             <td><span  class="badge badge-danger">inactive</span></td>
                             @endif
                             <td>
-                                <a href="{{ url('/admin/generate-discount') }}/{{ $discount->_id }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
-                                <a href="#" class="btn btn-danger"> <i class="fa fa-trash "></i></a>
+                                <a href="{{ url('/admin/update-discount') }}/{{ $discount->_id }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
+                                <a href="{{ url('/admin/delete-discount') }}/{{ $discount->_id }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a>
                            </td>
                         </tr>
                         @endforeach

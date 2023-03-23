@@ -63,7 +63,7 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                        <form action="{{ url('').'/'.$host_detail['unique_id'].'/add-profile-picture' }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ url('/admin/host-image-update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div>
                             <input type="hidden" name="id" value="{{ $host_detail['id'] }}">
@@ -240,7 +240,15 @@
                 <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:300px;">
                   <div class="direct-chat-msg" id="messages">
                     @foreach($message as $m)
-                    <p><strong>{{$m['username']}}</strong> : {{$m['message']}}</p>
+                    <div class="direct-chat-msg <?php if($m['sender_id'] == Auth()->user()->id){ echo 'right'; }?>">
+                    <div class="direct-chat-infos clearfix">
+                      <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }?>">{{$m['username']}}</span>
+                    </div>
+                    <div class="direct-chat-text"<?php if($m['sender_id'] == Auth()->user()->id){ echo 'style="margin-right:0px;text-align: right; margin-left:40%;"'; }else{ echo 'style="margin-left:0px; margin-right:40%;"'; }?> >
+                    {{$m['message']}}
+                    </div>
+                    <!-- /.direct-chat-text -->
+                  </div>
                     @endforeach
                   </div>
                 </div>
@@ -296,7 +304,7 @@
                     success: function(response)
                     {
                       // console.log(response);
-                      $('#messageinput').val('');
+                      $('#messageinput').val(0);
                       // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
                     }
         });
@@ -314,10 +322,10 @@
                     success: function(response)
                     {
                     let messagecount = parseInt(response.length);
-                    let notificationcount = parseInt($('#notificationcount').html());
+                    // let notificationcount = parseInt($('#notificationcount').html());
                     let messagecount1 = parseInt($('#messagecount').html());
-                    $('#messagecount').html(notificationcount-messagecount);
-                    $('#notificationcount').html(messagecount1-messagecount);
+                    $('#messagecount').html(messagecount1-messagecount);
+                    // $('#notificationcount').html(messagecount1-messagecount);
                     }
         });
     });

@@ -93,25 +93,47 @@
       </li>
       @php
          $messages = App\Models\Messages::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->orWhere([['type','=',1],['status','=',1]])->with('users')->get();
-        $admin = App\Models\User::where('status',2)->first();
-       
+         $mnotification = App\Models\Messages::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->distinct('sender_id')->get()->toArray();
+         $admin = App\Models\User::where('status',2)->first();
       @endphp
    
       <!-- Messages Dropdown Menu -->
       
       <!-- Notifications Dropdown Menu -->
+      <li class="nav-item dropdown show">
+      <input type="hidden" id="adminid" value="{{ $admin->id ?? '' }}">
+      <input type="hidden" id="hostauthid" value="{{Auth::user()->id}}">
+        <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="true">
+          <i class="far fa-comments"></i>
+          <span class="badge badge-danger navbar-badge" id="messagecount">{{ count($messages) ?? 0 }}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="messagedropdown" style="left: inherit; right: 0px;">
+        @foreach($mnotification as $m)
+        @php
+        $user = App\Models\User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id',Auth()->user()->id); })->first();
+        @endphp
+          <a href="{{ url(Auth()->user()->unique_id.'/message/'.$user['_id']) }}" class="dropdown-item">
+            <div class="media">
+              <div class="media-body">
+                <p class="text-sm"><b>{{ count($user['adminmessage']) ?? '' }} new message from {{ $user['first_name'] ?? '' }}</b></p>
+              </div>
+            </div>
+          </a>
+          <div class="dropdown-divider"></div>
+        @endforeach
+        </div>
+      </li>
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
-          <input type="hidden" id="adminid" value="{{ $admin->id ?? '' }}">
-          <input type="hidden" id="hostauthid" value="{{Auth::user()->id}}">
-          <span class="badge badge-warning navbar-badge" id ="notificationcount">{{ count($messages) ?? 0 }}</span>
+          
+          <span class="badge badge-warning navbar-badge" >10</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <span class="dropdown-item dropdown-header">15 Notifications</span>
           <div class="dropdown-divider"></div>
           <a href="{{ url('') }}/{{ Auth::user()->unique_id ?? '' }}/message" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i><span id="messagecount">{{ count($messages) ?? 0 }}</span> new messages
+            <i class="fas fa-envelope mr-2"></i><span id=""></span> new messages
           </a>
           <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item">
@@ -279,6 +301,15 @@
               <i class="nav-icon fas fa-calendar"></i>
               <p>
                 Appoinments
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+          <li class="nav-item ">
+            <a href="{{ url('/'.auth()->user()->unique_id.'/message/') }}" class="nav-link active">
+              <i class="nav-icon fas fa-calendar"></i>
+              <p>
+                Message
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>

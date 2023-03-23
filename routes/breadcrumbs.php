@@ -12,11 +12,15 @@ Breadcrumbs::for('host-list', function (BreadcrumbTrail $trail): void {
     $trail->parent('admin-dashboard');
     $trail->push('host-list', route('host-list'));
 });
-
 Breadcrumbs::for('host-details', function (BreadcrumbTrail $trail): void {
     $trail->parent('host-list');
     $trail->push('host-details', route('host-details',['id' => 1]));
 });
+Breadcrumbs::for('guest-list', function (BreadcrumbTrail $trail): void {
+    $trail->parent('admin-dashboard');
+    $trail->push('Guest-list', route('guest-list'));
+});
+
 Breadcrumbs::for('membership-list', function (BreadcrumbTrail $trail): void {
     $trail->parent('admin-dashboard');
     $trail->push('membership-list', route('membership-list'));
@@ -40,6 +44,10 @@ Breadcrumbs::for('discount', function (BreadcrumbTrail $trail): void {
 Breadcrumbs::for('discount-add', function (BreadcrumbTrail $trail): void {
     $trail->parent('discount');
     $trail->push('Genrate', route('generate-discount'));
+});
+Breadcrumbs::for('discount-Update', function (BreadcrumbTrail $trail): void {
+    $trail->parent('discount');
+    $trail->push('Update', route('update-discount',['id'=>1]));
 });
 Breadcrumbs::for('membership-payment-list', function (BreadcrumbTrail $trail): void {
     $trail->parent('admin-dashboard');
