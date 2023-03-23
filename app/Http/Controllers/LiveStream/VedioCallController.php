@@ -14,8 +14,8 @@ class VedioCallController extends Controller
 {
     //
     public function index(Request $req){
-       
-        return view('vediocall.vediocall');
+        $roomName = $req->segment(2);
+        return view('vediocall.vediocall',compact('roomName'));
     }
     public function passToken(Request $req){
         // dd($req);
@@ -50,13 +50,13 @@ class VedioCallController extends Controller
         $token->addGrant($grant);
         
         // Grant access to Sync
-        // $syncGrant = new SyncGrant();
-        // if (empty($_ENV['TWILIO_SYNC_SERVICE_SID'])) {
-        //     $syncGrant->setServiceSid('default');
-        // } else  {
-        //     $syncGrant->setServiceSid($_ENV['TWILIO_SYNC_SERVICE_SID']);
-        // }  
-        // $token->addGrant($syncGrant);
+        $syncGrant = new SyncGrant();
+        if (empty(env('TWILIO_SYNC_SERVICE_ID'))) {
+            $syncGrant->setServiceSid('default');
+        } else  {
+            $syncGrant->setServiceSid(env('TWILIO_SYNC_SERVICE_ID'));
+        }  
+        $token->addGrant($syncGrant);
         
         // // Grant access to Chat
         // if (!empty($_ENV['TWILIO_CHAT_SERVICE_SID'])) {

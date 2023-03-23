@@ -2,49 +2,83 @@
 <html>
 <head>
   <title>LiveStream|Streamlode</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="{{ asset('twilio-assets/site.css') }}">
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+
 </head>
 <body>
-  <!-- modal  -->
-  
-  <!-- modal end -->
-  <div id="remote-media"></div>
+  @if($roomName)
+    <input type="hidden" id="room-name" value="{{ $roomName }}">
+  @endif
   <div id="controls">
     <div id="preview">
-      <p class="instructions">Hello Beautiful</p>
-      <div id="local-media"></div>
-      <button id="button-preview">Preview My Camera</button>
-    </div>
-    <div id="room-controls">
-      <p class="instructions">Room Name:</p>
-      <input id="room-name" type="text" placeholder="Enter a room name" />
-      <button id="button-join">Join Room</button>
-      <button id="button-leave">Leave Room</button>
-    </div>
-    <div id="log"></div>
-  </div>
-
-  <div class="modal fade show" id="roomNameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
+    <div class="vedio-response-text" style="display:none;"></div>
+      <div id="vedio-timer">
+        <!-- <span id="hours"></span>
+        <span id="minutes"></span>
+        <span id="seconds"></span> -->
+      </div>
+      <div id="remote-media"></div>
+      <!-- <div id="local-media"></div> -->
+      <div class="vedio-btn-wrapper">
+      <!-- <i class="fa-solid fa-microphone-slash"></i> -->
+      <button><i class="fa-solid fa-microphone"></i></button>
+      <!-- <i class="fa-solid fa-video-slash"></i> -->
+        <button id="button-preview"><i class="fa-sharp fa-solid fa-video"></i></button>
+        <button id="button-message"><i class="fa-regular fa-comment"></i></button>
+        <button id="button-leave" class="btn btn-danger"><i class="fa-solid fa-phone"></i></button>
       </div>
     </div>
+   
+    <!-- <div id="log"></div> -->
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.my-actions { margin: 0 2em; }
+.order-1 { order: 1; }
+.order-2 { order: 2; }
+.order-3 { order: 3; }
+
+.right-gap {
+margin-right: auto;
+}
+</style>
+  <script>
+    $(document).ready(function(){
+      Swal.fire({
+        title: 'Are you ready for your session ?',
+        text : 'Please press yes for start if you are ready !',
+        icon: "info",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        denyButtonText: 'No',
+        customClass: {
+          actions: 'my-actions',
+          cancelButton: 'order-1 right-gap',
+          confirmButton: 'order-2',
+          denyButton: 'order-3',
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Swal.fire('Saved!', '', 'success')
+            console.log("ready??????");
+            startVedioCall();
+        } else if (result.isDenied) {
+            window.location.href = "{{ url('/') }}";
+        }
+      })
+    });
+    $(".vedio-response").on('change',function(){
+      alert($(this).html);
+    });
+    
+    
+    
+  </script>
   <script src="//media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.min.js"></script>
   <script src="//sdk.twilio.com/js/video/releases/2.26.2/twilio-video.min.js"></script>
   <!-- <script src="//media.twiliocdn.com/sdk/js/video/releases/1.14.0/twilio-video.js"></script> -->
