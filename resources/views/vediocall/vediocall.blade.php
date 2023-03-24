@@ -24,16 +24,14 @@
       <div id="remote-media"></div>
       <!-- <div id="local-media"></div> -->
       <div class="vedio-btn-wrapper">
-      <!-- <i class="fa-solid fa-microphone-slash"></i> -->
-      <button><i class="fa-solid fa-microphone"></i></button>
-      <!-- <i class="fa-solid fa-video-slash"></i> -->
-        <button id="button-preview"><i class="fa-sharp fa-solid fa-video"></i></button>
+        <button id="button-mic" class="active"><i class="fa-solid fa-microphone"></i></button>
+        <button id="button-preview" class="active"><i class="fa-sharp fa-solid fa-video"></i></button>
         <button id="button-message"><i class="fa-regular fa-comment"></i></button>
         <button id="button-leave" class="btn btn-danger"><i class="fa-solid fa-phone"></i></button>
       </div>
     </div>
    
-    <!-- <div id="log"></div> -->
+    <div id="log"></div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
