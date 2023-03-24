@@ -1,5 +1,6 @@
 var activeRoom;
 var previewTracks;
+var audioTracks;
 var identity;
 var roomName;
 var hour = 0;
@@ -8,9 +9,9 @@ var seconds = 0;
 var timerIntervalId;
 
 function attachTracks(tracks, container) {
-  tracks.forEach(function(track) {
-    container.appendChild(track.attach());
-  });
+ 
+    container.appendChild(tracks.attach());
+ 
 }
 
 function attachParticipantTracks(participant, container) {
@@ -18,12 +19,12 @@ function attachParticipantTracks(participant, container) {
   attachTracks(tracks, container);
 }
 
-function detachTracks(tracks) {
-  tracks.forEach(function(track) {
+function detachTracks(track) {  
+	console.log('trackcheck'+track);
     track.detach().forEach(function(detachedElement) {
+    	console.log('detachelement' + detachedElement);
       detachedElement.remove();
     });
-  });
 }
 
 function detachParticipantTracks(participant) {
@@ -102,31 +103,31 @@ function startVedioCall(){
       // url = parser.protocol+'//'+parser.host+'/host';
       // window.location.href = url;
     };
+    // function setPreviewTrack(){
+    //   activeRoom.localParticipant.videoTracks.forEach(track => {
+    //     previewTracks = track.track;
+    //   });
+    // }
+    // setPreviewTrack();
+    
   });
 }
 
 // Successfully connected!
 function roomJoined(room) {
   activeRoom = room;
-
   log("Joined as '" + identity + "'");
   // my code +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   let participantNum = 0;
   const handleConnectedParticipant = (participant) => {
-      
-    // create a div for this participant's tracks
     const participantDiv = document.createElement("div");
     const remote_media = document.getElementById('remote-media');
     participantDiv.setAttribute("id", participant.identity);
     participantDiv.setAttribute("class", 'main-screen');
-    
-    // let hour_box = document.getElementById("hours"); 
-    
-
     participantNum = parseInt(participantNum) + 1;
     let participantJoined =  participantNum;
+    ///////// join message ////////////////
     if(participantJoined > 1){
-      // join message
       document.querySelector('.vedio-response-text').style.display = "block";
       document.querySelector('.vedio-response-text').innerHTML =' You are succesfully joined with '+participant.identity;
       timerIntervalId = setInterval(counterStart, 1000);  
@@ -135,13 +136,8 @@ function roomJoined(room) {
         document.querySelector('.vedio-response-text').innerHTML = '';
       },5000);
     }
-    // var previewContainer = document.getElementById('local-media');
-    // if (previewContainer.querySelector('video')) {
-    //   detachTracks(tracks, previewContainer);
-    // }
-    
+    ////////////////////////////////////////
     remote_media.appendChild(participantDiv);
-
     // iterate through the participant's published tracks and
     // call `handleTrackPublication` on them
     participant.tracks.forEach((trackPublication) => {
@@ -157,17 +153,16 @@ function roomJoined(room) {
     function displayTrack(track) {
       // append this track to the participant's div and render it on the page
       const participantDiv = document.getElementById(participant.identity);
+
       // track.attach creates an HTMLVideoElement or HTMLAudioElement
       // (depending on the type of track) and adds the video or audio stream
       participantDiv.append(track.attach());
     }
-
     // check if the trackPublication contains a `track` attribute. If it does,
     // we are subscribed to this track. If not, we are not subscribed.
     if (trackPublication.track) {
       displayTrack(trackPublication.track);
     }
-
     // listen for any new subscriptions to this track publication
     trackPublication.on("subscribed", displayTrack);
   };
@@ -176,21 +171,17 @@ function roomJoined(room) {
   room.participants.forEach(handleConnectedParticipant);
   room.on("participantConnected", handleConnectedParticipant);
 
-  // my code en+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    document.getElementById('button-join').style.display = 'none';
-    document.getElementById('button-leave').style.display = 'inline';
-
-    // Draw local video, if not already previewing
-    var previewContainer = document.getElementById('local-media');
+  //////////////////////////////////////////// my code end ////////////////////////////////////////////
+    
+  // Draw local video, if not already previewing
+  
+    var previewContainer = document.getElementById('remote-media');
     if (!previewContainer.querySelector('video')) {
       attachParticipantTracks(room.localParticipant, previewContainer);
-    
     }
-    // publish track   ///////////////////////////////
-
 
   //////////////////////////////////////////
+
     room.participants.forEach(function(participant) {
       log("Already in Room: '" + participant.identity + "'");
       var previewContainer = document.getElementById('remote-media');
@@ -230,39 +221,66 @@ function roomJoined(room) {
       document.getElementById('button-join').style.display = 'inline';
       document.getElementById('button-leave').style.display = 'none';
     });
+
 }
+  ///////////////////////////////// Camera functionality for on and off //////////////////////////////// 
 
-//  Local video preview
-document.getElementById('button-preview').onclick = function() {
-  console.log('button-preiview clicked');
-  // custom function for show camera
+  document.getElementById('button-preview').onclick = function() {
+    var previewContainer = document.getElementById('remote-media');
+    var localpreviewContainer = previewContainer.firstChild;
+    var elementClass = this.classList;
+    elementClass.toggle("active");
 
-  // var localTracksPromise = previewTracks
-  
-  // ? Promise.resolve(previewTracks)
-  // : Twilio.Video.createLocalTracks();
+    activeRoom.localParticipant.videoTracks.forEach(track => {
+      previewTracks = track.track;
+    });
+    if (!localpreviewContainer.querySelector('video')) {
+        attachTracks(previewTracks,localpreviewContainer);
+        this.innerHTML = '<i class="fa-sharp fa-solid fa-video"></i>';
+        console.log('vedio123 is not there' + previewTracks);
+    }else{
+      console.log('vedio123 is there');
+        previewTracks.detach().forEach(function(detachedElement) {
+          detachedElement.remove();
+        });
+        this.innerHTML = '<i class="fa-solid fa-video-slash"></i>';
+        console.log('prevewtracks21'+previewTracks);
+    }
+  }, function(error) {
+    console.error('Unable to access local media', error);
+    log('Unable to access Camera and Microphone');
+  };
 
-  // localTracksPromise.then(function(tracks) {
-  //   previewTracks = tracks;
-  //   var previewContainer = document.getElementById('remote-media');
-  //   if (!previewContainer.querySelector('video')) {
-  //     attachTracks(tracks, previewContainer);
-  //   }else{
-  //     detachTracks(tracks, previewContainer)
-  //   }
-  // }, function(error) {
-  //   console.error('Unable to access local media', error);
-  //   log('Unable to access Camera and Microphone');
-  // });
-  // room.localParticipant.audioTracks.forEach(trackPublication => {
-  //   trackPublication.track.disable();
-  // });
-  // room.on('trackRemoved', function(track, participant) {
-  //   log(participant.identity + " removed track: " + track.kind);
-  //   detachTracks([track]);
-  // });
+  //////////////////////////////// Camera functionality end //////////////////////////////////////////
 
-};
+  //////////////////////////////////// Mic functionality Start ////////////////////////////////////
+
+  document.getElementById('button-mic').onclick = function() {
+    var audioContainer = document.getElementById('remote-media');
+    var localAudioContainer = audioContainer.firstChild;
+    var elementClass = this.classList;
+    elementClass.toggle("active");
+
+    activeRoom.localParticipant.audioTracks.forEach(track => {
+      audioTracks = track.track;
+    });
+
+    if (!localAudioContainer.querySelector('audio')) {
+      attachTracks(audioTracks,localAudioContainer);
+      this.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+      console.log('audio is not there' + audioTracks);
+    }else{
+      console.log('audio is there');
+      audioTracks.detach().forEach(function(detachedElement) {
+          detachedElement.remove();
+        });
+        this.innerHTML = '<i class="fa-solid fa-microphone-slash"></i>';
+        console.log('audio'+audioTracks);
+    }
+  };
+
+  ////////////////////////////////////////  mic functionality end ////////////////////////////////////
+
 
 // Activity log
 function log(message) {
