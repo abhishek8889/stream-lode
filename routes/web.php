@@ -269,10 +269,11 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index']);
 
     //Vedio chat
-    Route::get('{id}/vedio-conference',[HostStreamController::class,'index']); 
+    Route::get('{id}/vedio-conference/{userid}',[HostStreamController::class,'index']); 
     Route::post('create-room',[HostStreamController::class,'createRoom']); 
     Route::post('generate-token',[HostStreamController::class,'generateToken']); 
     Route::get('{id}/join-room',[HostStreamController::class,'joinRoomView']); 
+    Route::post('host/send-room-link',[HostStreamController::class,'sendlink']); 
 
     // 
     Route::get('{id}/websocket', [WebsocketController::class,'onOpen'])->name('websocket');
