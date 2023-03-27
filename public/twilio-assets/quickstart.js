@@ -163,6 +163,7 @@ function roomJoined(room) {
     if (trackPublication.track) {
       displayTrack(trackPublication.track);
     }
+    console.log('hello froim handle track');
     // listen for any new subscriptions to this track publication
     trackPublication.on("subscribed", displayTrack);
   };
@@ -277,6 +278,7 @@ function roomJoined(room) {
           detachedElement.remove();
         });
         this.innerHTML = '<i class="fa-solid fa-microphone-slash"></i>';
+
         console.log('audio'+audioTracks);
     }
   };
