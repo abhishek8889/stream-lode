@@ -18,7 +18,7 @@
     
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script src="https://media.twiliocdn.com/sdk/js/video/v1/twilio-video.min.js"></script>
-
+    @vite(['resources/css/app.css' , 'resources/js/guestapp.js'])
 
 
 
@@ -52,7 +52,36 @@
           </li>
           @endif
           @endif
-        </ul>
+          @if(Auth::check())
+          @php
+        $messagess = App\Models\Messages::where([['status',1],['reciever_id',Auth::user()->id]])->get();
+        $mnotification = App\Models\Messages::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->distinct('sender_id')->get()->toArray();
+          
+        @endphp
+          <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+          <i class="far fa-bell"></i><span class="badge badge-warning navbar-badge messagecount">{{ count($messagess) ?? 0 }}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+         <input type="hidden" id="authid" value="{{Auth::user()->id}}">
+         @foreach($mnotification as $m)
+        @php
+        $user = App\Models\User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id',Auth()->user()->id); })->first();
+        @endphp
+          <a href="{{ url('message/'.$user['unique_id']) }}" class="dropdown-item">
+            <div class="media">
+              <div class="media-body">
+                <p class="text-sm"><b>{{ count($user['adminmessage']) ?? '' }} new message from {{ $user['first_name'] ?? '' }}</b></p>
+              </div>
+            </div>
+          </a>
+          <div class="dropdown-divider"></div>
+        @endforeach
+        </div>
+      </li>
+      @endif
+      </ul>
+       
       </div>
       <div class="form-inline my-2 my-lg-0 login button-col">
         @if(isset(auth()->user()->id) || !empty(auth()->user()->id))

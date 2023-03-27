@@ -151,6 +151,19 @@ display: none;
     <span></span>
 </div>
 </div>
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+            {{ Breadcrumbs::render('appoinments') }}
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
 <div class="row">
           <div class="col-12">
             <div class="card">
@@ -168,9 +181,9 @@ display: none;
                     <tr>
                       <th>Sr no.</th>
                       <th>Guest Name</th>
+                      <th>Email</th>
                       <th>Start Time</th>
                       <th>End Time</th>
-                      <th></th>
                     </tr>
                   </thead>
                   <?php $count = 0; ?>
@@ -182,8 +195,8 @@ display: none;
                         <td>{{$count}}</td>
                         <td>{{$hs->guest_name}}</td>
                         <?php 
-                        $startdate =  Date("M/d/Y h:i", strtotime("0 minutes", strtotime($hs->start)));
-                        $enddate =  Date("M/d/Y h:i", strtotime("0 minutes", strtotime($hs->end)));
+                        $startdate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->start)));
+                        $enddate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->end)));
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
@@ -241,7 +254,7 @@ display: none;
         aid = $(this).attr('data-id');
         $.ajax({
             method: 'POST',
-            url: '{{ url('create-room') }}',
+            url: "{{ url('create-room') }}",
             data:{ room_name:aid,_token:'{{csrf_token()}}' },
             dataType: 'json',
             success: function(response){
@@ -269,7 +282,7 @@ display: none;
       link = $(this).attr('link');
       $.ajax({
             method: 'POST',
-            url: '{{url('host/send-room-link')}}',
+            url: "{{url('host/send-room-link')}}",
             data:{ link:link, id:aid ,_token:'{{csrf_token()}}' },
             dataType: 'json',
             success: function(response){

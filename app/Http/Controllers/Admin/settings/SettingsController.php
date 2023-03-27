@@ -62,4 +62,9 @@ class SettingsController extends Controller
         }
        
     }
+    public function changepassword(){
+        
+    return view('Admin.settings.changepassword');
+    }
+   
 }

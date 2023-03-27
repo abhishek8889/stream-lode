@@ -19,6 +19,7 @@ $time = date('Y-m-d H:i');
                                     <th>Meeting Starting Time</th>
                                     <th>Meeting End Time</th>
                                     <th>Status</th>
+                                    <th>Message</th>
                                    
                                 </tr>
                             </thead>
@@ -37,6 +38,7 @@ $time = date('Y-m-d H:i');
                                     <td>{{ $sartdate }}</td>
                                     <td>{{ $enddate }}</td>
                                     <td>@if($time > $ap->end)<span class="badge badge-success"> done </span>@else <span class="badge badge-danger"> pending</span> @endif </td>
+                                    <td><a href="{{ url('message') }}/{{ $ap->user['unique_id'] }}" class="btn btn-scucess"> Message <span class="badge badge-warning navbar-badge    ">{{ count($ap->messages) ?? 0 }}</span> </a></td>
                                 </tr>
                                @endforeach
                             </tbody>

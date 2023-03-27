@@ -174,7 +174,7 @@ function roomJoined(room) {
   //////////////////////////////////////////// my code end ////////////////////////////////////////////
     
   // Draw local video, if not already previewing
-  
+
     var previewContainer = document.getElementById('remote-media');
     if (!previewContainer.querySelector('video')) {
       attachParticipantTracks(room.localParticipant, previewContainer);
@@ -206,6 +206,7 @@ function roomJoined(room) {
     });
 
     // When a participant disconnects, note in log
+    
     room.on('participantDisconnected', function(participant) {
       log("Participant '" + participant.identity + "' left the room");
       detachParticipantTracks(participant);
@@ -213,6 +214,7 @@ function roomJoined(room) {
 
     // When we are disconnected, stop capturing local video
     // Also remove media for all remote participants
+
     room.on('disconnected', function() {
       log('Left');
       detachParticipantTracks(room.localParticipant);
