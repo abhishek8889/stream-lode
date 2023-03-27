@@ -45,6 +45,16 @@ return [
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
             ],
+            // 'twilio' => [
+            //     'name' => 'Twilio',
+            //     'key' => env('TWILIO_API_KEY'),
+            //     'secret' => env('TWILIO_API_SECRET'),
+            //     'path' => 'twilio',
+            //     'options' => [
+            //         'cluster' => env('TWILIO_CLUSTER'),
+            //         'encrypted' => true
+            //         ],
+            // ]
         ],
 
         'ably' => [

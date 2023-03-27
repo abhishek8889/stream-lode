@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Tags;
-use App\Models\Message;
+use App\Models\Messages;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\appoinmentsconfirmation;
 use App\Mail\HostAppoinmentsMail;
@@ -237,7 +237,17 @@ class SearchHostController extends Controller
     }
 //   
 public function trycode(){
-    return back();
+    $messages = Messages::where([['reciever_id','63fd8e4d1ad0d9aee603e4d2'],['status',1]])->distinct('sender_id')->get()->toArray();
+    if($messages){
+    foreach($messages as $m){
+        $user = User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id','63fd8e4d1ad0d9aee603e4d2'); })->first();
+    
+    print_r($user['first_name']);
+}
+    
+    }
+    
+
 }
 
 }

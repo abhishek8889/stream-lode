@@ -1,113 +1,188 @@
 @extends('host_layout.master')
 @section('content')
-<!-- <script src="//sdk.twilio.com/js/video/releases/2.17.1/twilio-video.min.js"></script> -->
-<!-- <script src="https://media.twiliocdn.com/sdk/js/video/v1/twilio-video.min.js"></script> -->
+<div id="remote-media"></div>
+  <div id="controls">
+    <div id="preview">
+      <p class="instructions">Hello Beautiful</p>
+      <div id="local-media">
+        cancel button
+      </div>
+      <button id="button-preview">Preview My Camera</button>
+    </div>
 
-<div id="join_metting">click me to join</div>
-<script src="//media.twiliocdn.com/sdk/js/video/v1/twilio-video.min.js"></script>
+    <div id="room-controls">
+      <p class="instructions">Room Name:</p>
+      <input id="room-name" type="text" placeholder="Enter a room name" />
+      <button id="button-join">Join Room</button>
+      <button id="button-leave">Leave Room</button>
+    </div>
+
+    <div id="log"></div>
+  </div>
+
 <script>
+var activeRoom;
+var previewTracks;
+var identity;
+var roomName;
 
-    $(document).ready(function(){
-    
-        $("#join_metting").on('click',function(){  
-            const socket = new WebSocket('wss://endpoint.twilio.com/');
-            const accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTSzA3ZmViYzE2OTk3Y2Q4NjFhNjBiZTJiMDE5MzI3ZGFlLTE2NzgzNjA5NDYiLCJpc3MiOiJTSzA3ZmViYzE2OTk3Y2Q4NjFhNjBiZTJiMDE5MzI3ZGFlIiwic3ViIjoiQUMzMjJhNjVjMWZmMmVhZTU3N2IwZDA5YTgxMWQ2ZGQ3ZCIsImV4cCI6MTY3ODM2NDU0NiwiZ3JhbnRzIjp7ImlkZW50aXR5IjoiYWJoaXNoZWsiLCJ2aWRlbyI6eyJyb29tIjoicm9vbV9hYmhpNyJ9fX0.KG3L86KUO7CQ3P02RffOWmuP0IamDpvwtOw-gmgVZ9w';
-            const roomName  = 'room_abhi7';
-            
-            Twilio.Video.connect( accessToken, {
-                name: roomName,
-                // tracks: localTracks,
-                // video: { width: 300 }
-            }).then(function(room) {
-            console.log('Successfully joined a Room: ', room.name);
-            });
+function attachTracks(tracks, container) {
+  tracks.forEach(function(track) {
+    container.appendChild(track.attach());
+  });
+}
 
-        });
-            // Twilio.Video.createLocalTracks({
-            // audio: true,
-            // video: { width: 300 }
-            // }).then(function(localTracks) {
-            // return Twilio.Video.connect( accessToken, {
-            //     name: roomName,
-            //     tracks: localTracks,
-            //     video: { width: 300 }
-            // });
-            // }).then(function(room) {
-            // console.log('Successfully joined a Room: ', room.name);
+function attachParticipantTracks(participant, container) {
+  var tracks = Array.from(participant.tracks.values());
+  attachTracks(tracks, container);
+}
 
-            // room.participants.forEach(participantConnected);
-
-            // var previewContainer = document.getElementById(room.localParticipant.sid);
-            // if (!previewContainer || !previewContainer.querySelector('video')) {
-            //     participantConnected(room.localParticipant);
-            // }
-
-            // room.on('participantConnected', function(participant) {
-            //     console.log("Joining: '"   participant.identity   "'");
-            //     participantConnected(participant);
-            // });
-
-            // room.on('participantDisconnected', function(participant) {
-            //     console.log("Disconnected: '"   participant.identity   "'");
-            //     participantDisconnected(participant);
-            // });
-            // }).error(function(error){
-            //     console.log('unable to connect' + error);
-            // });
-
-        
-
-        
-        // function participantConnected(participant) {
-        //     console.log('Participant "%s" connected', participant.identity);
-
-        //     const div = document.createElement('div');
-        //     div.id = participant.sid;
-        //     div.setAttribute("style", "float: left; margin: 10px;");
-        //     div.innerHTML = "<div style='clear:both'>" participant.identity "</div>";
-
-        //     participant.tracks.forEach(function(track) {
-        //         trackAdded(div, track)
-        //     });
-
-        //     participant.on('trackAdded', function(track) {
-        //         trackAdded(div, track)
-        //     });
-        //     participant.on('trackRemoved', trackRemoved);
-
-        //     document.getElementById('media-div').appendChild(div);
-        // }
-
-        // function participantDisconnected(participant) {
-        //     console.log('Participant "%s" disconnected', participant.identity);
-
-        //     participant.tracks.forEach(trackRemoved);
-        //     document.getElementById(participant.sid).remove();
-        // }
-
-        // function trackAdded(div, track) {
-        //     div.appendChild(track.attach());
-        //     var video = div.getElementsByTagName("video")[0];
-        //     if (video) {
-        //         video.setAttribute("style", "max-width:300px;");
-        //     }
-        // }
-
-        // function trackRemoved(track) {
-        //     track.detach().forEach( function(element) { element.remove() });
-        // }
-
+function detachTracks(tracks) {
+  tracks.forEach(function(track) {
+    track.detach().forEach(function(detachedElement) {
+      detachedElement.remove();
     });
+  });
+}
 
+function detachParticipantTracks(participant) {
+  var tracks = Array.from(participant.tracks.values());
+  detachTracks(tracks);
+}
+
+// Check for WebRTC
+if (!navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
+  alert('WebRTC is not available in your browser.');
+}
+
+// When we are about to transition away from this page, disconnect
+// from the room, if joined.
+window.addEventListener('beforeunload', leaveRoomIfJoined);
+
+
+// $.getJSON('/token.php', function(data) {
+
+// join room code
+
+  token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTSzA3ZmViYzE2OTk3Y2Q4NjFhNjBiZTJiMDE5MzI3ZGFlLTE2NzkyOTg2MTUiLCJpc3MiOiJTSzA3ZmViYzE2OTk3Y2Q4NjFhNjBiZTJiMDE5MzI3ZGFlIiwic3ViIjoiQUMzMjJhNjVjMWZmMmVhZTU3N2IwZDA5YTgxMWQ2ZGQ3ZCIsImV4cCI6MTY3OTMwMjIxNSwiZ3JhbnRzIjp7ImlkZW50aXR5IjoiYWJoaXNoZWsiLCJ2aWRlbyI6e319fQ.b62kISDsDOCqgxq0vwKbNdNc1e0glM8nZub5tTAJwjI';
+    identity = 'abhishegsdfk';
+
+
+  document.getElementById('room-controls').style.display = 'block';
+
+  // Bind button to join room
+  document.getElementById('button-join').onclick = function () {
+    roomName = document.getElementById('room-name').value;
+    if (roomName) {
+      log("Joining room '" + roomName + "'...");
+
+      var connectOptions = { name: roomName, logLevel: 'debug' };
+      if (previewTracks) {
+        connectOptions.tracks = previewTracks;
+      }
+
+      Twilio.Video.connect(token, connectOptions).then(roomJoined, function(error) {
+        log('Could not connect to Twilio: ' + error.message);
+      });
+    } else {
+      alert('Please enter a room name.');
+    }
+  };
+
+  // Bind button to leave room
+  document.getElementById('button-leave').onclick = function () {
+    log('Leaving room...');
+    activeRoom.disconnect();
+  };
+
+//   window.location.href = "{{ url('johny-host/join-room') }}";
+
+// join room code end
+
+// Successfully connected!
+function roomJoined(room) {
+  activeRoom = room;
+
+  log("Joined as '" + identity + "'");
+  document.getElementById('button-join').style.display = 'none';
+  document.getElementById('button-leave').style.display = 'inline';
+
+  // Draw local video, if not already previewing
+  var previewContainer = document.getElementById('local-media');
+  if (!previewContainer.querySelector('video')) {
+    attachParticipantTracks(room.localParticipant, previewContainer);
+  }
+
+  room.participants.forEach(function(participant) {
+    log("Already in Room: '" + participant.identity + "'");
+    var previewContainer = document.getElementById('remote-media');
+    attachParticipantTracks(participant, previewContainer);
+  });
+
+  // When a participant joins, draw their video on screen
+  room.on('participantConnected', function(participant) {
+    log("Joining: '" + participant.identity + "'");
+  });
+
+  room.on('trackAdded', function(track, participant) {
+    log(participant.identity + " added track: " + track.kind);
+    var previewContainer = document.getElementById('remote-media');
+    attachTracks([track], previewContainer);
+  });
+
+  room.on('trackRemoved', function(track, participant) {
+    log(participant.identity + " removed track: " + track.kind);
+    detachTracks([track]);
+  });
+
+  // When a participant disconnects, note in log
+  room.on('participantDisconnected', function(participant) {
+    log("Participant '" + participant.identity + "' left the room");
+    detachParticipantTracks(participant);
+  });
+
+  // When we are disconnected, stop capturing local video
+  // Also remove media for all remote participants
+  room.on('disconnected', function() {
+    log('Left');
+    detachParticipantTracks(room.localParticipant);
+    room.participants.forEach(detachParticipantTracks);
+    activeRoom = null;
+    document.getElementById('button-join').style.display = 'inline';
+    document.getElementById('button-leave').style.display = 'none';
+  });
+}
+
+//  Local video preview
+document.getElementById('button-preview').onclick = function() {
+  var localTracksPromise = previewTracks
+  ? Promise.resolve(previewTracks)
+  : Twilio.Video.createLocalTracks();
+
+  localTracksPromise.then(function(tracks) {
+    previewTracks = tracks;
+    var previewContainer = document.getElementById('local-media');
+    if (!previewContainer.querySelector('video')) {
+      attachTracks(tracks, previewContainer);
+    }
+  }, function(error) {
+    console.error('Unable to access local media', error);
+    log('Unable to access Camera and Microphone');
+  });
+};
+
+// Activity log
+function log(message) {
+  var logDiv = document.getElementById('log');
+  logDiv.innerHTML += '<p>&gt;&nbsp;' + message + '</p>';
+  logDiv.scrollTop = logDiv.scrollHeight;
+}
+
+function leaveRoomIfJoined() {
+  if (activeRoom) {
+    activeRoom.disconnect();
+  }
+}
 
 </script>
-<div class="content">
-    <div class="title m-b-md">
-        Video Chat Rooms
-    </div>
-
-    <div id="media-div">
-    </div>
-</div>
-
 @endsection

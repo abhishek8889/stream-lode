@@ -1,5 +1,6 @@
 @extends('admin_layout.master')
 @section('content')
+
 <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -8,8 +9,7 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">User Profile</li>
+            {{ Breadcrumbs::render('host-details') }}
             </ol>
           </div>
         </div>
@@ -63,7 +63,7 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                        <form action="{{ url('').'/'.$host_detail['unique_id'].'/add-profile-picture' }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ url('/admin/host-image-update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div>
                             <input type="hidden" name="id" value="{{ $host_detail['id'] }}">
@@ -237,24 +237,30 @@
              
               <div class="card-body">
                 <!-- Conversations are loaded here -->
-                <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse;">
-                  <div class="direct-chat-msg">
+                <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:300px;">
+                  <div class="direct-chat-msg" id="messages">
                     @foreach($message as $m)
-                    <div class="direct-chat-text mt-1" style="margin: 0 0 0 0;">
-                    {{ $m['message'] }}
+                    <div class="direct-chat-msg <?php if($m['sender_id'] == Auth()->user()->id){ echo 'right'; }?>">
+                    <div class="direct-chat-infos clearfix">
+                      <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }?>">{{$m['username']}}</span>
                     </div>
+                    <div class="direct-chat-text"<?php if($m['sender_id'] == Auth()->user()->id){ echo 'style="margin-right:0px;text-align: right; margin-left:40%;"'; }else{ echo 'style="margin-left:0px; margin-right:40%;"'; }?> >
+                    {{$m['message']}}
+                    </div>
+                    <!-- /.direct-chat-text -->
+                  </div>
                     @endforeach
                   </div>
                 </div>
-               
               </div>
               <!-- /.card-body -->
               <div class="card-footer">
                 <form id="message" action="{{ url('admin/message') }}" method="post">
                   @csrf
                   <div class="input-group">
-                    <input type="hidden" name="reciever_id" value="{{ $host_detail['_id'] ?? '' }}">
-                    <input type="hidden" name="sender_id" value="{{ Auth() ->user()->id ?? '' }}">
+                    <input type="hidden" id ="reciever_id" name="reciever_id" value="{{ $host_detail['_id'] ?? '' }}">
+                    <input type="hidden" id ="sender_id"  name="sender_id" value="{{ Auth()->user()->id ?? '' }}">
+                    <input type="hidden" name="username" value="{{ Auth() ->user()->first_name ?? '' }}">
                     <input type="text" id ="messageinput" name="message" placeholder="Type Message ..." class="form-control">
                     <span class="input-group-append">
                       <button class="btn btn-primary">Send</button>
@@ -282,8 +288,12 @@
 
     $(document).ready(function(){
       $('#message').on('submit',function(e){
+        if($('#messageinput').val() == ''){
+            alert('Please enter message')
+            return false;
+        }
         e.preventDefault();
-        formdata = new FormData(this);
+       let formdata = new FormData(this);
         $.ajax({
           method: 'post',
                     url: '{{url('/admin/message')}}',
@@ -293,14 +303,32 @@
                     processData: false,
                     success: function(response)
                     {
-                      console.log(response);
-                      $('#messageinput').val('');
-                      $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
+                      // console.log(response);
+                      $('#messageinput').val(0);
+                      // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
                     }
         });
       });
     });
 
+    $(document).ready(function(){
+     sender_id = $('#sender_id').val();
+     reciever_id = $('#reciever_id').val();
+      $.ajax({
+          method: 'post',
+                    url: '{{url('/admin/messageseen')}}',
+                    data: {sender_id:sender_id, reciever_id:reciever_id , _token:"{{csrf_token()}}"},
+                    dataType: 'json',
+                    success: function(response)
+                    {
+                    let messagecount = parseInt(response.length);
+                    // let notificationcount = parseInt($('#notificationcount').html());
+                    let messagecount1 = parseInt($('#messagecount').html());
+                    $('#messagecount').html(messagecount1-messagecount);
+                    // $('#notificationcount').html(messagecount1-messagecount);
+                    }
+        });
+    });
 
   </script>
 @endsection

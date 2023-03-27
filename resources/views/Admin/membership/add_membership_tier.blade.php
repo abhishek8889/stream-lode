@@ -1,5 +1,21 @@
 @extends('admin_layout.master')
 @section('content')
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v1</li> -->
+              {{ Breadcrumbs::render('add-membership') }}
+            </ol> 
+          </div>
+        </div>
+      </div>
+    </div>
 <section class="content">
 <div class="card card-primary">
     <div class="card-header">
@@ -82,13 +98,6 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="card-body col-md-4">
-                <div class="form-group row">
-                    <div class="col-sm-8">
-                        <input type="file" class="form-control" id="inputEmail3" name="card_logo" />
-                    </div>
-                </div>
-            </div> -->
         </div>
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">Add membership tier</button>
@@ -110,7 +119,7 @@
     // });
     // $("body").on("click", "#DeleteRow", function () {
     //         $(this).parents("#row").remove();
-    //     })
+    //     })         
         $(document).ready(function(){
            $("#name").on('change',function(){
             let name = $(this).val().toLowerCase();

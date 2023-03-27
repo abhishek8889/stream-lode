@@ -32,16 +32,16 @@ return [
             'enable_client_messages' => false,
             'enable_statistics' => true,
         ],
-        'twilio' => [
-            'name' => 'Twilio',
-            'key' => env('TWILIO_API_KEY'),
-            'secret' => env('TWILIO_API_SECRET'),
-            'path' => 'twilio',
-            'options' => [
-                'cluster' => env('TWILIO_CLUSTER'),
-                'encrypted' => true
-            ]
-        ],
+        // [
+        //     'name' => 'Twilio',
+        //     'key' => env('TWILIO_API_KEY'),
+        //     'secret' => env('TWILIO_API_SECRET'),
+        //     'path' => 'twilio',
+        //     'options' => [
+        //         'cluster' => env('TWILIO_CLUSTER'),
+        //         'encrypted' => true
+        //         ],
+        // ]
     ],
 
     /*
@@ -59,6 +59,7 @@ return [
      */
     'allowed_origins' => [
         //
+      
     ],
 
     /*

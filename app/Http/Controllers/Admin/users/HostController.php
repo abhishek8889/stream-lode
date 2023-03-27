@@ -5,21 +5,24 @@ namespace App\Http\Controllers\Admin\users;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Message;
+use App\Models\Messages;
+use App\Events\Message;
 use DB;
 use Hash;
+use Auth;
+use File;
 class HostController extends Controller
 {
     public function hostList(){
-        $hosts = DB::table('users')->where('status', 1)->get();
-        
+        $hosts = User::where('status', 1)->with(['adminmessage' => function($response){ $response->where('reciever_id',Auth::user()->id); }])->get();
+        // dd($hosts);
         
         return view('Admin.users.hostlist',compact('hosts'));
     }
     public function hostDetail(Request $req , $id){
         $host_detail = User::where('unique_id', $id)->first();
     //    dd($host_detail);
-        $message = Message::where('reciever_id',$host_detail['_id'])->orderBy('created_at','asc')->get();
+    $message = Messages::where([['reciever_id',$host_detail['_id']],['sender_id',Auth::user()->id]])->orWhere([['reciever_id',Auth::user()->id],['sender_id',$host_detail['_id']]])->get();
         return view('Admin.users.host_detail',compact('host_detail','message'));
     }
     public function hostDelete($id){
@@ -81,17 +84,63 @@ class HostController extends Controller
 
         }
     }
-    public function message(Request $req){
+    public function profileimage(Request $req){
         $req->validate([
-            'message' => 'required'
+            'profile_img' => 'required',
+        ],
+        [
+            'profile_img.required' => 'You have to choose any image before upload.',
         ]);
-        $message = new Message();
+        $user = User::find($req->id);
+        if($req->profile_exist == '1'){
+            if($req->hasfile('profile_img')){
+                $destination = public_path().'/Assets/images/user-profile-images/'. auth()->user()->profile_image_name;
+                if(File::exists($destination)){
+                    File::delete($destination);
+                }
+                $file = $req->file('profile_img');
+                $name = time().rand(1,100).'.'.$file->extension();
+                $file->move(public_path().'/Assets/images/user-profile-images/', $name);
+                $user->profile_image_name = $name;
+                $user->profile_image_url = asset('Assets/images/user-profile-images/'.$name);
+                $user->update();
+            }
+            return back()->with('success','Profile picture uploaded succesfully.');
+        }else{
+            if($req->hasfile('profile_img')){
+                $file = $req->file('profile_img');
+                $name = time().rand(1,100).'.'.$file->extension();
+                $file->move(public_path().'/Assets/images/user-profile-images/', $name);
+                $user->profile_image_name = $name;
+                $user->profile_image_url = asset('Assets/images/user-profile-images/'.$name);
+                $user->save();
+            }
+            return back()->with('success','New profile picture added succesfully.');
+        }
+    }
+    public function message(Request $req){
+        $username = Auth::user();
+        $sender_id = $req->sender_id;
+        $reciever_id = $req->reciever_id;
+        // $username = $req->username;
+        $messages = $req->message;
+        event(new Message($username, $messages,$sender_id,$reciever_id));
+        $message = new Messages();
         $message->reciever_id = $req->reciever_id;
         $message->sender_id = $req->sender_id;
+        $message->username = $req->username;
         $message->message = $req->message;
         $message->status = 1;
         $message->save();
         return response()->json('message sent');
     }
-    
+    public function seenmessage(Request $req){
+        $update = Messages::where([['reciever_id',$req->sender_id],['sender_id',$req->reciever_id],['status',1]])->get();
+        foreach($update as $u){
+            $res = Messages::find($u['_id']);
+            $res->status = 0;
+            $res->update();
+        }
+        return response()->json($update);
+    }
 }

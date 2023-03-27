@@ -58,7 +58,7 @@
                             @endif
                         @endif
                         <div>
-                            <a href="{{ url('login') }}" class="text text-success">Go for login....</a>
+                            <a href="{{ url('login') }}" class="text text-success">Login</a>
                         </div>
                         </div>
                     </div>
