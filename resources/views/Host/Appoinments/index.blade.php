@@ -181,7 +181,6 @@ display: none;
                     <tr>
                       <th>Sr no.</th>
                       <th>Guest Name</th>
-                      <th>Email</th>
                       <th>Start Time</th>
                       <th>End Time</th>
                     </tr>

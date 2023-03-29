@@ -16,12 +16,14 @@
   <div id="controls">
     <div id="preview">
     <div class="vedio-response-text" style="display:none;"></div>
-      <div id="vedio-timer">
-        <!-- <span id="hours"></span>
-        <span id="minutes"></span>
-        <span id="seconds"></span> -->
+      <div id="vedio-timer"></div>
+      <div class="response-wrapper">
+        <div id="video-response" class="participantResponse"></div>
+        <div id="mic-response" class="participantResponse"></div>
       </div>
       <div id="remote-media"></div>
+      
+      <!-- <div id="mute-icon" style="display:none;"><i class="fa-solid fa-microphone-slash"></i></div> -->
       <!-- <div id="local-media"></div> -->
       <div class="vedio-btn-wrapper">
         <button id="button-mic" class="active"><i class="fa-solid fa-microphone"></i></button>
