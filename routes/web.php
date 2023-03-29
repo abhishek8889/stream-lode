@@ -37,6 +37,7 @@ use App\Http\Controllers\Hosts\HostCalendar;
 use App\Http\Controllers\Hosts\AppoinmentsController;
 use App\Http\Controllers\Hosts\HostStreamController;
 use App\Http\Controllers\Hosts\WebsocketController;
+use App\Http\Controllers\Hosts\HostDiscountController;
 
 use Google\Service\ServiceConsumerManagement\Authentication;
 
@@ -105,7 +106,7 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-Route::get('/trycode',[SearchHostController::class,'trycode']);
+// Route::get('/trycode',[SearchHostController::class,'trycode']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
@@ -280,6 +281,13 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/upgrade-subscription/{slug}',[HostMembershipController::class,'upgradeSubscriptionDetail'])->name('upgrade-subscription');
     Route::post('/{id}/upgrade-to-new-subscription',[HostMembershipController::class,'upgradeSubscriptionProcess'])->name('upgrade-to-new-subscription');
     
+    //Discount
+    Route::get('/{id}/coupons',[HostDiscountController::class,'index'])->name('hots-coupons');
+    Route::get('/{id}/coupons/create/{did?}',[HostDiscountController::class,'create'])->name('coupons-create');
+    Route::post('/{id}/coupons/createproc',[HostDiscountController::class,'createproc'])->name('coupons-createproc');
+    Route::get('/{id}/trycode',[HostDiscountController::class,'trycode']);
+    Route::get('/{id}/coupons/delete/{did}',[HostDiscountController::class,'delete']);
+
     // Calendar
     // Route::get('/{id}/calendar',[HostCalendar::class,'index'])->name('host-calendar');
     // Route::post('/{id}/insert-schedule',[HostCalendar::class,'insertSchedule']); old

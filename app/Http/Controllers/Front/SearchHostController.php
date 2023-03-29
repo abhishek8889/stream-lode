@@ -237,17 +237,28 @@ class SearchHostController extends Controller
     }
 //   
 public function trycode(){
-    $messages = Messages::where([['reciever_id','63fd8e4d1ad0d9aee603e4d2'],['status',1]])->distinct('sender_id')->get()->toArray();
-    if($messages){
-    foreach($messages as $m){
-        $user = User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id','63fd8e4d1ad0d9aee603e4d2'); })->first();
+//     $messages = Messages::where([['reciever_id','63fd8e4d1ad0d9aee603e4d2'],['status',1]])->distinct('sender_id')->get()->toArray();
+//     if($messages){
+//     foreach($messages as $m){
+//         $user = User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id','63fd8e4d1ad0d9aee603e4d2'); })->first();
     
-    print_r($user['first_name']);
-}
+//     print_r($messages);
+// }
+//     }
+// $reciever_id = '63fd8e4d1ad0d9aee603e4d2';
+// $messages = Messages::where('reciever_id',$reciever_id)->orWhere('sender_id',$reciever_id)->orderBy('created_at','desc')->get();
+// $ids = array();
+// foreach($messages as $m){
+//    array_push($ids,$m->sender_id);
+//    array_push($ids,$m->reciever_id);
+// }
+// // print_r($ids);
+//     $message_id =array_unique($ids); 
     
-    }
-    
-
+//     foreach($message_id as $mid){
+//        $users[] = User::where('_id',$mid)->with('adminmessage',function($response){ $response->where([['reciever_id','63fd8e4d1ad0d9aee603e4d2'],['status',1]]); })->first(); 
+//     }
+//     dd($users);
 }
 
 }
