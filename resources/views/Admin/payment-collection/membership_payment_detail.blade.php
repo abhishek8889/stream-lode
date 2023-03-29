@@ -1,6 +1,21 @@
 @extends('admin_layout.master')
 @section('content')
-
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+         
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v1</li> -->
+              {{ Breadcrumbs::render('payment-details') }}
+            </ol> 
+          </div>
+        </div>
+      </div>
+    </div>
             <div class="card-body table-responsive p-0">
             @foreach($membership_payments_details as $membership_payments_details)
                 <div class="invoice p-3 mb-3">
@@ -96,7 +111,6 @@
                     </div>
                     </div>
                     <!-- /.col -->
-                </div>
                 </div>
                  @endforeach
             </div>

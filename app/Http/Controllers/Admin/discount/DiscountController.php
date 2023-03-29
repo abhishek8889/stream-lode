@@ -9,8 +9,10 @@ use App\Models\Discounts\AdminDiscount;
 class DiscountController extends Controller
 {
     public function index(){
+       
         return view('Admin.discount.index');
     }
+   
     public function discountList(){
         $discount_list = AdminDiscount::paginate(8);
         // dd($discount_list);
@@ -22,6 +24,7 @@ class DiscountController extends Controller
         $validate = $req->validate([
             'name' => 'required',
         ]);
+        // add coupon code
         $coupon_name = $req->name;
         $amount = null;
         $type = $req->discount_type;
@@ -83,6 +86,19 @@ class DiscountController extends Controller
         $discount->status = 1;
         $discount->save();
         return redirect()->back()->with('success','Discount coupon created succesfully.');
+   
+    }
+    public function delete($id){
+        // echo $id;
+        $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+        $coupon = AdminDiscount::find($id);
+        $stripe->coupons->delete($coupon['stripe_coupon_id'], []);
+        $coupon->delete();
+        return redirect()->back()->with('success','Successfully deleted coupon');
+    }
+    public function update($id){
+    $coupondata = AdminDiscount::find($id);
+    return view('Admin.discount.edit_discount',compact('coupondata'));    
     }
    
 }

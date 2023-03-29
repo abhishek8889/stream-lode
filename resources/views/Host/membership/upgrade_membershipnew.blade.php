@@ -33,6 +33,7 @@
     <div class="container-fluid">
       <div class="dark-nav">
         <ul class="nav-list" id="filter-list">
+          <li class="nave-list-item" id="all"><a href="{{ url('') }}/{{ Auth::user()->unique_id.'/membership-details' }}">Go back</a></li>
           <li class="nave-list-item" id="all"><a href="#all" onclick="filterSelection('all')">All</a></li>
           <li class="nave-list-item" id="standar-tier"><a href="#standar-tier" onclick="filterSelection('Standard')">Standard Tier</a></li>
           <li class="nave-list-item" id="premium-tier"><a href="#premium-tier" onclick="filterSelection('Premium')">Premium Tier</a></li>
@@ -45,7 +46,7 @@
     <div class="container-fluid">
       <div class="section-head text-center">
         <!-- <h2>Choose a plan to start with <span class="yellow">Stream</span><span class="blue">Lode</span></h2> -->
-        <h2>Choose a plan to start with <br> <span class="yellow">Stream</span><span class="blue">Lode</span></h2>
+        <h2>Choose a plan to upgrade with <br> <span class="yellow">Stream</span><span class="blue">Lode</span></h2>
       </div>
       <div class="plans-wrapper">
         <div class="row plans-row justify-content-center">
@@ -223,7 +224,7 @@
                     @if((int)$subscription['amount'] < 1)
                     <p><b>For a Sponsorship Tier, email <a href="mailto:Sales@StreamLode.com">Sales@StreamLode.com</a> about being a StreamLode Sponsor.</b></p>
                     @else
-                    <a href="{{ url('/membership-payment/'.$subscription['slug']) }}" class="cta cta-yellow">Upgrade Membership</a>
+                    <a href="{{ url(auth()->user()->unique_id.'/upgrade-subscription/'.$subscription['slug']) }}" class="cta cta-yellow">Upgrade Membership</a>
                     @endif
                   </div>
                 </div>

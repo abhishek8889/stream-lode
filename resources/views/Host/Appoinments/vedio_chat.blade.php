@@ -1,6 +1,6 @@
 @extends('host_layout.master')
 @section('content')
-<h4>Create Room for Vediocall : </h4>
+<h4>Create Room for Videocall : </h4>
 <div class="container">
     <div class="card" style="width:500px;padding:10px;">
         <form action="{{ url('create-room') }}"  method="POST">
@@ -17,7 +17,7 @@
         @if(Session::has('data'))
         <?php $data = Session::get('data');  ?>
         <div id="roomDetails"><span>Your room name is : </span> <span class="text text-primary">{{ $data['roomName'] }}</span></div>
-        <label for="roomDetails">This room name is required for join vedio call</label>
+        <label for="roomDetails">This room name is required for join video call</label>
         <a target="_blank" href="{{$data['join_link']}}" id="roomLink" class="meeting-link">{{$data['join_link']}}</a>
         <label for="roomLink">Click this link to join or store this for future use</label>
         <Button class="btn btn-dark" id="send-link" link="{{$data['join_link']}}">Send Link</Button>

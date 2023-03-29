@@ -1,5 +1,19 @@
 @extends('admin_layout.master')
 @section('content')
+<section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Profile</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+            {{ Breadcrumbs::render('guest-list') }}
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -43,7 +57,7 @@
                         <?php 
                             $first_name = '';
                             $last_name = '';
-                            if(isset($guest['first_name'] ?? '')){
+                            if(isset($guest['first_name'])){
                                 $first_name = $guest['first_name'];
                             }
                             if(isset($guest['last_name'])){
@@ -61,7 +75,7 @@
                         ?>
                         <td> {{ $dateInLocal }} </td>
                         <td> 
-                            <a href="{{ url('/admin/host-details/'.$guest['_id']) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
+                            <a href="{{ url('/admin/guest-details/'.$guest['_id']) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
                             <a href="{{ url('/admin/host-delete/'.$guest['_id']) }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a> 
                         </td>
                     </tr>

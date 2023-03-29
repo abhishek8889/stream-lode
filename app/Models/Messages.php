@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Message extends Model
+class Messages extends Model
 {
     use HasFactory;
     protected $table = 'messages';
     protected $fillable = [
-        'sender_id','reciever_id','message','type','status'
+        'sender_id','reciever_id','username','message','type','status'
     ];
     public function users(){
         return $this->belongsTo(User::class,'sender_id');

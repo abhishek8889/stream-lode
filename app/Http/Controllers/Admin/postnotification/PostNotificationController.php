@@ -5,29 +5,29 @@ namespace App\Http\Controllers\Admin\postnotification;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Message;
+use App\Models\Messages;
+use App\Models\PostNotification;
+use App\Events\Message;
+
 class PostNotificationController extends Controller
 {
     public function index(){
-        $messages = Message::where('type','=',1)->with('users')->get();
-            // print_r($messages);
+        $messages = PostNotification::get();
             // dd($messages);
         return view('Admin.postnotification.index',compact('messages'));
     }
     public function sendmessage(Request $request){
         // print_r($request->all());
+        event(new Message($request->username, $request->message,$request->sender_id,'public'));
         $request->validate([
             'message' => 'required'
         ]);
-        $users = User::where('status',1)->select('id')->get();
-        foreach($users as $u){
-            $message = new Message();
+            $message = new PostNotification();
             $message->sender_id = $request->sender_id;
             $message->message = $request->message;
-            $message->reciever_id = $u->_id;
-            $message->status = 1;
+            $message->reciever_id = 'hosts';
+            $message->username = $request->username;
             $message->save();
-        }
         return response()->json('done');
     }
 }

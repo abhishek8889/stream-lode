@@ -37,11 +37,13 @@ use App\Http\Controllers\Hosts\HostCalendar;
 use App\Http\Controllers\Hosts\AppoinmentsController;
 use App\Http\Controllers\Hosts\HostStreamController;
 use App\Http\Controllers\Hosts\WebsocketController;
+use App\Http\Controllers\Hosts\HostDiscountController;
 
 use Google\Service\ServiceConsumerManagement\Authentication;
 
 use App\Http\Controllers\LiveStream\VedioCallController;
 
+use App\Events\Message;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -56,12 +58,18 @@ use App\Http\Controllers\LiveStream\VedioCallController;
 // Route::get('create-room',[VedioChatController::class,'createRoom']);
 // Route::get('/vedio/{roomName}',[VedioChatController::class,'joinRoom']);
 
-// Route::get('/', function () {
-//     return view('welcome');
+// Route::get('/welcome', function () {
+//     return view('welcometest');
 // });
 
 Route::get('/live-stream/{room_name}',[VedioCallController::class,'index']);
 Route::get('live-stream-token',[VedioCallController::class,'passToken']);
+// Route::post('send-message',function (Request $request){
+//     event(new Message($request->username, $request->message));
+//     return ['success' => true];
+// });
+
+
 
 Route::get('host-register-email',function(){
     return view('Emails.host_registration');
@@ -71,7 +79,7 @@ Route::get('learn-area',[TestController::class,'index'])->name('learn-area');
 Route::get('return-from-listener',[TestController::class,'returnFromListener']);
 Route::get('send-test-email-with-job',[TestController::class,'sendTestEmail']);
 
-// Route::group(['middleware'=>['auth','Guest']],function(){
+// Route::group(['middleware'=>['auth','guest']],function(){
 // Authentication
 Route::get('login',[AuthenticationController::class,'login'])->name('login');
 Route::get('register',[AuthenticationController::class,'register'])->name('register');
@@ -102,6 +110,9 @@ Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
+Route::get('/message/{id}',[MeetingController::class,'message']);
+Route::post('send-messages',[MeetingController::class,'send']);
+Route::post('messageseen',[MeetingController::class,'messageseen']);
 
 
 
@@ -129,23 +140,29 @@ Route::group(['middleware'=>['auth','Admin']],function(){
             Route::post('/host-generals-update','hostGeneralsUpdate');
         });
         Route::controller(HostController::class)->group(function(){
+            Route::post('/host-image-update','profileimage');
+        });
+        Route::controller(HostController::class)->group(function(){
             Route::post('/message','message');
+        });
+        Route::controller(HostController::class)->group(function(){
+            Route::post('/messageseen','seenmessage');
         });
         // Guest list
         Route::controller(GuestController::class)->group(function(){
             Route::get('/guest-list','guestlist')->name('guest-list');
         });
-        // Route::controller(GuestController::class)->group(function(){
-        //     Route::get('/host-details/{id}','hostDetail')->name('host-details');
-        // });
+        Route::controller(GuestController::class)->group(function(){
+            Route::get('/guest-details/{id}','hostdetail')->name('host-details');
+        });
         // Route::controller(GuestController::class)->group(function(){
         //     Route::get('/host-delete/{id}','hostDelete');
         // });
-        // Route::controller(GuestController::class)->group(function(){
-        //     Route::post('/host-generals-update','hostGeneralsUpdate');
-        // });
+        Route::controller(GuestController::class)->group(function(){
+            Route::post('/guest-generals-update','update')->name('guest-generals-update');
+        });
         Route::controller(SettingsController::class)->group(function(){
-            Route::get('/general-settings','index');
+            Route::get('/general-settings','index')->name('admin-general-setting');
         });
         Route::controller(SettingsController::class)->group(function(){
             Route::post('/admin-update','adminUpdate');
@@ -155,16 +172,16 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         });
         // create membership
         Route::controller(MembershipController::class)->group(function(){
-            Route::get('/membership-list','index');
+            Route::get('/membership-list','index')->name('membership-list');
         });
         Route::controller(MembershipController::class)->group(function(){
-            Route::get('/add-membership-tier','addMembershipTier');
+            Route::get('/add-membership-tier','addMembershipTier')->name('add-membership');
         });
         Route::controller(MembershipController::class)->group(function(){
             Route::post('/insert-membership-tier','addMembershipTierProc');
         });
         Route::controller(MembershipController::class)->group(function(){
-            Route::get('/edit-membership-tier/{slug}','edit');
+            Route::get('/edit-membership-tier/{slug}','edit')->name('edit-membership');
         });
         // Route::controller(MembershipController::class)->group(function(){
         //     Route::post('/update-membership-tier','editproc')->name('update-membership-tier');
@@ -196,7 +213,13 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         // Discount 
 
         Route::controller(DiscountController::class)->group(function(){
-            Route::get('/generate-discount','index')->name('generate-discount');
+            Route::get('/generate-discount/','index')->name('generate-discount');
+        });
+        Route::controller(DiscountController::class)->group(function(){
+            Route::get('/update-discount/{id}','update')->name('update-discount');
+        });
+        Route::controller(DiscountController::class)->group(function(){
+            Route::get('/delete-discount/{id}','delete')->name('delete-discount');
         });
         Route::controller(DiscountController::class)->group(function(){
             Route::get('/discount-coupon-list','discountList')->name('discount-coupon-list');
@@ -222,6 +245,10 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MembershipFeatureController::class)->group(function(){
             Route::post('/featureedit','edit')->name('featureedit');
         });
+        Route::controller(SettingsController::class)->group(function(){
+            Route::get('/changepassword','changepassword')->name('changepassword');
+        });
+        
         
     });
 });
@@ -254,19 +281,29 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/upgrade-subscription/{slug}',[HostMembershipController::class,'upgradeSubscriptionDetail'])->name('upgrade-subscription');
     Route::post('/{id}/upgrade-to-new-subscription',[HostMembershipController::class,'upgradeSubscriptionProcess'])->name('upgrade-to-new-subscription');
     
+    //Discount
+    Route::get('/{id}/coupons',[HostDiscountController::class,'index'])->name('hots-coupons');
+    Route::get('/{id}/coupons/create/{did?}',[HostDiscountController::class,'create'])->name('coupons-create');
+    Route::post('/{id}/coupons/createproc',[HostDiscountController::class,'createproc'])->name('coupons-createproc');
+    Route::get('/{id}/trycode',[HostDiscountController::class,'trycode']);
+    Route::get('/{id}/coupons/delete/{did}',[HostDiscountController::class,'delete']);
+
     // Calendar
     // Route::get('/{id}/calendar',[HostCalendar::class,'index'])->name('host-calendar');
     // Route::post('/{id}/insert-schedule',[HostCalendar::class,'insertSchedule']); old
       
-    Route::get('/{id}/calendar',[HostCalendar::class,'index']);
+    Route::get('/{id}/calendar',[HostCalendar::class,'index'])->name('host-calender');
     Route::post('/{id}/calendar-response',[HostCalendar::class,'ajax']);
 
     //hostMessage
-    Route::get('/{id}/message',[HostMessageController::class,'index']);
+    Route::get('/{id}/message/{uid?}',[HostMessageController::class,'index']);
+    Route::get('/{id}/hostmessage/{uid}',[HostMessageController::class,'hostmessage']);
+    Route::post('send-message',[HostMessageController::class,'message']);
+
     Route::post('host/updatemessage',[HostMessageController::class,'update']);
    
     //Appoinments
-    Route::get('{id}/Appoinments',[AppoinmentsController::class,'index']);
+    Route::get('{id}/Appoinments',[AppoinmentsController::class,'index'])->name('appoinments');
 
     //Vedio chat
     Route::get('{id}/vedio-conference/{userid}',[HostStreamController::class,'index']); 

@@ -1,5 +1,22 @@
 @extends('admin_layout.master')
 @section('content')
+
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v1</li> -->
+              {{ Breadcrumbs::render('discount-add') }}
+            </ol> 
+          </div>
+        </div>
+      </div>
+    </div>
 <section class="content">
 <div class="card card-primary">
     <div class="card-header">
@@ -13,9 +30,10 @@
         <div class="row">
             <div class="card-body col-md-6">
                 <div class="form-group row">
+                    <input type="hidden" name="id" value="">
                     <label for="name" class="col-sm-3 col-form-label">Name</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+                        <input type="text" class="form-control" id="name" placeholder="Name" name="name" value="">
                         @error('name')
                             <div class="text text-danger">{{ $message }}</div>
                         @enderror
@@ -24,7 +42,7 @@
                 <div class="form-group row">
                     <label for="couponCode" class="col-sm-3 col-form-label">Coupon Code</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="couponCode" placeholder="" name="coupon_code">
+                        <input type="text" class="form-control" id="couponCode" placeholder="" name="coupon_code" value="" >
                         @error('coupon_code')
                             <div class="text text-danger">{{ $message }}</div>
                         @enderror
@@ -36,7 +54,7 @@
                     <div class="col-sm-9">
                         <select name="discount_type" id="discount_type" class="form-control">
                             <option value="percent_off">Percentage Off</option>
-                            <option value="amount_off">Amount Off</option>
+                            <!-- <option value="amount_off" >Amount Off</option> -->
                         </select>
                         @error('percent_off')
                             <div class="text text-danger">{{ $message }}</div>
@@ -52,13 +70,13 @@
                         <input type="text" id="perentage_off" class="form-control" name="percent_off" placeholder="Enter percentage"/>  
                     </div>
                 </div>
-                <div class="form-group row" id="discount_amt">
+                <!-- <div class="form-group row" id="discount_amt">
                     <label for="amount_off" class="col-sm-3 col-form-label">Amount Off</label>
                     <div class="col-sm-9">
                         <input type="text" id="amount_off" class="form-control" name="amount_off" placeholder="Enter amount"/>
                     </div>
-                </div>
-                <div class="form-group row" id="currency_box">
+                </div> -->
+                <!-- <div class="form-group row" id="currency_box">
                     <label for="currency" class="col-sm-3 col-form-label">Currency</label>
                     <div class="col-sm-9">
                         <select class="form-control" id="currency" name="currency">
@@ -68,7 +86,7 @@
                             <div class="text text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
+                </div> -->
                 <!-- currency code -->
                 <div class="form-group row">
                     <label for="duration" class="col-sm-3 col-form-label">Duration</label>

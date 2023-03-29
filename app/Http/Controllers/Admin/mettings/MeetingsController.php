@@ -11,8 +11,22 @@ use App\Models\User;
 class MeetingsController extends Controller
 {
   public function index(){
-    $user = User::where('status',1)->with('appoinments')->paginate(5);
-    // dd($user);
+    $data = HostAppointments::with('user')->get()->toArray();
+    
+    // dd($data);
+    foreach($data as $d){
+      $userdata[] = $d['user'];
+    }
+     $data = array_unique($userdata,SORT_REGULAR);
+     foreach($data as $d){
+      // print_r($d['_id']);
+      $user[] = User::where('_id',$d['_id'])->with('appoinments')->get();
+     }
+    // // dd($user);
+    // echo '<pre>';
+    // print_r($user);
+    // echo '</pre>';
+    // die();
     return view('Admin.mettings.index',compact('user'));
   }
 }

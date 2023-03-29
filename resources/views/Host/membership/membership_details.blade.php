@@ -9,8 +9,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ url('/'.auth()->user()->unique_id) }}">Home</a></li>
-              <li class="breadcrumb-item active">Membership / {{$membership_tier_details['name']}}</li>
+            {{ Breadcrumbs::render('membership-details') }}
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
