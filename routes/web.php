@@ -282,11 +282,12 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::post('/{id}/upgrade-to-new-subscription',[HostMembershipController::class,'upgradeSubscriptionProcess'])->name('upgrade-to-new-subscription');
     
     //Discount
-    Route::get('/{id}/coupons',[HostDiscountController::class,'index'])->name('hots-coupons');
+    Route::get('/{id}/coupons',[HostDiscountController::class,'index'])->name('host-coupons');
     Route::get('/{id}/coupons/create/{did?}',[HostDiscountController::class,'create'])->name('coupons-create');
     Route::post('/{id}/coupons/createproc',[HostDiscountController::class,'createproc'])->name('coupons-createproc');
     Route::get('/{id}/trycode',[HostDiscountController::class,'trycode']);
     Route::get('/{id}/coupons/delete/{did}',[HostDiscountController::class,'delete']);
+    Route::post('/{id}/coupons/disable',[HostDiscountController::class,'disable'])->name('coupon-disable');
 
     // Calendar
     // Route::get('/{id}/calendar',[HostCalendar::class,'index'])->name('host-calendar');

@@ -1,6 +1,19 @@
 @extends('host_layout.master')
 @section('content')
-
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+            {{ Breadcrumbs::render('coupons-create') }}
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
 <div class="container-fluid">
 <div class="col-md-12">
             <!-- general form elements -->
@@ -29,7 +42,7 @@
                   @enderror
                   <div class="form-group">
                     <label for="coupontype">Percentage Off</label>
-                    <input type="text" class="form-control" id="coupontype" name="percentage_off" value="{{ $coupon_data['percentage_off'] ?? '' }}" >
+                    <input type="number" class="form-control" id="coupontype" name="percentage_off" value="{{ $coupon_data['percentage_off'] ?? '' }}" >
                   </div>
                   @error('percentage_off')
                             <div class="text text-danger">{{ $message }}</div>
@@ -47,11 +60,15 @@
                   @enderror
                     <div class="form-group" id="durationmonth">
                     <label for="durationtimes">Duration times</label>
-                    <input type="text" class="form-control" id="durationtimes" name="duration_times" value=" {{ $coupon_data['duration_times'] ?? ''}} ">
+                    <input type="number" class="form-control" id="durationtimes" name="duration_times" value="{{ $coupon_data['duration_times'] ?? '0'}}">
                   </div>
                   @error('duration_times')
                             <div class="text text-danger">{{ $message }}</div>
                   @enderror
+                  <div class="form-group">
+                    <label for="coupontype">ExpireDate</label>
+                    <input type="date" class="form-control" id="expiredate" name="expiredate" value="{{ $coupon_data['expiredate'] ?? '' }}" >
+                  </div>
                 <div class="">
                   <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
@@ -68,7 +85,6 @@
       }
       else{
         $('#durationmonth').hide();
-        $('#durationtimes').val('');
       }  
     $('#couponduration').change(function(){
       if($('#couponduration').val() == 'Repeating'){
