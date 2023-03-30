@@ -40,8 +40,8 @@
                             <th>Durations Times</th>
                             <th>Used Times</th>
                             <th>Expire On</th>
-                            <th>Status</th>
                             <th>Action</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                         <tbody>
@@ -53,11 +53,10 @@
                                 <td>{{$dc->coupon_name ?? ''}}</td>
                                 <td>{{$dc->coupon_code ?? ''}}</td>
                                 <td>{{ $dc->percentage_off ?? '' }}%</td>
-                                <td>{{ $dc->duration ?? '' }}</td>
+                                <td><span class="badge badge-pill badge-success">{{ $dc->duration ?? '' }}</span></td>
                                 <td>{{ $dc->duration_times ?? '-' }}</td>
                                 <td>{{ $dc->coupon_used ?? '-' }}</td>
                                 <td>{{ $dc->expiredate ?? '' }}</td>
-                                <td>@if($dc->status == 1)<span class="badge badge-success" >active</span> @else<span class="badge badge-danger" >not-active</span>@endif</td>
                                 <td>
                                 <a href="{{ route('coupons-create',['id'=>Auth::user()->unique_id]) }}/{{ $dc->_id }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
                                 <a href="{{ url(Auth::user()->unique_id.'/coupons/delete/'.$dc->_id ) }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a>
@@ -88,8 +87,13 @@
 			    dataType: 'json',
 			    data: {id:id,status:status,_token:"{{ csrf_token() }}"},
 			    success: function(response)
-			{
-                    // console.log(response);
+			         {
+                        console.log(status);
+                        if(status == 0){
+                            $('#customSwitches'+id).attr('status',1);
+                        }else{
+                            $('#customSwitches'+id).attr('status',0);   
+                        }
                 }
                });
             })

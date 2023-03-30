@@ -10,18 +10,20 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SendNotifications
+class SendNotifications implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $clickme ;
+    public $username;
+    public $message;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($clickme)
+    public function __construct($username,$message)
     {
-        $this->clickme = $clickme;
+        $this->username = $username;
+        $this->message = $message;
     }
 
     /**
@@ -31,6 +33,6 @@ class SendNotifications
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new Channel('notification');
     }
 }

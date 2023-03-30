@@ -73,9 +73,6 @@ margin-right: auto;
     $(".vedio-response").on('change',function(){
       alert($(this).html);
     });
-    
-    
-    
   </script>
   <script src="//media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.min.js"></script>
   <script src="//sdk.twilio.com/js/video/releases/2.26.2/twilio-video.min.js"></script>

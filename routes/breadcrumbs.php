@@ -37,6 +37,11 @@ Breadcrumbs::for('features', function (BreadcrumbTrail $trail): void {
     $trail->parent('membership-list');
     $trail->push('Features', route('features'));
 });
+
+Breadcrumbs::for('post-notification', function (BreadcrumbTrail $trail): void {
+    $trail->parent('admin-dashboard');
+    $trail->push('Post-Notification', route('postnotification'));
+});
 Breadcrumbs::for('discount', function (BreadcrumbTrail $trail): void {
     $trail->parent('admin-dashboard');
     $trail->push('Discount', route('discount-coupon-list'));

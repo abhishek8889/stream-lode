@@ -4,13 +4,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Hosts</h1>
+            <h1 class="m-0">Membership List</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
               <li class="breadcrumb-item active">Dashboard v1</li> -->
-              {{ Breadcrumbs::render('host-list') }}
+              {{ Breadcrumbs::render('membership-list') }}
             </ol> 
           </div>
         </div>
@@ -81,7 +81,7 @@
                            <td>
                                 <a href="{{ url('admin/edit-membership-tier/'.$membership['slug']) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
                                 @if(!empty($membership['status']) || $membership['status'] == 1)
-                                <a href="{{ url('admin/delete-membership-tier/'.$membership['_id']) }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a>
+                                <a href="{{ url('admin/delete-membership-tier/'.$membership['_id']) }}" class="btn btn-danger">Deactivate</a>
                                @else
                                <a href="{{ url('admin/activate/'.$membership['_id']) }}" class="btn btn-success"> Activate</a>
                                 @endif

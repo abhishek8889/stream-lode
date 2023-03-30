@@ -315,7 +315,7 @@
             <a href="{{ route('postnotification') }}" class="nav-link active">
             <i class="fa-regular fa-message nav-icon"></i>
               <p>
-                  Post Messages 
+                  Post Notification 
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
