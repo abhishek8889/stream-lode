@@ -136,8 +136,8 @@
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <span class="dropdown-item dropdown-header">15 Notifications</span>
           <div class="dropdown-divider"></div>
-          <a href="{{ url('') }}/{{ Auth::user()->unique_id ?? '' }}/message" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i><span id=""></span> new messages
+          <a href="" class="dropdown-item" data-toggle="modal" data-toggle="modal" data-target="#exampleModalCenter123">
+            <i class="fas fa-envelope mr-2"></i><span id=""></span> new notification from admin side
           </a>
           <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item">
@@ -192,6 +192,31 @@
   </nav>
   <!-- /.navbar -->
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter123" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Admin Notifications</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="max-height: 200px; overflow: auto;">
+     @php 
+
+     $adminnotifications = App\Models\PostNotification::orderBy('created_at','desc')->get();
+     @endphp
+    @foreach($adminnotifications as $an)
+    <p><span>{{$an->username}}:</span> {{$an->message}} </p>
+    @endforeach
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -199,6 +224,7 @@
       <img src="http://127.0.0.1:8000/streamlode-front-assets/images/logo.png" alt="AdminLTE Logo" class="brand-image" style="opacity: .8">
     
     </a>
+    
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -264,7 +290,7 @@
           <!-- membership -->
           <li class="nav-item ">
             <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-user"></i>
+              <i class="fab fa-google-play nav-icon"></i>
               <p>
                 Membership
                 <i class="right fas fa-angle-left"></i>
@@ -302,7 +328,7 @@
           </li>
           <li class="nav-item ">
             <a href="{{ url('/'.auth()->user()->unique_id.'/Appoinments') }}" class="nav-link active">
-              <i class="nav-icon fas fa-calendar"></i>
+            <i class="far fa-calendar-check nav-icon"></i>
               <p>
                 Appoinments
                 <i class="right fas fa-angle-left"></i>
@@ -312,7 +338,7 @@
         <!-- discount -->
         <li class="nav-item ">
             <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-user"></i>
+            <i class="fas fa-file-invoice-dollar nav-icon"></i>
               <p>
                 Discount-Coupon
                 <i class="right fas fa-angle-left"></i>
@@ -337,7 +363,7 @@
 
           <li class="nav-item ">
             <a href="{{ url('/'.auth()->user()->unique_id.'/message/') }}" class="nav-link active">
-              <i class="nav-icon fas fa-calendar"></i>
+            <i class="fas fa-comment-alt nav-icon"></i>
               <p>
                 Message
                 <i class="right fas fa-angle-left"></i>

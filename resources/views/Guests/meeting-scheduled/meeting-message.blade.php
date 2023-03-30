@@ -100,5 +100,11 @@ $(document).ready(function(){
     });
     });
 </script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    var APP_URL = {!! json_encode(url('/')) !!}
+    console.log(APP_URL);
+  });
+</script>
 
 @endsection

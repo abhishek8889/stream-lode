@@ -259,6 +259,7 @@ public function trycode(){
 //        $users[] = User::where('_id',$mid)->with('adminmessage',function($response){ $response->where([['reciever_id','63fd8e4d1ad0d9aee603e4d2'],['status',1]]); })->first(); 
 //     }
 //     dd($users);
+return view('trycode');
 }
 
 }

@@ -18,6 +18,7 @@ use Hash;
 class HostStreamController extends Controller
 {
     public function index($unique_id,$id){
+      
         $appoinments = HostAppointments::where('_id',$id)->with('user')->first();
         // dd($appoinments);
        
