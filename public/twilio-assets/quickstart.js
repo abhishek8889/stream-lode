@@ -64,14 +64,14 @@ if (!navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
 
 // When we are about to transition away from this page, disconnect
 // from the room, if joined.
+
 window.addEventListener('beforeunload', leaveRoomIfJoined);
+
 
 function startVedioCall(){
   $.getJSON("http://127.0.0.1:8000/live-stream-token", function(data) {
     console.log(data);
     identity = data.identity;
-
-    leaveRoomIfJoined();
     // join room 
     let joinRoom = function() {
       roomName = document.getElementById('room-name').value;
@@ -92,16 +92,20 @@ function startVedioCall(){
       } 
     }; 
     joinRoom();
-    // Bind button to leave room
+
+    //////////////////////// Bind button to leave room //////////////////////// 
     document.getElementById('button-leave').onclick = function () {
-      log('Leaving room...');
-      activeRoom.disconnect();
+      // log('Leaving room...');
+      // const remote_media = document.getElementById('remote-media');
       counterStop();
+      activeRoom.disconnect();
       // var parser = document.createElement('a');
       // parser.href = window.location.href;
       // url = parser.protocol+'//'+parser.host+'/host';
       // window.location.href = url;
     };
+    
+
   });
 }
 
@@ -113,12 +117,14 @@ function roomJoined(room) {
   const handleConnectedParticipant = (participant) => {
     const participantDiv = document.createElement("div");
     const remote_media = document.getElementById('remote-media');
-    participantDiv.setAttribute("id", participant.identity);
-    participantDiv.setAttribute("class", 'main-screen');
+    let remote_participant;
+    var existing_participant = document.getElementById(participant.identity);
     participantNum = parseInt(participantNum) + 1;
     let participantJoined =  participantNum;
     ///////// join message ////////////////
-    if(participantJoined > 1){
+    if(participantJoined > 1 ){
+      participantDiv.setAttribute("id", participant.identity);
+      participantDiv.setAttribute("class", 'main-screen remote-participant');
       document.querySelector('.vedio-response-text').style.display = "block";
       document.querySelector('.vedio-response-text').innerHTML =' You are succesfully joined with '+participant.identity;
       timerIntervalId = setInterval(counterStart, 1000);  
@@ -126,18 +132,16 @@ function roomJoined(room) {
       document.querySelector('.vedio-response-text').style.display = "none";
         document.querySelector('.vedio-response-text').innerHTML = '';
       },5000);
+    }else{
+      participantDiv.setAttribute("id", participant.identity);
+      participantDiv.setAttribute("class", 'main-screen local-participant');
     }
-    
     remote_media.appendChild(participantDiv);
-    // iterate through the participant's published tracks and
-    // call `handleTrackPublication` on them
-
     participant.tracks.forEach((trackPublication) => {
       handleTrackPublication(trackPublication, participant);
     });
     // listen for any new track publications
     participant.on("trackPublished", handleTrackPublication);
-
   }; 
       
   const handleTrackPublication = (trackPublication, participant) => {
@@ -146,8 +150,7 @@ function roomJoined(room) {
       const participantDiv = document.getElementById(participant.identity);
       // track.attach creates an HTMLVideoElement or HTMLAudioElement
       // (depending on the type of track) and adds the video or audio stream
-      
-      participantDiv.append(track.attach());
+        participantDiv.append(track.attach());
     }
     // check if the trackPublication contains a `track` attribute. If it does,
     // we are subscribed to this track. If not, we are not subscribed.
@@ -158,10 +161,17 @@ function roomJoined(room) {
     // listen for any new subscriptions to this track publication
     trackPublication.on("subscribed", displayTrack);
   };
-
   handleConnectedParticipant(room.localParticipant);
   room.participants.forEach(handleConnectedParticipant);
-  room.on("participantConnected", handleConnectedParticipant);
+  room.on("participantConnected", handleConnectedParticipant); 
+
+  const handleDisconnectedParticipant = (participant) => {
+    participant.removeAllListeners();
+    const participantDiv = document.getElementById(participant.identity);
+    participantDiv.remove();
+  };
+  // handle cleanup when a participant disconnects
+  room.on("participantDisconnected", handleDisconnectedParticipant);
 
   //////////////////////////////////////////// my code end ////////////////////////////////////////////
   
@@ -209,12 +219,13 @@ function roomJoined(room) {
     // Also remove media for all remote participants
 
     room.on('disconnected', function() {
-      log('Left');
+      handleDisconnectedParticipant(room.localParticipant);
       detachParticipantTracks(room.localParticipant);
       room.participants.forEach(detachParticipantTracks);
       activeRoom = null;
-      document.getElementById('button-join').style.display = 'inline';
-      document.getElementById('button-leave').style.display = 'none';
+      
+      // document.getElementById('button-join').style.display = 'inline';
+      // document.getElementById('button-leave').style.display = 'none';
     });
   }
   ///////////////////////////////// Camera functionality for on and off //////////////////////////////// 
@@ -278,6 +289,8 @@ function roomJoined(room) {
   };
 
   //////////////////////////////////// Mic functionality End ////////////////////////////////////
+
+ 
 
   /////////////////////////////////////////////////////////////////////////////////////////////
 

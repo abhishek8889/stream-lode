@@ -111,6 +111,7 @@ div#controls {
     padding: 20px 0px;
     display: flex;
     justify-content: center;
+    position: relative;
 }
 .vedio-btn-wrapper button {
     margin-top: 0px !important;
@@ -275,4 +276,16 @@ div#controls button:focus {
   right: 0px;
   top: 0px;
   padding: 20px;
+}
+.vedio-btn-wrapper .site-logo {
+  width: 170px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.9;
+}
+
+.vedio-btn-wrapper .site-logo img {
+  max-width: 100%;
 }
