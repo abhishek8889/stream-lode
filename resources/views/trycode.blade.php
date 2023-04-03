@@ -18,7 +18,7 @@
     height: 134px;
 }
 </style>
-<button class="btn btn-dark" id = "endcall" data-toggle="modal" data-target="#exampleModal">EndCall</button>
+<button class="btn btn-dark" id = "endcall">EndCall</button>
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -34,8 +34,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary mr-5" data-dismiss="modal">Rejoin Room</button>
-        <a href="/" class="btn btn-primary ml-5">Return Home</a>
+        <a id="rejoin" class="btn btn-secondary mr-5">Rejoin Room</a>
+        <a href="/" id="return" class="btn btn-primary ml-5">Return Home</a>
       </div>
     </div>
   </div>
@@ -47,19 +47,62 @@ function startCountdown(seconds) {
 
     
   const interval = setInterval(() => {
-    // console.log(counter);
-    // console.log(window.location.href);
     document.getElementById('time').innerHTML = counter;
     counter--;
       
     if (counter < 0 ) {
       clearInterval(interval);
       startCountdown(6);
-    //   window.location.href = "/";
-      
     }
   }, 1000);
 }
-startCountdown(10);
+
+// array filter
+// var unique = [];
+//           var distinct = [];
+//           for( let i = 0; i < res.length; i++ ){
+//             if( !unique[res[i]._id]){
+//               distinct.push(res[i]);
+//               unique[res[i]._id] = 1;
+//             }
+
+//  }
+
+const button = document.querySelector("#endcall");
+const modal = document.querySelector('#exampleModal');
+  button.addEventListener("click",function(){
+    startCountdown(10);
+    // modal.classList.add('show');
+    $('#exampleModal').modal();
+     document.querySelector("#rejoin").addEventListener("click",function(e){
+     e.preventDefault();
+      console.log('rejoin');
+    });
+    document.querySelector("#return").addEventListener("click",function(e){
+      e.preventDefault();
+      console.log('return');
+    });
+    // console.log(App_url);
+  });
+
+ const data = [2,10,6,3,8,66,5,7,88,5,9,7];
+  function test(){
+    var res = data.filter(number => number%2 == 0);
+      let sum = 0;
+      for (let i = 0; i < res.length; i++) {
+        sum += res[i];
+    }
+    console.log(res);
+    console.log(sum);
+  }
+test();
+
+//   rejoin.addEventListener("click",function(){
+// console.log('rejoin');
+//   });
+
+
+
+
 </script>
 @endsection

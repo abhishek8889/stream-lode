@@ -260,8 +260,8 @@ display: none;
             success: function(response){
             //  console.log(response);
             $('#overlayer').fadeOut();
-             $('#exampleModalCenter').addClass("show");
-             $('#exampleModalCenter').css("display","block");
+             $('#exampleModalCenter').modal("show");
+            //  $('#exampleModalCenter').css("display","block");
              $('#send-link').attr("data-id",aid);
              $('#send-link').attr("link",response);
              $('#link-input').val(response);
@@ -314,11 +314,6 @@ copyText.querySelector("button").addEventListener("click", function () {
 	}, 2500);
 });
 
-$('.close').click(function(){
-  $('#exampleModalCenter').removeClass("show");
-  $('#exampleModalCenter').css("display",'none');
-
-})
   </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert"></script>
 
