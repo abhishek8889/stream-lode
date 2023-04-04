@@ -87,7 +87,6 @@ function startVedioCall(){
         Twilio.Video.connect(data.token, connectOptions).then(roomJoined, function(error) {
           log('Could not connect to Twilio: ' + error.message);
           
-          
         });
       } 
     }; 
@@ -98,6 +97,7 @@ function startVedioCall(){
       // log('Leaving room...');
       // const remote_media = document.getElementById('remote-media');
       counterStop();
+      alert(activeRoom);
       activeRoom.disconnect();
       // var parser = document.createElement('a');
       // parser.href = window.location.href;
@@ -223,7 +223,7 @@ function roomJoined(room) {
       detachParticipantTracks(room.localParticipant);
       room.participants.forEach(detachParticipantTracks);
       activeRoom = null;
-      
+      alert(activeRoom);
       // document.getElementById('button-join').style.display = 'inline';
       // document.getElementById('button-leave').style.display = 'none';
     });

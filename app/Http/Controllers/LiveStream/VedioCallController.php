@@ -15,7 +15,9 @@ class VedioCallController extends Controller
     //
     public function index(Request $req){
         $roomName = $req->segment(2);
+       
         return view('vediocall.vediocall',compact('roomName'));
+
     }
     public function passToken(Request $req){
         // dd($req);

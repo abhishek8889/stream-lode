@@ -6,8 +6,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="{{ asset('twilio-assets/site.css') }}">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-
+  
 </head>
 <body>
   @if($roomName)
@@ -35,10 +34,32 @@
       </div>
       
     </div>
+    <!-- payment modal -->
+      <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- payment modal end -->
    
-    <div id="log"></div>
+    <!-- <div id="log"></div> -->
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 .my-actions { margin: 0 2em; }
 .order-1 { order: 1; }
@@ -49,11 +70,13 @@
 margin-right: auto;
 }
 </style>
+
   <script>
+   
     $(document).ready(function(){
       Swal.fire({
         title: 'Are you ready for your session ?',
-        text : 'Please press yes for start if you are ready !',
+        text : 'Please press yes for your payment and get ready for your session !',
         icon: "info",
         showDenyButton: true,
         showCancelButton: true,
@@ -67,8 +90,7 @@ margin-right: auto;
         }
       }).then((result) => {
         if (result.isConfirmed) {
-          // Swal.fire('Saved!', '', 'success')
-            console.log("ready??????");
+            // $("#paymentModal").modal('show');
             startVedioCall();
         } else if (result.isDenied) {
             window.location.href = "{{ url('/') }}";
@@ -78,14 +100,14 @@ margin-right: auto;
     $(".vedio-response").on('change',function(){
       alert($(this).html);
     });
-    
-    
-    
   </script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
   <script src="//media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.min.js"></script>
   <script src="//sdk.twilio.com/js/video/releases/2.26.2/twilio-video.min.js"></script>
-  <!-- <script src="//media.twiliocdn.com/sdk/js/video/releases/1.14.0/twilio-video.js"></script> -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <!-- <script src="//media.twiliocdn.com/sdk/js/video/releases/1.14.0/twilio-video.js"></script>  this is commented --> 
+  <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> default jquery -->
   <script src="{{ asset('twilio-assets/quickstart.js') }}"></script>
 </body>
 </html>
