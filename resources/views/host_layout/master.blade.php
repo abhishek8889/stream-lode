@@ -560,7 +560,7 @@
 
 <!-- <script src="{{ asset('twilio-assets/quickstart.js') }}"></script> -->
 <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> -->
-<script src="{{ asset('twilio-assets/quickstart.js') }}"></script>
+<!-- <script src="{{ asset('twilio-assets/quickstart.js') }}"></script> -->
 
 
 <!-- Twilio ends -->

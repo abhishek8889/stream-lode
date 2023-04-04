@@ -9,6 +9,7 @@
   
 </head>
 <body>
+  <div id="test" style="display:none;">anjkdfhadjshfk</div>
   @if($roomName)
     <input type="hidden" id="room-name" value="{{ $roomName }}">
   @endif
@@ -28,6 +29,7 @@
         <button id="button-preview" class="active"><i class="fa-sharp fa-solid fa-video"></i></button>
         <button id="button-message"><i class="fa-regular fa-comment"></i></button>
         <button id="button-leave" class="btn btn-danger"><i class="fa-solid fa-phone"></i></button>
+        <div id="sendPaymentBtn" class="btn btn-success" style="display:none;">Send request for payment</div>
         <div class="site-logo">
           <img src="{{ asset('streamlode-front-assets/images/logo.png') }}" alt="logo.png">
         </div>
@@ -91,11 +93,19 @@ margin-right: auto;
       }).then((result) => {
         if (result.isConfirmed) {
             // $("#paymentModal").modal('show');
+            @if(isset(auth()->user()->status))
+              @if(auth()->user()->status == 1)
+                $("#sendPaymentBtn").show();
+              @endif
+            @endif
             startVedioCall();
         } else if (result.isDenied) {
             window.location.href = "{{ url('/') }}";
         }
       })
+    });
+    $("#sendPaymentBtn").on('click',function(){
+      $("#test").show();
     });
     $(".vedio-response").on('change',function(){
       alert($(this).html);

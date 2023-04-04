@@ -15,11 +15,12 @@ class VedioCallController extends Controller
     //
     public function index(Request $req){
         $roomName = $req->segment(2);
-       
-        $appoinments = HostAppointments::where('video_link_name',$roomName)->first();
-        // print_r($appoinments);
+        
+        $appoinment_details = HostAppointments::where('video_link_name',$roomName)->first();
+        $guest_id = $appoinment_details['user_id'];
+        $host_id = $appoinment_details['host_id'];
      
-        return view('vediocall.vediocall',compact('roomName'));
+        return view('vediocall.vediocall',compact('roomName','host_id'));
 
     }
     public function passToken(Request $req){
