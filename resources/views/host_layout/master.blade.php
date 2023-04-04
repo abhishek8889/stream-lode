@@ -555,7 +555,7 @@
 <script src="//sdk.twilio.com/js/video/releases/2.26.2/twilio-video.min.js"></script>
 <!-- <script src="//media.twiliocdn.com/sdk/js/video/releases/1.14.0/twilio-video.js"></script> -->
 <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> -->
-<script src="{{ asset('twilio-assets/quickstart.js') }}"></script>
+<!-- <script src="{{ asset('twilio-assets/quickstart.js') }}"></script> -->
 
 
 <!-- Twilio ends -->
