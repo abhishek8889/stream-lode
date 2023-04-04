@@ -73,12 +73,7 @@ class HostStreamController extends Controller
     );
     return response()->json($data['join_link']);
     }
-    public function viewlink(Request $req){
-
-
-        return response()->json('done');
-
-    }
+ 
     // public function generateToken(Request $req){
     //     $twilioAccountSid = getenv('TWILIO_ACCOUNT_SID');
     //     $twilioApiKey = getenv('TWILIO_API_KEY');
@@ -174,6 +169,7 @@ class HostStreamController extends Controller
             'link' => $req->link,
         ];
         $mail = Mail::to($appoinments->guest_email)->send(new SendVideoLink($mailData));
+        
 
         return response()->json('successfully sent email to guest');
     }
