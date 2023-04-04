@@ -18,6 +18,7 @@ use Hash;
 class HostStreamController extends Controller
 {
     public function index($unique_id,$id){
+      
         $appoinments = HostAppointments::where('_id',$id)->with('user')->first();
         // dd($appoinments);
        
@@ -44,7 +45,7 @@ class HostStreamController extends Controller
     //     );
       
     //    return redirect()->back()->with('data',$data);
-    $room_name = md5($req->room_name).rand(1,1000);
+    $room_name = md5($req->room_name).'12';
     $twilioAccountSid = getenv('TWILIO_ACCOUNT_SID');
     $twilioAuthToken = getenv("TWILIO_AUTH_TOKEN");
     $twilio = new Client($twilioAccountSid, $twilioAuthToken);
@@ -59,13 +60,24 @@ class HostStreamController extends Controller
             "unusedRoomTimeout" => 60,
         ]
     );
+   $host_appoinments = HostAppointments::find($req->room_name);
+   $host_appoinments->video_link_name = $room_name;
+   $host_appoinments->join_link = env('APP_URL')."live-stream/".$room_name;
+   $host_appoinments->update();
 
     $data = array(
         'roomName'  =>  $room_name,
         'join_link' =>  $room->statusCallback,
         'status'    =>  Hash::make('host'),
+        
     );
     return response()->json($data['join_link']);
+    }
+    public function viewlink(Request $req){
+
+
+        return response()->json('done');
+
     }
     // public function generateToken(Request $req){
     //     $twilioAccountSid = getenv('TWILIO_ACCOUNT_SID');
