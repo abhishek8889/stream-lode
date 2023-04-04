@@ -106,7 +106,7 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-Route::get('/trycode',[SearchHostController::class,'trycode']);
+// Route::get('/trycode',[SearchHostController::class,'trycode']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
@@ -285,7 +285,6 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/coupons',[HostDiscountController::class,'index'])->name('host-coupons');
     Route::get('/{id}/coupons/create/{did?}',[HostDiscountController::class,'create'])->name('coupons-create');
     Route::post('/{id}/coupons/createproc',[HostDiscountController::class,'createproc'])->name('coupons-createproc');
-    Route::get('/{id}/trycode',[HostDiscountController::class,'trycode']);
     Route::get('/{id}/coupons/delete/{did}',[HostDiscountController::class,'delete']);
     Route::post('/{id}/coupons/disable',[HostDiscountController::class,'disable'])->name('coupon-disable');
 

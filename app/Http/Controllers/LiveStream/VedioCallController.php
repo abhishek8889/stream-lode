@@ -8,13 +8,16 @@ use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\VideoGrant;
 use Twilio\Jwt\Grants\SyncGrant;
 use Twilio\Jwt\Grants\ChatGrant;
-
+use App\Models\HostAppointments;
 
 class VedioCallController extends Controller
 {
     //
     public function index(Request $req){
         $roomName = $req->segment(2);
+        $appoinments = HostAppointments::where('video_link_name',$roomName)->first();
+        // print_r($appoinments);
+     
         return view('vediocall.vediocall',compact('roomName'));
     }
     public function passToken(Request $req){

@@ -118,7 +118,7 @@
         @endphp
           <a href="{{ url(Auth()->user()->unique_id.'/message/'.$user['_id']) }}" class="dropdown-item">
             <div class="media">
-              <div class="media-body">
+              <div class="media-body" id="messages-notification">
                 <p class="text-sm"><b>{{ count($user['adminmessage']) ?? '' }} new message from {{ $user['first_name'] ?? '' }}</b></p>
               </div>
             </div>

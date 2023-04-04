@@ -181,13 +181,17 @@ display: none;
                     <tr>
                       <th>Sr no.</th>
                       <th>Guest Name</th>
-                      <th>Email</th>
                       <th>Start Time</th>
                       <th>End Time</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <?php $count = 0; ?>
                   <tbody>
+              <?php
+              $current_date = date('Y-d-m H:i');
+              
+              ?>
                     @if($host_schedule)
                     @forelse ($host_schedule as $hs)
                       <tr>
@@ -197,15 +201,28 @@ display: none;
                         <?php 
                         $startdate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->start)));
                         $enddate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->end)));
+                        $time = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->end)));
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
                         <td>
+                        @if($current_date < $hs->end)
+                          @if($hs->video_link_name)
+                          <a class="videoconfrencelink" app-id="{{$hs->_id}}" data-id="{{$hs->video_link_name}}" href="{{ url(auth()->user()->unique_id.'/vedio-conference/'.$hs->_id) }}">
+                            <span>View Room</span>
+                            <i class="fa fa-video-camera" aria-hidden="true"></i>
+                          </a>
+                          @else
                           <a class="videoconfrence" data-id="{{$hs->_id}}" href="{{ url(auth()->user()->unique_id.'/vedio-conference/'.$hs->_id) }}">
                             <span>Create Room</span>
                             <i class="fa fa-video-camera" aria-hidden="true"></i>
                           </a>
+                          @endif
+                          @else
+                         <span class="badge badge-pill badge-danger">TimedOut</span>
+                          @endif
                         </td>
+                       
                       </tr>
                     @empty
                       <tr>
@@ -269,9 +286,27 @@ display: none;
             }
 
         });
+        $('.close').click(function(){
+location.reload();
+});
 
       });
     });
+    $(document).ready(function(){
+     
+     $('.videoconfrencelink').click(function(e){
+      e.preventDefault();
+      // $('#overlayer').fadeIn();
+       room_name = $(this).attr('data-id');
+       room_link = '{{url('live-stream')}}/'+room_name;
+       aid = $(this).attr('app-id');
+       $('#exampleModalCenter').modal("show");
+       $('#send-link').attr("data-id",aid);
+       $('#send-link').attr("link",room_link);
+       $('#link-input').val(room_link);
+
+     });
+   });
 
     $('#send-link').click(function(e){
       $('#overlayer').fadeIn();
@@ -288,8 +323,8 @@ display: none;
             success: function(response){
               // console.log(response);
               $('#overlayer').fadeOut();
-       $('#exampleModalCenter').addClass("show");
-       $('#exampleModalCenter').css("display","block");
+              $('#exampleModalCenter').addClass("show");
+              $('#exampleModalCenter').css("display","block");
                 swal({
                           title: "success !",
                           text: response,
@@ -303,6 +338,7 @@ display: none;
 
 // copy to clipboard
 let copyText = document.querySelector(".copy-text");
+
 copyText.querySelector("button").addEventListener("click", function () {
 	let input = copyText.querySelector("input.text");
 	input.select();
@@ -313,6 +349,7 @@ copyText.querySelector("button").addEventListener("click", function () {
 		copyText.classList.remove("active");
 	}, 2500);
 });
+
 
   </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert"></script>
