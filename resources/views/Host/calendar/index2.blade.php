@@ -152,8 +152,9 @@ $(document).ready(function () {
                                                 end: data.end,
                                                 allDay: allDay
                                             },true);
-    
+                                            
                                         calendar.fullCalendar('unselect');
+                                        location.reload();
                                         }
                                     }
                                 });
@@ -207,18 +208,7 @@ $(document).ready(function () {
                 });
  
     });
-    $(document).ready(function(){
-      $.ajax({
-        method:'post',
-        url: '{{ url('/'.auth()->user()->unique_id.'/seen-status') }}',
-        data: { status:1 },
-        dataType: 'json',
-        success: function(response) {
-          // console.log(response);
-          $('#notificationscount').html('0');
-        }
-      })
-    })
+    
       
     /*------------------------------------------
     --------------------------------------------
