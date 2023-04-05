@@ -183,13 +183,13 @@ display: none;
                       <th>Guest Name</th>
                       <th>Start Time</th>
                       <th>End Time</th>
-                      <th>Action</th>
+                      <th class="text-center">Action</th>
                     </tr>
                   </thead>
                   <?php $count = 0; ?>
                   <tbody>
               <?php
-              $current_date = date('Y-d-m H:i');
+              $current_date = date('Y-m-d H:i');
               
               ?>
                     @if($host_schedule)
@@ -205,7 +205,7 @@ display: none;
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
-                        <td>
+                        <td class="text-center">
                         @if($current_date < $hs->end)
                           @if($hs->video_link_name)
                           <a class="videoconfrencelink" app-id="{{$hs->_id}}" data-id="{{$hs->video_link_name}}" href="{{ url(auth()->user()->unique_id.'/vedio-conference/'.$hs->_id) }}">
@@ -287,8 +287,8 @@ display: none;
 
         });
         $('.close').click(function(){
-location.reload();
-});
+        location.reload();
+        });
 
       });
     });

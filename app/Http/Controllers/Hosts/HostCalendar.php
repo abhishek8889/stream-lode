@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Hosts;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\HostAvailablity;
+use App\Models\HostAppointments;
 use DB;
 
 class HostCalendar extends Controller
@@ -89,5 +90,15 @@ class HostCalendar extends Controller
         $message = array('error' => "Sorry but for schedule meeting you have to activate your account by paying invoice got in registered email.");
         return response()->json($message);
       }
+    }
+    public function seenstatus(Request $request){
+      $data = HostAppointments::where([['host_id',Auth()->user()->id],['seen_status',0]])->get();
+        foreach($data as $d){
+            $update = HostAppointments::find($d->_id);
+            $update->seen_status = 1;
+            $update->update();
+        }
+      return response()->json($data);
+
     }
 }

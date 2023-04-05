@@ -207,6 +207,18 @@ $(document).ready(function () {
                 });
  
     });
+    $(document).ready(function(){
+      $.ajax({
+        method:'post',
+        url: '{{ url('/'.auth()->user()->unique_id.'/seen-status') }}',
+        data: { status:1 },
+        dataType: 'json',
+        success: function(response) {
+          // console.log(response);
+          $('#notificationscount').html('0');
+        }
+      })
+    })
       
     /*------------------------------------------
     --------------------------------------------

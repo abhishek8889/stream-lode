@@ -59,7 +59,7 @@
         <a href="#" class="nav-link">Contact</a>
       </li>
     </ul>
-
+<input type="hidden" id="base_url" value="{{ url(Auth()->user()->unique_id) }}">
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Navbar Search -->
@@ -127,30 +127,31 @@
         @endforeach
         </div>
       </li>
+       <?php  $appoinments = App\Models\HostAppointments::where([['host_id','63fd8e4d1ad0d9aee603e4d2'],['seen_status',0]])->get(); ?>
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
           
-          <span class="badge badge-warning navbar-badge" >10</span>
+          <span class="badge badge-warning navbar-badge" id="notificationcount" >{{ count($appoinments) }}</span>
         </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">15 Notifications</span>
+       
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notificationbox">
+          <span class="dropdown-item dropdown-header"></span>
           <div class="dropdown-divider"></div>
           <a href="" class="dropdown-item" data-toggle="modal" data-toggle="modal" data-target="#exampleModalCenter123">
             <i class="fas fa-envelope mr-2"></i><span id=""></span> new notification from admin side
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 8 friend requests
-            <span class="float-right text-muted text-sm">12 hours</span>
+        
+          @foreach($appoinments as $ap)
+          <a href="{{ url(Auth()->user()->unique_id.'/Appoinments') }}" class="dropdown-item p-2">
+          <i class="nav-icon fas fa-calendar"></i>
+          new appointment scheduled with {{$ap->guest_name}}
+            <!-- <span class="float-right text-muted text-sm">12 hours</span> -->
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-file mr-2"></i> 3 new reports
-            <span class="float-right text-muted text-sm">2 days</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+          @endforeach
+      
         </div>
       </li>
       <!-- Logout -->
@@ -206,11 +207,13 @@
      @php 
 
      $adminnotifications = App\Models\PostNotification::orderBy('created_at','desc')->get();
+    
      @endphp
     @foreach($adminnotifications as $an)
-    <p><span>{{$an->username}}:</span> {{$an->message}} </p>
+    <p><span>{{$an->username}}:</span> {{$an->message}} </p> 
     @endforeach
-      </div>
+   
+  </div>
       <div class="modal-footer">
       </div>
     </div>

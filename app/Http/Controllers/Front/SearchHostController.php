@@ -18,7 +18,7 @@ use Auth;
 use Hash;
 use DateTime;
 use Twilio\Rest\Client;
-
+use App\Events\NotificationsSend;
 use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\VideoGrant;
 
@@ -131,6 +131,7 @@ class SearchHostController extends Controller
                 $newAppointment->start = date('Y-m-d H:i', strtotime($req->start));
                 $newAppointment->end = date('Y-m-d H:i', strtotime($req->end));
                 $newAppointment->status = $req->status;
+                $newAppointment->seen_status = 0;
                 $newAppointment->save();
                 $user = User::find($req->user_id); 
             }else{
@@ -164,6 +165,7 @@ class SearchHostController extends Controller
                 $newAppointment->start = date('Y-m-d H:i', strtotime($req->start));
                 $newAppointment->end = date('Y-m-d H:i', strtotime($req->end));
                 $newAppointment->status = $req->status;
+                $newAppointment->seen_status = 0;
                 $newAppointment->save();
                 $user = User::find($user->_id); 
             }
@@ -183,6 +185,7 @@ class SearchHostController extends Controller
                 
                 $mail = Mail::to($uemail)->send(new appoinmentsconfirmation($mailData));
                 $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
+                event(new NotificationsSend($req->host_id,$newAppointment));
                 $meeting_end_time =  strtotime($req->end);
                 $updated_host_available_time =  date('Y-m-d H:i', strtotime('+30 minutes',$meeting_end_time));
                 
@@ -196,6 +199,9 @@ class SearchHostController extends Controller
                     $host_availablity->start = date('Y-m-d H:i',$meeting_end_time);
                     $host_availablity->update();
                 }
+
+                //notifications
+          
                 
                 $event = array(
                     'id' => $newAppointment['id'],
@@ -263,10 +269,10 @@ public function trycode(){
 //        $users[] = User::where('_id',$mid)->with('adminmessage',function($response){ $response->where([['reciever_id','63fd8e4d1ad0d9aee603e4d2'],['status',1]]); })->first(); 
 //     }
 //     dd($users);
-$sid = getenv("TWILIO_ACCOUNT_SID");
-$token = getenv("TWILIO_AUTH_TOKEN");
-$twilio = new Client($sid, $token);
-return view('trycode');
+// $sid = getenv("TWILIO_ACCOUNT_SID");
+// $token = getenv("TWILIO_AUTH_TOKEN");
+// $twilio = new Client($sid, $token);
+// return view('trycode');
 }
 
 }

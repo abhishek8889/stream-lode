@@ -74,12 +74,12 @@
                <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:420px;">
                     <div class="direct-chat-msg messagesappend" id="messages">
                         @foreach($messages as $m)
-                    <div class="direct-chat-msg <?php if($m['sender_id'] == Auth()->user()->id){ echo 'right'; }?>">
+                    <div class="direct-chat-msg <?php if($m['sender_id'] == Auth()->user()->id){ }?>">
                     <div class="direct-chat-infos clearfix">
                       <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }?>">{{$m['username']}}</span>
                     </div>
                     <div class="direct-chat-text"<?php if($m['sender_id'] == Auth()->user()->id){ echo 'style="margin-right:0px;text-align: right; margin-left:40%;"'; }else{ echo 'style="margin-left:0px; margin-right:40%;"'; }?> >
-                    {{$m['message']}}
+                  <?php echo $m['message']; ?>
                     </div>
                     <!-- /.direct-chat-text -->
                   </div>

@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Mail\SendVideoLink;
 use App\Models\HostAppointments;
+use App\Models\Messages;
 use Hash;
+use App\Events\Message;
 
 class HostStreamController extends Controller
 {
@@ -69,7 +71,6 @@ class HostStreamController extends Controller
         'roomName'  =>  $room_name,
         'join_link' =>  $room->statusCallback,
         'status'    =>  Hash::make('host'),
-        
     );
     return response()->json($data['join_link']);
     }
@@ -169,8 +170,14 @@ class HostStreamController extends Controller
             'link' => $req->link,
         ];
         $mail = Mail::to($appoinments->guest_email)->send(new SendVideoLink($mailData));
-        
-
-        return response()->json('successfully sent email to guest');
+        event(new Message($appoinments->user,'<a href="'.$req->link.'">'.$req->link.'</a>',Auth()->user()->id,$appoinments->user_id));
+        $message = new Messages;
+        $message->username = $appoinments->user['first_name'];
+        $message->sender_id = Auth()->user()->id;
+        $message->message = '<a href="'.$req->link.'">'.$req->link.'</a>';
+        $message->reciever_id = $appoinments->user_id;
+        $message->status = 1;
+        $message->save();
+        return response()->json('successfully sent link');
     }
 }

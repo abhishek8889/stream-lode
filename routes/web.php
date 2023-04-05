@@ -106,7 +106,7 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-// Route::get('/trycode',[SearchHostController::class,'trycode']);
+Route::get('/trycode',[SearchHostController::class,'trycode']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
@@ -294,6 +294,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
       
     Route::get('/{id}/calendar',[HostCalendar::class,'index'])->name('host-calender');
     Route::post('/{id}/calendar-response',[HostCalendar::class,'ajax']);
+    Route::post('/{id}/seen-status',[HostCalendar::class,'seenstatus']);
 
     //hostMessage
     Route::get('/{id}/message/{uid?}',[HostMessageController::class,'index']);

@@ -23,7 +23,8 @@
                     <div class="direct-chat-msg" id ="messages">
                     <b>{{ $m->username }}</b>:
                     <div class="direct-chat-text">
-                        {{ $m->message }}
+                      <?php
+                     echo $m->message; ?>
                       </div>
                     </div>
                 @endforeach
