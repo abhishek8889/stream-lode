@@ -13,6 +13,7 @@ use App\Mail\HostAppoinmentsMail;
 use App\Mail\SendpasswordMail;
 use App\Models\HostAvailablity;
 use App\Models\HostAppointments;
+use App\Models\Discounts\HostDiscount;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Hash;
@@ -247,32 +248,80 @@ class SearchHostController extends Controller
     }
 //   
 public function trycode(){
-//     $messages = Messages::where([['reciever_id','63fd8e4d1ad0d9aee603e4d2'],['status',1]])->distinct('sender_id')->get()->toArray();
-//     if($messages){
-//     foreach($messages as $m){
-//         $user = User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id','63fd8e4d1ad0d9aee603e4d2'); })->first();
+    $date = date('Y-m-d');
+    // print_r($date);
+    $amount = 100;
+    $discount_code = '#TEST-B3g5';
+    $host_id = '63fd8e4d1ad0d9aee603e4d2';
+    $discounts = HostDiscount::where([['coupon_code',$discount_code],['host_id',$host_id]])->first();
+    if(!empty($discounts)){
+            if($discounts->status == 1){
+                if($discounts->expiredate >= $date){
+                if($discounts->duration == 'Once'){
+                    $discount_amount = $discounts->percentage_off;
+                    $response = 'discount coupon is valid';
+                }elseif($discounts->duration == 'Repeating'){
+                    if($discounts->duration_times > 0){
+                        $discount_amount = $discounts->percentage_off;
+                        $response = 'discount coupon is valid';
+                    }else{
+                        $discount_amount = 0;
+                        $response = 'discount coupon is expired';
+                    }
+                }elseif($discounts->duration == 'Forever'){
+                    $discount_amount = $discounts->percentage_off;
+                    $response = 'discount coupon is valid';
+                }
+            }else{
+            $discount_amount = 0;
+            $response = 'discount coupon is expired';  
+            }
+        }else{
+            $discount_amount = 0;
+            $response = 'discount is expired ';
+        }
+    }else{
+        $discount_amount = 0;
+        $response = 'discount coupon is invalid';
+    }
+    // print_r($discount_amount.'<br>');
+    // print_r($response.'<br>');
+    // print_r($discount_code.'<br>');
+    if($discount_amount != 0){
+        // echo 'done';
+    $discunt_coupon_code = HostDiscount::where('coupon_code',$discount_code)->first();
+    // echo $discunt_coupon_code->duration;
+    if($discunt_coupon_code->duration == 'Once'){
+        // echo 'done';
+        // print_r($discunt_coupon_code->id);
+        $update = HostDiscount::find($discunt_coupon_code->_id);
+        $update->status = 0;
+        $update->update();
+    }elseif($discunt_coupon_code->duration == 'Repeating'){
+        $update = HostDiscount::find($discunt_coupon_code->_id);
+        $update->duration_times = $discunt_coupon_code->duration_times-1;
+        $update->update();
+    }else{
+        $update = HostDiscount::find($discunt_coupon_code->_id);
+        $update->coupon_used = $discunt_coupon_code->coupon_used+1;
+        $update->update();
+    }
+    }
     
-//     print_r($messages);
-// }
-//     }
-// $reciever_id = '63fd8e4d1ad0d9aee603e4d2';
-// $messages = Messages::where('reciever_id',$reciever_id)->orWhere('sender_id',$reciever_id)->orderBy('created_at','desc')->get();
-// $ids = array();
-// foreach($messages as $m){
-//    array_push($ids,$m->sender_id);
-//    array_push($ids,$m->reciever_id);
-// }
-// // print_r($ids);
-//     $message_id =array_unique($ids); 
-    
-//     foreach($message_id as $mid){
-//        $users[] = User::where('_id',$mid)->with('adminmessage',function($response){ $response->where([['reciever_id','63fd8e4d1ad0d9aee603e4d2'],['status',1]]); })->first(); 
-//     }
-//     dd($users);
-// $sid = getenv("TWILIO_ACCOUNT_SID");
-// $token = getenv("TWILIO_AUTH_TOKEN");
-// $twilio = new Client($sid, $token);
-// return view('trycode');
+    $discount_amounts = $amount*$discount_amount/100;
+    $final_amount = $amount-$discount_amounts;
+    // print_r($final_amount);
+
+    $result = array(
+        'subtotal' => '$'.$amount,
+        'coupon_code' => $discount_code,
+        'discount_percentage' => '%'.$discount_amount,
+        'discount_amount' => '$'.$discount_amounts,
+        'final_amount' => '$'.$final_amount,
+        'response' => $response
+    );
+    print_r($result);
+
 }
 
 }

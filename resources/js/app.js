@@ -34,7 +34,7 @@ import './bootstrap';
         if(authid = e.host_id){
             $('#notificationcount').html(count1 + 1);
             // console.log(e.appoinments);
-            $('#notificationbox').append('<a href="'+base_url+'/Appoinments" class="dropdown-item p-2"><i class="nav-icon fas fa-calendar"></i>new appointment scheduled with '+e.appoinments.guest_name+'</a>');
+            $('#notificationbox12').append('<a href="'+base_url+'/Appoinments" class="dropdown-item"><i class="nav-icon fas fa-calendar mr-2"></i>new appointment scheduled with '+e.appoinments.guest_name+'</a>');
 
         }
        

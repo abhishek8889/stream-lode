@@ -13,7 +13,7 @@ use App\Events\Message;
 class MeetingController extends Controller
 {
     public function index(){
-       $appoinments = HostAppointments::where('user_id',Auth::user()->id)->with('user')->with('messages',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); })->orderBy('created_by','desc')->get();
+       $appoinments = HostAppointments::where('user_id',Auth::user()->id)->with('user')->with('messages',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); })->orderBy('created_at','desc')->get();
         // dd($appoinments);
         // echo Auth::user()->id;
         return view('Guests.meeting-scheduled.index',compact('appoinments'));

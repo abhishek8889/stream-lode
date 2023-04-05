@@ -135,7 +135,7 @@
           <span class="badge badge-warning navbar-badge" id="notificationcount" >{{ count($appoinments) }}</span>
         </a>
        
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notificationbox">
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notificationbox12" style="max-height: 171px; overflow: auto;">
           <span class="dropdown-item dropdown-header"></span>
           <div class="dropdown-divider"></div>
           <a href="" class="dropdown-item" data-toggle="modal" data-toggle="modal" data-target="#exampleModalCenter123">
@@ -144,8 +144,8 @@
           <div class="dropdown-divider"></div>
         
           @foreach($appoinments as $ap)
-          <a href="{{ url(Auth()->user()->unique_id.'/Appoinments') }}" class="dropdown-item p-2">
-          <i class="nav-icon fas fa-calendar"></i>
+          <a href="{{ url(Auth()->user()->unique_id.'/Appoinments') }}" class="dropdown-item">
+          <i class="nav-icon fas fa-calendar mr-2"></i>
           new appointment scheduled with {{$ap->guest_name}}
             <!-- <span class="float-right text-muted text-sm">12 hours</span> -->
           </a>

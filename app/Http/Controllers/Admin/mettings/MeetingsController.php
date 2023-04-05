@@ -20,7 +20,7 @@ class MeetingsController extends Controller
      $data = array_unique($userdata,SORT_REGULAR);
      foreach($data as $d){
       // print_r($d['_id']);
-      $user[] = User::where('_id',$d['_id'])->with('appoinments')->get();
+      $user[] = User::where('_id',$d['_id'])->with('appoinments',function($response){ $response->orderBy('created_at','desc'); } )->get();
      }
     // // dd($user);
     // echo '<pre>';

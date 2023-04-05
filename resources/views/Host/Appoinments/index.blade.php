@@ -208,18 +208,18 @@ display: none;
                         <td class="text-center">
                         @if($current_date < $hs->end)
                           @if($hs->video_link_name)
-                          <a class="videoconfrencelink" app-id="{{$hs->_id}}" data-id="{{$hs->video_link_name}}" href="{{ url(auth()->user()->unique_id.'/vedio-conference/'.$hs->_id) }}">
+                          <a class="videoconfrencelink" app-id="{{$hs->_id}}" data-id="{{$hs->video_link_name}}" style="cursor:move;">
                             <span>View Room</span>
                             <i class="fa fa-video-camera" aria-hidden="true"></i>
                           </a>
                           @else
-                          <a class="videoconfrence" data-id="{{$hs->_id}}" href="{{ url(auth()->user()->unique_id.'/vedio-conference/'.$hs->_id) }}">
+                          <a class="videoconfrence" data-id="{{$hs->_id}}" style="cursor:move;">
                             <span>Create Room</span>
                             <i class="fa fa-video-camera" aria-hidden="true"></i>
                           </a>
                           @endif
                           @else
-                         <span class="badge badge-pill badge-danger">TimedOut</span>
+                         <span class="badge badge-pill badge-danger">Expired</span>
                           @endif
                         </td>
                        
@@ -349,7 +349,21 @@ copyText.querySelector("button").addEventListener("click", function () {
 		copyText.classList.remove("active");
 	}, 2500);
 });
-
+$(document).ready(function(){
+      $.ajax({
+        method:'post',
+        url: '{{ url('/'.auth()->user()->unique_id.'/seen-status') }}',
+        data: { status:1,_token: "{{ csrf_token() }}" },
+        dataType: 'json',
+        success: function(response) {
+          console.log(response);
+          if(response[0]){
+            location.reload();
+          }
+          $('#notificationscount').html('0');
+        }
+      })
+    })
 
   </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert"></script>

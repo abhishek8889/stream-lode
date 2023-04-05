@@ -40,6 +40,7 @@ class HostDiscountController extends Controller
                 }
                 $data->duration_times = $req->duration_times;
                 $data->expiredate = $expire_new_date;
+                $data->host_id = Auth()->user()->id;
                 $data->status = 1;
                 $data->save();
                 return redirect()->back()->with('success','Successfully save new coupons');
@@ -51,10 +52,11 @@ class HostDiscountController extends Controller
                 $data->percentage_off = $req->percentage_off;
                 $data->duration = $req->duration;
                 if($req->duration == 'Forever'){
-                    $data->coupon_used = 0;
+                    $data->coupon_used += 0;
                 }
                 $data->duration_times = $req->duration_times;
                 $data->expiredate = $expire_new_date;
+                $data->host_id = Auth()->user()->id;
                 $data->status = 1;
                 $data->update();
                 return redirect()->back()->with('success','Successfully update new coupons');
