@@ -214,7 +214,7 @@ class SearchHostController extends Controller
                     'allDay'   =>  false,
                 );
                 //    return $event;
-               return response()->json($event);
+               return response()->json($hostmail);
 
               break;
             }
@@ -248,79 +248,88 @@ class SearchHostController extends Controller
     }
   
 public function trycode(){
-    $date = date('Y-m-d');
-    // print_r($date);
-    $amount = 100;
-    $discount_code = '#TEST-B3g5';
-    $host_id = '63fd8e4d1ad0d9aee603e4d2';
-    $discounts = HostDiscount::where([['coupon_code',$discount_code],['host_id',$host_id]])->first();
-    if(!empty($discounts)){
-            if($discounts->status == 1){
-                if($discounts->expiredate >= $date){
-                if($discounts->duration == 'Once'){
-                    $discount_amount = $discounts->percentage_off;
-                    $response = 'discount coupon is valid';
-                }elseif($discounts->duration == 'Repeating'){
-                    if($discounts->duration_times > 0){
-                        $discount_amount = $discounts->percentage_off;
-                        $response = 'discount coupon is valid';
-                    }else{
-                        $discount_amount = 0;
-                        $response = 'discount coupon is expired';
-                    }
-                }elseif($discounts->duration == 'Forever'){
-                    $discount_amount = $discounts->percentage_off;
-                    $response = 'discount coupon is valid';
-                }
-            }else{
-            $discount_amount = 0;
-            $response = 'discount coupon is expired';  
-            }
-        }else{
-            $discount_amount = 0;
-            $response = 'discount is expired ';
-        }
-    }else{
-        $discount_amount = 0;
-        $response = 'discount coupon is invalid';
-    }
-    // print_r($discount_amount.'<br>');
-    // print_r($response.'<br>');
-    // print_r($discount_code.'<br>');
-    if($discount_amount != 0){
-        // echo 'done';
-    $discunt_coupon_code = HostDiscount::where('coupon_code',$discount_code)->first();
-    // echo $discunt_coupon_code->duration;
-    if($discunt_coupon_code->duration == 'Once'){
-        // echo 'done';
-        // print_r($discunt_coupon_code->id);
-        $update = HostDiscount::find($discunt_coupon_code->_id);
-        $update->status = 0;
-        $update->update();
-    }elseif($discunt_coupon_code->duration == 'Repeating'){
-        $update = HostDiscount::find($discunt_coupon_code->_id);
-        $update->duration_times = $discunt_coupon_code->duration_times-1;
-        $update->update();
-    }else{
-        $update = HostDiscount::find($discunt_coupon_code->_id);
-        $update->coupon_used = $discunt_coupon_code->coupon_used+1;
-        $update->update();
-    }
-    }
+    // $date = date('Y-m-d');
+    // // print_r($date);
+    // $amount = 100;
+    // $discount_code = '#TEST-B3g5';
+    // $host_id = '63fd8e4d1ad0d9aee603e4d2';
+    // $discounts = HostDiscount::where([['coupon_code',$discount_code],['host_id',$host_id]])->first();
+    // if(!empty($discounts)){
+    //         if($discounts->status == 1){
+    //             if($discounts->expiredate >= $date){
+    //             if($discounts->duration == 'Once'){
+    //                 $discount_amount = $discounts->percentage_off;
+    //                 $response = 'discount coupon is valid';
+    //             }elseif($discounts->duration == 'Repeating'){
+    //                 if($discounts->duration_times > 0){
+    //                     $discount_amount = $discounts->percentage_off;
+    //                     $response = 'discount coupon is valid';
+    //                 }else{
+    //                     $discount_amount = 0;
+    //                     $response = 'discount coupon is expired';
+    //                 }
+    //             }elseif($discounts->duration == 'Forever'){
+    //                 $discount_amount = $discounts->percentage_off;
+    //                 $response = 'discount coupon is valid';
+    //             }
+    //         }else{
+    //         $discount_amount = 0;
+    //         $response = 'discount coupon is expired';  
+    //         }
+    //     }else{
+    //         $discount_amount = 0;
+    //         $response = 'discount is expired ';
+    //     }
+    // }else{
+    //     $discount_amount = 0;
+    //     $response = 'discount coupon is invalid';
+    // }
+    // // print_r($discount_amount.'<br>');
+    // // print_r($response.'<br>');
+    // // print_r($discount_code.'<br>');
+    // if($discount_amount != 0){
+    //     // echo 'done';
+    // $discunt_coupon_code = HostDiscount::where('coupon_code',$discount_code)->first();
+    // // echo $discunt_coupon_code->duration;
+    // if($discunt_coupon_code->duration == 'Once'){
+    //     // echo 'done';
+    //     // print_r($discunt_coupon_code->id);
+    //     $update = HostDiscount::find($discunt_coupon_code->_id);
+    //     $update->status = 0;
+    //     $update->update();
+    // }elseif($discunt_coupon_code->duration == 'Repeating'){
+    //     $update = HostDiscount::find($discunt_coupon_code->_id);
+    //     $update->duration_times = $discunt_coupon_code->duration_times-1;
+    //     $update->update();
+    // }else{
+    //     $update = HostDiscount::find($discunt_coupon_code->_id);
+    //     $update->coupon_used = $discunt_coupon_code->coupon_used+1;
+    //     $update->update();
+    // }
+    // }
     
-    $discount_amounts = $amount*$discount_amount/100;
-    $final_amount = $amount-$discount_amounts;
-    // print_r($final_amount);
+    // $discount_amounts = $amount*$discount_amount/100;
+    // $final_amount = $amount-$discount_amounts;
+    // // print_r($final_amount);
 
-    $result = array(
-        'subtotal' => '$'.$amount,
-        'coupon_code' => $discount_code,
-        'discount_percentage' => '%'.$discount_amount,
-        'discount_amount' => '$'.$discount_amounts,
-        'final_amount' => '$'.$final_amount,
-        'response' => $response
-    );
-    print_r($result);
+    // $result = array(
+    //     'subtotal' => '$'.$amount,
+    //     'coupon_code' => $discount_code,
+    //     'discount_percentage' => '%'.$discount_amount,
+    //     'discount_amount' => '$'.$discount_amounts,
+    //     'final_amount' => '$'.$final_amount,
+    //     'response' => $response
+    // );
+    // print_r($result);
+
+    $mailData = [
+        'hostname' => '$user->first_name$user->last_name',
+        'username' => '$user->first_name$user->last_name',
+        'start' => '$req->start',
+        'end' => '$req->end',
+    ];
+    $mail = Mail::to('pdeveloper261@gmail.com')->send(new appoinmentsconfirmation($mailData));
+    $hostmail = Mail::to('yashwantchandel06@gmail.com')->send(new HostAppoinmentsMail($mailData));
 
 }
 

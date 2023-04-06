@@ -363,7 +363,31 @@
               
             </ul>
           </li>
-
+          <li class="nav-item ">
+            <a href="#" class="nav-link active">
+            <i class="fas fa-file-invoice-dollar nav-icon"></i>
+              <p>
+                Meeting-Charges
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ url( '/'.auth()->user()->unique_id.'/meeting-charges') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>List</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ url( '/'.auth()->user()->unique_id.'/meeting-charges/add') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add-Charges</p>
+                </a>
+              </li>
+            </ul>
+          </li>
           <li class="nav-item ">
             <a href="{{ url('/'.auth()->user()->unique_id.'/message/') }}" class="nav-link active">
             <i class="fas fa-comment-alt nav-icon"></i>
