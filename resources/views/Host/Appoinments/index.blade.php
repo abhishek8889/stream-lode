@@ -201,11 +201,12 @@ display: none;
                         <?php 
                         $startdate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->start)));
                         $enddate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->end)));
-                        $time = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->end)));
+                        // $time = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->end)));
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
-                        <td class="text-center">
+                        <td>
+                        
                         @if($current_date < $hs->end)
                           @if($hs->video_link_name)
                           <a class="videoconfrencelink" app-id="{{$hs->_id}}" data-id="{{$hs->video_link_name}}" style="cursor:move;">
