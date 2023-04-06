@@ -16,5 +16,10 @@ class AppoinmentsController extends Controller
         // print_r($host_schedule);
         return view('Host.Appoinments.index',compact('host_schedule'));
     }
-   
+    public function deleteAppointment(Request $req){
+        // return $req->id;
+        $appointment = HostAppointments::find($req->id);
+        $appointment->delete();
+        return redirect()->back()->with('success','You have succesfully delete you appointment');
+    }
 }

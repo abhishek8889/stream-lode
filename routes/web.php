@@ -306,6 +306,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
    
     //Appoinments
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index'])->name('appoinments');
+    Route::get('delete-appointment/{id}',[AppoinmentsController::class,'deleteAppointment']);
 
     //Vedio chat
     Route::get('{id}/vedio-conference/{userid}',[HostStreamController::class,'index']); 
