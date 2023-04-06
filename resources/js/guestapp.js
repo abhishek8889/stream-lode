@@ -20,9 +20,7 @@ import './bootstrap';
         if(e.sender_id = reciever_id && e.reciever_id == sender_id){
             $('#messages').append('<div class="direct-chat-msg ml-0" id ="messages"><b>'+e.username.first_name+'</b>:<div class="direct-chat-text">'+e.message+'</div></div>');
             
-        }
-            
-
+        }    
     });
     
 
