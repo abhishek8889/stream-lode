@@ -10,30 +10,27 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SendStreamPaymentRequest
+class SendStreamPaymentRequest implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    public $appointment_id;
+    public $stream_amount;
+    public $currency;
+    public $message;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
+    public function __construct($stream_amount,$currency,$appointment_id,$message)
+    {  
+        $this->stream_amount = $stream_amount;
+        $this->currency = $currency;
+        $this->appointment_id = $appointment_id;
+        $this->message = $message;
     }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
     public function broadcastOn()
     {
-        return new PrivateChannel('sendStreamRequest');
+        return new Channel('sendStreamRequest');
     }
-    public function broadcastAs(){
+    public function broadcastAs()
+    {
         return 'streamPaymentRequest';
     }
 }

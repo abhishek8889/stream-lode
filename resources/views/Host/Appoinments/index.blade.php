@@ -189,7 +189,7 @@ display: none;
                   <?php $count = 0; ?>
                   <tbody>
               <?php
-              $current_date = date('Y-d-m H:i');
+              $current_date = date('Y-m-d H:i');
               
               ?>
                     @if($host_schedule)
