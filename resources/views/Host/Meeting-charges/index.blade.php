@@ -1,7 +1,7 @@
 @extends('host_layout.master')
 @section('content')
 <div class="container">
-<div class="col-8">
+<div class="col-12">
         <div class="card">
             <div class="card-header">
                 <div class="card-tools">
@@ -34,7 +34,7 @@
                             <?php $count = $count+1; ?>
                             <tr >
                                 <td>{{ $count }}.</td>
-                                <td>{{ $mc->duration }} minutes</td>
+                                <td>{{ $mc->duration_in_minutes }} minutes</td>
                                 <td>${{ $mc->payment }}</td>
                                 <td>
                                 <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add/'.$mc->_id) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>

@@ -21,13 +21,14 @@ class MeetingCharges extends Controller
             'duration' => 'required',
             'payment' => 'required'
         ]);
-        $duration = MeetingCharge::where([['host_id',Auth()->user()->id],['duration',$req->duration]])->first();
+        $duration = MeetingCharge::where([['host_id',Auth()->user()->id],['duration_in_minutes',$req->duration]])->first();
         // dd($duration);
         if($duration){
             $data = MeetingCharge::find($duration['_id']);
             $data->host_id = Auth()->user()->id;
             $data->duration_in_minutes = $req->duration;
             $data->payment = $req->payment;
+            $data->currency = $req->currency;
             $data->update();
             return redirect()->back()->with('success','successfully updated meeting charges');
         }else{
@@ -35,6 +36,7 @@ class MeetingCharges extends Controller
             $data->host_id = Auth()->user()->id;
             $data->duration_in_minutes = $req->duration;
             $data->payment = $req->payment;
+            $data->currency = $req->currency;
             $data->save();
             return redirect()->back()->with('success','successfully saved meeting charges');
         }

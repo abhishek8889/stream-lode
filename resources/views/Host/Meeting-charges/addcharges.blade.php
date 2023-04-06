@@ -13,7 +13,18 @@
                   <div class="form-group row">
                     <label for="duration" class="col-sm-2 col-form-label">Duration In Minutes</label>
                     <div class="col-sm-10">
-                      <input type="number" class="form-control" id="duration" name="duration" placeholder="Duration" value="{{ $meetingcharges['duration'] ?? '' }}">
+                      <input type="number" class="form-control" id="duration" name="duration" placeholder="Duration" value="{{ $meetingcharges['duration_in_minutes'] ?? '' }}">
+                    </div>
+                    @error('duration')
+                            <div class="text text-danger">{{ $message }}</div>
+                    @enderror
+                  </div>
+                  <div class="form-group row">
+                    <label for="duration" class="col-sm-2 col-form-label">Currency</label>
+                    <div class="col-sm-10">
+                      <select class="form-control" name="currency" id="">
+                        <option value="usd">USD</option>
+                      </select>
                     </div>
                     @error('duration')
                             <div class="text text-danger">{{ $message }}</div>
