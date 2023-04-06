@@ -38,6 +38,7 @@ use App\Http\Controllers\Hosts\AppoinmentsController;
 use App\Http\Controllers\Hosts\HostStreamController;
 use App\Http\Controllers\Hosts\WebsocketController;
 use App\Http\Controllers\Hosts\HostDiscountController;
+use App\Http\Controllers\Hosts\MeetingCharges;
 
 use Google\Service\ServiceConsumerManagement\Authentication;
 
@@ -306,6 +307,12 @@ Route::group(['middleware'=>['auth','Host']],function(){
    
     //Appoinments
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index'])->name('appoinments');
+
+    //meeting charges
+    Route::get('{id}/meeting-charges',[MeetingCharges::class,'index']);
+    Route::get('{id}/meeting-charges/add/{idd?}',[MeetingCharges::class,'add'])->name('meeting-charges');
+    Route::post('{id}/meeting-charges/addproc',[MeetingCharges::class,'addproc'])->name('meeting-add');
+    Route::get('{id}/meeting-charges/delete/{idd}',[MeetingCharges::class,'delete'])->name('meeting-delete');
 
     //Vedio chat
     Route::get('{id}/vedio-conference/{userid}',[HostStreamController::class,'index']); 
