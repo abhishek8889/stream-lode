@@ -92,20 +92,74 @@ function startVedioCall(){
     }; 
     joinRoom();
 
-    //////////////////////// Bind button to leave room //////////////////////// 
-    document.getElementById('button-leave').onclick = function () {
-      // log('Leaving room...');
-      // const remote_media = document.getElementById('remote-media');
-      counterStop();
-      alert(activeRoom);
-      activeRoom.disconnect();
-      // var parser = document.createElement('a');
-      // parser.href = window.location.href;
-      // url = parser.protocol+'//'+parser.host+'/host';
-      // window.location.href = url;
-    };
+    // //////////////////////// Bind button to leave room //////////////////////// 
+    // document.getElementById('button-leave').onclick = function () {
+    //   // log('Leaving room...');
+    //   // const remote_media = document.getElementById('remote-media');
+    //   counterStop();
+    //   alert(activeRoom);
+    //   activeRoom.disconnect();
+    //   // var parser = document.createElement('a');
+    //   // parser.href = window.location.href;
+    //   // url = parser.protocol+'//'+parser.host+'/host';
+    //   // window.location.href = url;
+    // };
     
+//======================  New Code for End Call Start ================================================
 
+document.getElementById('button-leave').onclick = function () {
+  
+  let timerInterval;
+  
+  Swal.fire({
+    title: "You've left the meeting",
+    html: 'I will close in <b>50</b> seconds.', // Updated time value to 50
+    timer: 50000, // Updated timer value to 50000 milliseconds (50 seconds)
+    timerProgressBar: true,
+    showConfirmButton: true, // Added to hide the default "OK" button
+    confirmButtonText: 'Returning to home screen',
+    buttonsStyling: false, // Added to disable the default button styling
+    showCancelButton: true,
+    cancelButtonColor: '#0000',
+    cancelButtonText: 'Rejoin',
+    customClass: {
+      confirmButton: 'btn btn-info mx-2', // Added custom class for "Return to Home Page" button
+      cancelButton: 'btn btn-warning ' // Added custom class for "Rejoin" button
+    },
+    
+    didOpen: () => {
+      // Swal.showLoading();
+      const b = Swal.getHtmlContainer().querySelector('b');
+      timerInterval = setInterval(() => {
+        const seconds = Math.ceil(Swal.getTimerLeft() / 1000); // Convert remaining time to seconds
+        b.textContent = seconds; // Update time value in seconds
+      }, 100);
+    },
+    willClose: () => {
+      clearInterval(timerInterval);
+    },
+    showCloseButton: false, // Added to hide the default close button
+    /* Read more about handling dismissals below */
+  }).then((result) => {
+    // This happens when the model close by the timer
+    if (result.dismiss === Swal.DismissReason.timer) {
+      window.location.replace('/');
+    }
+    if (result.isConfirmed) {
+      
+      window.location.replace('/');
+    } 
+    if(result.dismiss === Swal.DismissReason.cancel){
+      // Here we right our rejoin code to meating
+      window.location.reload(true);
+    }
+    // console.log(result);
+  });
+  counterStop();
+  activeRoom.disconnect();
+    };
+
+//======================  New Code for End Call End   ================================================
   });
 }
 
