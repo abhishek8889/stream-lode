@@ -143,7 +143,7 @@ $date = date('Y-m-d h:i');
            <div class="head-wrapper d-flex">
             
            <h2><span class="yellow"> I am</span><span class="blue"> {{ $host_details['first_name'] }} </span></h2>
-           <span class="head-star-pattern"><img src="{{ asset('streamlode-front-assets/images/star.png') }}" alt="logo"></span>
+           <span class="head-star-pattern"><img src="{{ asset('streamlode-front-assets/images/star.png') }}" alt="logo" style="max-height: 292px;"></span>
          </div>
          <h3 class="host_tag">
             <?php 
@@ -172,10 +172,10 @@ $date = date('Y-m-d h:i');
            <a href="mailto:{{ $host_details['email'] }}"><i class="fa-solid fa-envelope"></i> {{ $host_details['email'] }} </a>
          </div>
          <ul class="host-social-links">
-            <li><a href="//{{ $host_details['facebook'] ?? '' }}"><i class="fa-brands fa-facebook-f"></i></a></li>
-            <li><a href="//{{ $host_details['linkdin'] ?? '' }}"><i class="fa-brands fa-linkedin-in"></i></a></li>
-            <li><a href="//{{ $host_details['instagram'] ?? '' }}"><i class="fa-brands fa-instagram"></i></a></li>
-            <li><a href="//{{ $host_details['twitter'] ?? '' }}"><i class="fa-brands fa-twitter"></i></a></li> 
+          <li><a href="//{{ $host_details['facebook'] ?? '' }}"><i class="fa-brands fa-facebook-f"></i></a></li>
+          <li><a href="//{{ $host_details['linkdin'] ?? '' }}"><i class="fa-brands fa-linkedin-in"></i></a></li>
+           <li><a href="//{{ $host_details['instagram'] ?? '' }}"><i class="fa-brands fa-instagram"></i></a></li>
+          <li><a href="//{{ $host_details['twitter'] ?? '' }}"><i class="fa-brands fa-twitter"></i></a></li> 
          </ul>
         </div>
       </div>
@@ -230,7 +230,7 @@ $date = date('Y-m-d h:i');
                 </div>
                 <div class="form-group">
                   <label for="email">Enter your email</label>
-                  <input type="email" class="form-control" id="email"  placeholder="Enter your email" value="{{ Auth::user()->email ?? '' }}">
+                  <input type="email" class="form-control" id="email"  placeholder="Enter your email" value="{{ Auth::user()->email ?? '' }}" @if(Auth::check()) disabled @endif>
                 </div>
                 <div class="form-group">
                   <label for="time">Meeting start time</label>
@@ -415,6 +415,15 @@ $date = date('Y-m-d h:i');
                                      newDateTime = moment(startdate, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
                                     // console.log(newDateTime);
                                      let dateString_ = moment(startdate).format("YYYY-MM-DD HH:mm");
+                                     if(dateString_ > event.end._i){
+                                      swal({
+                                      title: "Sorry !",
+                                      text: "This timestap is not valid",
+                                      icon: "error",
+                                      button: "Dismiss",
+                                  });
+                                      $('#start_time').val(starttime);
+                                     }
                                     //  console.log(dateString_);
                                     if(dateString_ < starttime){
                                       swal({
@@ -453,6 +462,7 @@ $date = date('Y-m-d h:i');
                                     $('#end_time').change(function(){
                                      startdate = $('#start_time').val();
                                      newDateTime = moment(startdate, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
+                                     console.log(newDateTime);
                                       let dateString = moment($(this).val()).format("YYYY-MM-DD HH:mm");
                                       if(dateString < defaulttimestamp){
                                         swal({
@@ -462,6 +472,7 @@ $date = date('Y-m-d h:i');
                                       button: "Dismiss",
                                   });
                                   $('#end_time').val(newDateTime);
+                                  // console.log(newDateTime);
                                       }
                                       // console.log(event.end._i)
                                       if(dateString > event.end._i){
@@ -471,7 +482,8 @@ $date = date('Y-m-d h:i');
                                       icon: "error",
                                       button: "Dismiss",
                                   });
-                                  $('#end_time').val(newdateTime);
+                                  $('#end_time').val(newDateTime);
+                                  // console.log(newDateTime);
                                       }
                                     });
 

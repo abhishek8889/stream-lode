@@ -152,8 +152,9 @@ $(document).ready(function () {
                                                 end: data.end,
                                                 allDay: allDay
                                             },true);
-    
+                                            
                                         calendar.fullCalendar('unselect');
+                                        location.reload();
                                         }
                                     }
                                 });
@@ -207,6 +208,7 @@ $(document).ready(function () {
                 });
  
     });
+    
       
     /*------------------------------------------
     --------------------------------------------

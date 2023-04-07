@@ -1,16 +1,23 @@
 @extends('admin_layout.master')
 @section('content')
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          <h3 class="card-title">Send messages to all hosts</h3>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <!-- <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v1</li> -->
+              {{ Breadcrumbs::render('post-notification') }}
+            </ol> 
+          </div>
+        </div>
+      </div>
+    </div>
 <div class="container">
 <div class="card direct-chat direct-chat-primary">
-              <div class="card-header ui-sortable-handle" style="cursor: move;">
-                <h3 class="card-title">Send messages to all hosts</h3>
-              </div>
-                <!-- <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
-                  </button>
-                
-              </div>-->
               <div class="card-body"  >
               <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:65vh;">
                   <div class="direct-chat-msg" id="notificationbox">
@@ -78,8 +85,5 @@
             });
            });
         });
-    </script>
-    <script>
-     
     </script>
 @endsection

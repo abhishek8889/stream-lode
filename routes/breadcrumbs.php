@@ -37,6 +37,11 @@ Breadcrumbs::for('features', function (BreadcrumbTrail $trail): void {
     $trail->parent('membership-list');
     $trail->push('Features', route('features'));
 });
+
+Breadcrumbs::for('post-notification', function (BreadcrumbTrail $trail): void {
+    $trail->parent('admin-dashboard');
+    $trail->push('Post-Notification', route('postnotification'));
+});
 Breadcrumbs::for('discount', function (BreadcrumbTrail $trail): void {
     $trail->parent('admin-dashboard');
     $trail->push('Discount', route('discount-coupon-list'));
@@ -99,6 +104,14 @@ Breadcrumbs::for('calender', function (BreadcrumbTrail $trail): void {
 Breadcrumbs::for('appoinments', function (BreadcrumbTrail $trail): void {
     $trail->parent('host-dashboard');
     $trail->push('Appoinments', route('appoinments',['id'=> Auth::user()->unique_id]));
+});
+Breadcrumbs::for('Coupons', function (BreadcrumbTrail $trail): void {
+    $trail->parent('host-dashboard');
+    $trail->push('Coupons', route('host-coupons',['id'=> Auth::user()->unique_id]));
+});
+Breadcrumbs::for('coupons-create', function (BreadcrumbTrail $trail): void {
+    $trail->parent('Coupons');
+    $trail->push('Create', route('coupons-create',['id'=> Auth::user()->unique_id]));
 });
 // endhostbreadcrumbs
 ?>

@@ -4,23 +4,63 @@
  <div class="container-fluid">
     <div class="row">
       <div class="col-lg-3">
+        <!-- messageusers list -->
       <div class="card direct-chat direct-chat-primary" >
             <div class="card-body" >
+
+
                <!-- Conversations are loaded here -->
                <div class="direct-chat-messages" style="height:547px;">
+               <button class="btn btn-dark addnew" data-toggle="modal" data-target="#exampleModal" style="width:100%;" >Add New</button>
                     <div class="direct-chat-msg px-3">
-                    <a class="" href="{{ url(Auth::user()->unique_id.'/message/'.$admin['_id']) }}"><p><strong>{{$admin['first_name']}}</strong></p></a>
-                               <hr>
-                        @foreach($host_schedule as $h)
-                               <a href="{{ url(Auth::user()->unique_id.'/message/'.$h['user_id']) }}"><p><strong>{{$h['guest_name']}}</strong></p></a>
-                               <hr>
+                         <hr>
+                        @foreach($users as $h)
+                        <div class="d-flex" style="justify-content: space-between;">
+                               <a class="userlink" href="{{ url(Auth::user()->unique_id.'/message/'.$h['_id']) }}" url="{{ url(Auth::user()->unique_id.'/message/'.$h['_id']) }}"><p><strong>{{$h['first_name']}}</strong></p></a>
+                           <span class="badge badge-info right user{{$h['_id']}}">{{ count($h['adminmessage']) ?? 0}}</span> 
+                        </div> 
+                         <hr>
                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
       </div>
-     
+
+      <!-- host scheduled list -->
+      
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Users List</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body" style="height: 300px; overflow: auto;">
+                      <div class="container col-10">
+                      <div class="direct-chat-msg px-3">
+
+                      <div>
+                          <a href="{{ url(Auth::user()->unique_id.'/message/'.$admin->_id) }}"><p><strong>{{ $admin->first_name }}</strong></p></a>
+                          <hr>
+                        </div>
+                        @foreach($host_schedule as $u)
+                          <div>
+                          <a href="{{ url(Auth::user()->unique_id.'/message/'.$u->user_id) }}"><p><strong>{{ $u->guest_name }}</strong></p></a>
+                          <hr>
+                          </div>
+                        @endforeach 
+                    </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                  </div>
+                </div>
+              </div>
+                  
       <div class="col-lg-9">
         @if($idd)
       <div class="card direct-chat direct-chat-primary" >
@@ -34,12 +74,12 @@
                <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:420px;">
                     <div class="direct-chat-msg messagesappend" id="messages">
                         @foreach($messages as $m)
-                    <div class="direct-chat-msg <?php if($m['sender_id'] == Auth()->user()->id){ echo 'right'; }?>">
+                    <div class="direct-chat-msg <?php if($m['sender_id'] == Auth()->user()->id){ }?>">
                     <div class="direct-chat-infos clearfix">
                       <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }?>">{{$m['username']}}</span>
                     </div>
                     <div class="direct-chat-text"<?php if($m['sender_id'] == Auth()->user()->id){ echo 'style="margin-right:0px;text-align: right; margin-left:40%;"'; }else{ echo 'style="margin-left:0px; margin-right:40%;"'; }?> >
-                    {{$m['message']}}
+                  <?php echo $m['message']; ?>
                     </div>
                     <!-- /.direct-chat-text -->
                   </div>
@@ -68,6 +108,13 @@
     </div>
  </div>
  <script> 
+ $('.userlink').click(function(e){
+  e.preventDefault();
+  var pageurl = $(this).attr('url');
+  history.pushState(null, '', pageurl);
+  location.reload();
+
+ });
 $(document).ready(function(){
   reciever_id = $('#reciever_id').val();
    sender_id = $('#sender_id').val()
@@ -83,6 +130,8 @@ $(document).ready(function(){
                     let notificationcount = parseInt($('#notificationcount').html());
                     let messagecount1 = parseInt($('#messagecount').html());
                     $('#messagecount').html(messagecount1-messagecount);
+                    let span = parseInt($('.user'+reciever_id).html());
+                    $('.user'+reciever_id).html(messagecount1-span);
                     // $('#notificationcount').html(messagecount1-messagecount);
                     }
 

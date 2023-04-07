@@ -24,7 +24,6 @@ class DiscountController extends Controller
         $validate = $req->validate([
             'name' => 'required',
         ]);
-        if($req->id == null){
         // add coupon code
         $coupon_name = $req->name;
         $amount = null;
@@ -87,76 +86,7 @@ class DiscountController extends Controller
         $discount->status = 1;
         $discount->save();
         return redirect()->back()->with('success','Discount coupon created succesfully.');
-    }else{
-        // update coupon code
-        $discount = AdminDiscount::find($req->id);
-        $coupon_name = $req->name;
-        $amount = null;
-        $type = $req->discount_type;
-
-        if($req->discount_type == 'amount_off'){
-            $amount = $req->amount_off;
-        }
-        if($req->discount_type == 'percent_off'){
-            $amount = $req->percent_off;
-        }
-
-        $coupon_response = '';
-
-        if($req->duration == 'repeating'){
-            if($req->discount_type == 'amount_off'){
-                $coupon_response = $stripe->coupons->update($discount->stripe_coupon_id,[
-                    'metadata' =>
-                    ['name' => $coupon_name,
-                    $type => (int)$amount*100,
-                    'currency' => $req->currency,
-                    'duration' => 'repeating',
-                    'duration_in_months' => $req->duration_in_months,]
-                  ]);
-
-            }else{
-                $coupon_response = $stripe->coupons->update($discount->stripe_coupon_id,[
-                    'metadata' =>
-                    ['name' => $coupon_name,
-                    $type => $amount,
-                    'duration' => 'repeating',
-                    'duration_in_months' => $req->duration_in_months,]
-                  ]);
-            }
-        }else{
-            if($req->discount_type == 'amount_off'){
-                $coupon_response = $stripe->coupons->update($discount->stripe_coupon_id,[
-                    'metadata' =>
-                    ['name' => $coupon_name,
-                    $type => (int)$amount * 100,
-                    'currency' => $req->currency,
-                    'duration' => $req->duration,]
-                ]);
-
-            }else{
-                $coupon_response = $stripe->coupons->update($discount->stripe_coupon_id,[
-                    'metadata' =>
-                    ['name' => $coupon_name,
-                    $type => $amount,
-                    'duration' => $req->duration,]
-                ]);
-            }
-        }
-       
-        // print_r($discount);
-        $discount->coupon_name = $coupon_name;
-        $discount->coupon_code = $req->coupon_code;
-        $discount->stripe_coupon_id = $coupon_response->id;
-        $discount->discount_type = $type;
-        $discount->percent_off = $req->percent_off;
-        $discount->amount_off = $req->amount_off;
-        $discount->currency = $req->currency;
-        $discount->duration = $req->duration;
-        $discount->duration_in_months = $req->duration_in_months;
-        $discount->status = 1;
-        $discount->update();
-        return redirect()->back()->with('success','Successfully updated coupon');
-        }
+   
     }
     public function delete($id){
         // echo $id;

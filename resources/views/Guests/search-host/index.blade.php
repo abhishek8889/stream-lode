@@ -154,18 +154,31 @@
         success: function(response)
 			{
         // console.log(response);
+        if(cat == 3){
         var res = response.filter(function (el) {
           return el != null && el != "";
         });
-        // console.log(res);
+        var unique = [];
+          var distinct = [];
+          for( let i = 0; i < res.length; i++ ){
+            if( !unique[res[i]._id]){
+              distinct.push(res[i]);
+              unique[res[i]._id] = 1;
+            }
+        }
+        data = distinct;
+      }else{
+        data = response;
+      }
+                // console.log(res);
         divdata = [];
-        $.each(res, function(key,value){
+        $.each(data, function(key,value){
           if(value.profile_image_url){
             img = value.profile_image_url;
           }else{
             img = '{{ asset('Assets/images/default-avatar.jpg') }}';
           }
-        html = '<div class="col-lg-3 col-md-6 col-sm-6 host-col "><div class="host-box"><div class="box-up"><div class="image-box hover-zoom"><img src="'+img+'"></div><div class="box-body"><h3 class="host-name"><span class="yellow">'+value.first_name+'</span><span class="blue"> '+value.last_name+'</span></h3></div></div><div class="box-footer"><a href="{{ url('/details/') }}/'+value.unique_id+'">More info <i class="fa-solid fa-arrow-right"></i></a></div></div></div>';
+        html = '<div class="col-lg-3 col-md-6 col-sm-6 host-col "><div class="host-box"><div class="box-up"><div class="image-box hover-zoom" style="max-height:293px;"><img src="'+img+'"></div><div class="box-body"><h3 class="host-name"><span class="yellow">'+value.first_name+'</span><span class="blue"> '+value.last_name+'</span></h3></div></div><div class="box-footer"><a href="{{ url('/details/') }}/'+value.unique_id+'">More info <i class="fa-solid fa-arrow-right"></i></a></div></div></div>';
        
         divdata.push(html);
         });
