@@ -13,12 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('messages', function (Blueprint $table) {
+        //
+        Schema::create('streams_payment', function (Blueprint $table) {
             $table->id();
-            $table->string('sender_id');
-            $table->string('reciever_id');
-            $table->string('username');
-            $table->string('message');
+            $table->string('appointment_id');
+            $table->string('stripe_payment_intent');
+            $table->string('subtotal');
+            $table->string('discount_coupon_name');
+            $table->string('discount_amount');
+            $table->string('total');
             $table->string('status');
             $table->timestamps();
         });
@@ -31,6 +34,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('messages');
+        //
+        Schema::dropIfExists('streams_payment');
     }
 };

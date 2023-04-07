@@ -37,6 +37,8 @@ use App\Http\Controllers\Hosts\HostCalendar;
 use App\Http\Controllers\Hosts\AppoinmentsController;
 use App\Http\Controllers\Hosts\HostStreamController;
 use App\Http\Controllers\Hosts\WebsocketController;
+use App\Http\Controllers\Hosts\HostDiscountController;
+use App\Http\Controllers\Hosts\MeetingCharges;
 
 use Google\Service\ServiceConsumerManagement\Authentication;
 
@@ -63,6 +65,7 @@ use App\Events\Message;
 
 Route::get('/live-stream/{room_name}',[VedioCallController::class,'index']);
 Route::get('live-stream-token',[VedioCallController::class,'passToken']);
+Route::post('ping-for-payment',[VedioCallController::class,'pingForPayment']);
 // Route::post('send-message',function (Request $request){
 //     event(new Message($request->username, $request->message));
 //     return ['success' => true];
@@ -280,12 +283,20 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/upgrade-subscription/{slug}',[HostMembershipController::class,'upgradeSubscriptionDetail'])->name('upgrade-subscription');
     Route::post('/{id}/upgrade-to-new-subscription',[HostMembershipController::class,'upgradeSubscriptionProcess'])->name('upgrade-to-new-subscription');
     
+    //Discount
+    Route::get('/{id}/coupons',[HostDiscountController::class,'index'])->name('host-coupons');
+    Route::get('/{id}/coupons/create/{did?}',[HostDiscountController::class,'create'])->name('coupons-create');
+    Route::post('/{id}/coupons/createproc',[HostDiscountController::class,'createproc'])->name('coupons-createproc');
+    Route::get('/{id}/coupons/delete/{did}',[HostDiscountController::class,'delete']);
+    Route::post('/{id}/coupons/disable',[HostDiscountController::class,'disable'])->name('coupon-disable');
+
     // Calendar
     // Route::get('/{id}/calendar',[HostCalendar::class,'index'])->name('host-calendar');
     // Route::post('/{id}/insert-schedule',[HostCalendar::class,'insertSchedule']); old
       
     Route::get('/{id}/calendar',[HostCalendar::class,'index'])->name('host-calender');
     Route::post('/{id}/calendar-response',[HostCalendar::class,'ajax']);
+    Route::post('/{id}/seen-status',[HostCalendar::class,'seenstatus']);
 
     //hostMessage
     Route::get('/{id}/message/{uid?}',[HostMessageController::class,'index']);
@@ -296,6 +307,12 @@ Route::group(['middleware'=>['auth','Host']],function(){
    
     //Appoinments
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index'])->name('appoinments');
+
+    //meeting charges
+    Route::get('{id}/meeting-charges',[MeetingCharges::class,'index'])->name('meeting-charges');
+    Route::get('{id}/meeting-charges/add/{idd?}',[MeetingCharges::class,'add'])->name('add-meeting-charges');
+    Route::post('{id}/meeting-charges/addproc',[MeetingCharges::class,'addproc'])->name('meeting-add');
+    Route::get('{id}/meeting-charges/delete/{idd}',[MeetingCharges::class,'delete'])->name('meeting-delete');
 
     //Vedio chat
     Route::get('{id}/vedio-conference/{userid}',[HostStreamController::class,'index']); 

@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('messages', function (Blueprint $table) {
+        Schema::create('host_discounts_coupons', function (Blueprint $table) {
             $table->id();
-            $table->string('sender_id');
-            $table->string('reciever_id');
-            $table->string('username');
-            $table->string('message');
+            $table->string('coupon_name');
+            $table->string('coupon_code');
+            $table->string('percentage_off');
+            $table->string('duration');
+            $table->string('duration_times');
+            $table->string('expiredate');
             $table->string('status');
             $table->timestamps();
         });
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('messages');
+        Schema::dropIfExists('host_discounts_coupons');
     }
 };

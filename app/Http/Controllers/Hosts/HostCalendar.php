@@ -5,14 +5,16 @@ namespace App\Http\Controllers\Hosts;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\HostAvailablity;
+use App\Models\HostAppointments;
 use DB;
+use App\Models\MeetingCharge;
 
 class HostCalendar extends Controller
 {
     //
     public function index(Request $request)
     {
-        
+        $meeting_charges = MeetingCharge::where('host_id',Auth()->user()->id)->get();
         if($request->ajax()) {
          
             $data = HostAvailablity::where('host_id',auth()->user()->id)->get(['id', 'title', 'start','end']);
@@ -20,7 +22,7 @@ class HostCalendar extends Controller
              return response()->json($data);
         }
        
-        return view('Host.calendar.index2');
+        return view('Host.calendar.index2',compact('meeting_charges'));
     }
     
     public function ajax(Request $request)
@@ -89,5 +91,15 @@ class HostCalendar extends Controller
         $message = array('error' => "Sorry but for schedule meeting you have to activate your account by paying invoice got in registered email.");
         return response()->json($message);
       }
+    }
+    public function seenstatus(Request $request){
+      $data = HostAppointments::where([['host_id',Auth()->user()->id],['seen_status',0]])->get();
+        foreach($data as $d){
+            $update = HostAppointments::find($d->_id);
+            $update->seen_status = 1;
+            $update->update();
+        }
+      return response()->json($data);
+
     }
 }

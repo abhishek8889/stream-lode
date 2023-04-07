@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('sender_id');
             $table->string('message');
+            $table->string('reciever_id');
+            $table->string('username');
             $table->timestamps();
         });
     }

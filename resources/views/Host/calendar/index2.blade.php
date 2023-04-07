@@ -27,6 +27,15 @@
             </div>
             <form id="availableHostForm" action="" >
               <div class="modal-body">
+              @if( count($meeting_charges) !== 0 )
+                    <div class="alert alert-info" role="alert">
+                        <p style="font-size: large;">Your meeting charges for @foreach($meeting_charges as $mc) {{ $mc->duration_in_minutes ?? ''}} minutes is ${{ $mc->amount ?? '' }},  @endforeach if you want to add more charges than <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to create meeting charges"> click here </a></p>
+                    </div>
+                    @else
+                    <div class="alert alert-danger" role="alert">
+                        <p style="font-size:large;"> You have to <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to create meeting charges"> create meeting charge </a> before set you availability </p>
+                    </div>
+              @endif
                 <div class="form-group">
                   <label for="time">Title</label>
                   <input type="text" class="form-control" id="title" placeholder="Enter your Title" />
@@ -38,7 +47,6 @@
                 ?>
                 <div class="form-group">
                   <label for="time">Start time</label>
-                  
                   <input type="datetime-local" class="form-control" id="start_time" placeholder="Meetimg time" value="{{ $today_date }}"/>
                 </div>
 
@@ -48,8 +56,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                
-                <button type="submit" class="btn btn-primary">Schedule meeting</button>
+                <button type="submit" class="btn btn-primary" @if( count($meeting_charges) == 0 ) disabled @endif>Schedule meeting</button>
               </div>
             </form>
           </div>
@@ -152,8 +159,9 @@ $(document).ready(function () {
                                                 end: data.end,
                                                 allDay: allDay
                                             },true);
-    
+                                            
                                         calendar.fullCalendar('unselect');
+                                        location.reload();
                                         }
                                     }
                                 });
@@ -207,6 +215,7 @@ $(document).ready(function () {
                 });
  
     });
+    
       
     /*------------------------------------------
     --------------------------------------------

@@ -13,11 +13,14 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Mail\SendVideoLink;
 use App\Models\HostAppointments;
+use App\Models\Messages;
 use Hash;
+use App\Events\Message;
 
 class HostStreamController extends Controller
 {
     public function index($unique_id,$id){
+      
         $appoinments = HostAppointments::where('_id',$id)->with('user')->first();
         // dd($appoinments);
        
@@ -44,7 +47,7 @@ class HostStreamController extends Controller
     //     );
       
     //    return redirect()->back()->with('data',$data);
-    $room_name = md5($req->room_name).rand(1,1000);
+    $room_name = md5($req->room_name).'12';
     $twilioAccountSid = getenv('TWILIO_ACCOUNT_SID');
     $twilioAuthToken = getenv("TWILIO_AUTH_TOKEN");
     $twilio = new Client($twilioAccountSid, $twilioAuthToken);
@@ -59,6 +62,10 @@ class HostStreamController extends Controller
             "unusedRoomTimeout" => 60,
         ]
     );
+   $host_appoinments = HostAppointments::find($req->room_name);
+   $host_appoinments->video_link_name = $room_name;
+   $host_appoinments->join_link = env('APP_URL')."live-stream/".$room_name;
+   $host_appoinments->update();
 
     $data = array(
         'roomName'  =>  $room_name,
@@ -67,6 +74,7 @@ class HostStreamController extends Controller
     );
     return response()->json($data['join_link']);
     }
+ 
     // public function generateToken(Request $req){
     //     $twilioAccountSid = getenv('TWILIO_ACCOUNT_SID');
     //     $twilioApiKey = getenv('TWILIO_API_KEY');
@@ -162,7 +170,14 @@ class HostStreamController extends Controller
             'link' => $req->link,
         ];
         $mail = Mail::to($appoinments->guest_email)->send(new SendVideoLink($mailData));
-
-        return response()->json('successfully sent email to guest');
+        event(new Message($appoinments->user,'<a href="'.$req->link.'">'.$req->link.'</a>',Auth()->user()->id,$appoinments->user_id));
+        $message = new Messages;
+        $message->username = $appoinments->user['first_name'];
+        $message->sender_id = Auth()->user()->id;
+        $message->message = '<a href="'.$req->link.'">'.$req->link.'</a>';
+        $message->reciever_id = $appoinments->user_id;
+        $message->status = 1;
+        $message->save();
+        return response()->json('successfully sent link');
     }
 }

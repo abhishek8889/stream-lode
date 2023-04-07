@@ -13,10 +13,15 @@ use App\Mail\HostAppoinmentsMail;
 use App\Mail\SendpasswordMail;
 use App\Models\HostAvailablity;
 use App\Models\HostAppointments;
+use App\Models\Discounts\HostDiscount;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Hash;
 use DateTime;
+use Twilio\Rest\Client;
+use App\Events\NotificationsSend;
+use Twilio\Jwt\AccessToken;
+use Twilio\Jwt\Grants\VideoGrant;
 
 class SearchHostController extends Controller
 {
@@ -36,10 +41,11 @@ class SearchHostController extends Controller
         $host_details = DB::table('users')->where('unique_id',$unique_id)->first();
         
         //   Available Host
-        $today_date = date("Y-m-d H:m");
+        $today_date = date("Y-m-d H:i");
+        // print_r($today_date);
     //    $date = "2023-02-28 14:30";
         $host_schedule = HostAvailablity::where([['host_id','=',$host_data['_id']],['end','>=',$today_date]])->get(['title','start','end','status']);
-        
+        // dd($host_schedule);
         $available_host = array();
         
         if(isset($host_schedule) || !empty($host_schedule)){
@@ -81,8 +87,8 @@ class SearchHostController extends Controller
      
 
         //  Host Meetings 
-
         $host_appointments = HostAppointments::where([['host_id','=',$host_data['_id']],['end','>=',$today_date]])->get(['start','end','status']);
+            // dd($host_appointments);
         if(isset($host_appointments) || !empty($host_appointments)){
             foreach($host_appointments as $meetings){
                 if($schedule->status == 1){
@@ -118,7 +124,7 @@ class SearchHostController extends Controller
             case 'add':
                 //  Appointment data create
             if(Auth::check()){
-               $newAppointment = new HostAppointments;
+                $newAppointment = new HostAppointments;
                 $newAppointment->host_available_id = $req->available_id;
                 $newAppointment->user_id = $req->user_id;
                 $newAppointment->host_id = $req->host_id;
@@ -127,6 +133,7 @@ class SearchHostController extends Controller
                 $newAppointment->start = date('Y-m-d H:i', strtotime($req->start));
                 $newAppointment->end = date('Y-m-d H:i', strtotime($req->end));
                 $newAppointment->status = $req->status;
+                $newAppointment->seen_status = 0;
                 $newAppointment->save();
                 $user = User::find($req->user_id); 
             }else{
@@ -160,6 +167,7 @@ class SearchHostController extends Controller
                 $newAppointment->start = date('Y-m-d H:i', strtotime($req->start));
                 $newAppointment->end = date('Y-m-d H:i', strtotime($req->end));
                 $newAppointment->status = $req->status;
+                $newAppointment->seen_status = 0;
                 $newAppointment->save();
                 $user = User::find($user->_id); 
             }
@@ -179,6 +187,7 @@ class SearchHostController extends Controller
                 
                 $mail = Mail::to($uemail)->send(new appoinmentsconfirmation($mailData));
                 $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
+                event(new NotificationsSend($req->host_id,$newAppointment));
                 $meeting_end_time =  strtotime($req->end);
                 $updated_host_available_time =  date('Y-m-d H:i', strtotime('+30 minutes',$meeting_end_time));
                 
@@ -192,6 +201,9 @@ class SearchHostController extends Controller
                     $host_availablity->start = date('Y-m-d H:i',$meeting_end_time);
                     $host_availablity->update();
                 }
+
+                //notifications
+          
                 
                 $event = array(
                     'id' => $newAppointment['id'],
@@ -203,7 +215,7 @@ class SearchHostController extends Controller
                     'allDay'   =>  false,
                 );
                 //    return $event;
-               return response()->json($event);
+               return response()->json($hostmail);
 
               break;
             }
@@ -235,17 +247,82 @@ class SearchHostController extends Controller
         }
         return response()->json($hosts);
     }
-//   
+  
 public function trycode(){
-    $messages = Messages::where([['reciever_id','63fd8e4d1ad0d9aee603e4d2'],['status',1]])->distinct('sender_id')->get()->toArray();
-    if($messages){
-    foreach($messages as $m){
-        $user = User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id','63fd8e4d1ad0d9aee603e4d2'); })->first();
+    // $date = date('Y-m-d');
+    // // print_r($date);
+    // $amount = 100;
+    // $discount_code = '#TEST-B3g5';
+    // $host_id = '63fd8e4d1ad0d9aee603e4d2';
+    // $discounts = HostDiscount::where([['coupon_code',$discount_code],['host_id',$host_id]])->first();
+    // if(!empty($discounts)){
+    //         if($discounts->status == 1){
+    //             if($discounts->expiredate >= $date){
+    //             if($discounts->duration == 'Once'){
+    //                 $discount_amount = $discounts->percentage_off;
+    //                 $response = 'discount coupon is valid';
+    //             }elseif($discounts->duration == 'Repeating'){
+    //                 if($discounts->duration_times > 0){
+    //                     $discount_amount = $discounts->percentage_off;
+    //                     $response = 'discount coupon is valid';
+    //                 }else{
+    //                     $discount_amount = 0;
+    //                     $response = 'discount coupon is expired';
+    //                 }
+    //             }elseif($discounts->duration == 'Forever'){
+    //                 $discount_amount = $discounts->percentage_off;
+    //                 $response = 'discount coupon is valid';
+    //             }
+    //         }else{
+    //         $discount_amount = 0;
+    //         $response = 'discount coupon is expired';  
+    //         }
+    //     }else{
+    //         $discount_amount = 0;
+    //         $response = 'discount is expired ';
+    //     }
+    // }else{
+    //     $discount_amount = 0;
+    //     $response = 'discount coupon is invalid';
+    // }
+    // // print_r($discount_amount.'<br>');
+    // // print_r($response.'<br>');
+    // // print_r($discount_code.'<br>');
+    // if($discount_amount != 0){
+    //     // echo 'done';
+    // $discunt_coupon_code = HostDiscount::where('coupon_code',$discount_code)->first();
+    // // echo $discunt_coupon_code->duration;
+    // if($discunt_coupon_code->duration == 'Once'){
+    //     // echo 'done';
+    //     // print_r($discunt_coupon_code->id);
+    //     $update = HostDiscount::find($discunt_coupon_code->_id);
+    //     $update->status = 0;
+    //     $update->update();
+    // }elseif($discunt_coupon_code->duration == 'Repeating'){
+    //     $update = HostDiscount::find($discunt_coupon_code->_id);
+    //     $update->duration_times = $discunt_coupon_code->duration_times-1;
+    //     $update->update();
+    // }else{
+    //     $update = HostDiscount::find($discunt_coupon_code->_id);
+    //     $update->coupon_used = $discunt_coupon_code->coupon_used+1;
+    //     $update->update();
+    // }
+    // }
     
-    print_r($user['first_name']);
-}
-    
-    }
+    // $discount_amounts = $amount*$discount_amount/100;
+    // $final_amount = $amount-$discount_amounts;
+    // // print_r($final_amount);
+
+    // $result = array(
+    //     'subtotal' => '$'.$amount,
+    //     'coupon_code' => $discount_code,
+    //     'discount_percentage' => '%'.$discount_amount,
+    //     'discount_amount' => '$'.$discount_amounts,
+    //     'final_amount' => '$'.$final_amount,
+    //     'response' => $response
+    // );
+    // print_r($result);
+
     
 
 }
