@@ -10,10 +10,10 @@
             <ol class="breadcrumb float-sm-right">
             {{ Breadcrumbs::render('Coupons') }}
             </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
+          </div>
+        </div>
+      </div>
+</div>
 <div class="col-12">
         <div class="card">
             <div class="card-header">

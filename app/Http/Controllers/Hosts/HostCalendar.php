@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 use App\Models\HostAvailablity;
 use App\Models\HostAppointments;
 use DB;
+use App\Models\MeetingCharge;
 
 class HostCalendar extends Controller
 {
     //
     public function index(Request $request)
     {
-        
+        $meeting_charges = MeetingCharge::where('host_id',Auth()->user()->id)->get();
         if($request->ajax()) {
          
             $data = HostAvailablity::where('host_id',auth()->user()->id)->get(['id', 'title', 'start','end']);
@@ -21,7 +22,7 @@ class HostCalendar extends Controller
              return response()->json($data);
         }
        
-        return view('Host.calendar.index2');
+        return view('Host.calendar.index2',compact('meeting_charges'));
     }
     
     public function ajax(Request $request)

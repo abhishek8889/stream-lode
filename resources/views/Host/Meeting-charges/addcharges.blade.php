@@ -1,12 +1,24 @@
 @extends('host_layout.master')
 @section('content')
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Add Meeting Charges</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+            {{ Breadcrumbs::render('meeting-charges-add') }}
+            </ol>
+          </div>
+        </div>
+      </div>
+</div>
 <div class="container col-12">
-            <div class="card card-info ">
+      <div class="card card-info ">
               <div class="card-header">
                 <h3 class="card-title">Horizontal Form</h3>
               </div>
-              <!-- /.card-header -->
-              <!-- form start -->
               <form action="{{ route('meeting-add',['id' => Auth()->user()->unique_id]) }}" method="POST" class="form-horizontal">
                 @csrf
                 <div class="card-body col-6">
@@ -31,9 +43,9 @@
                     @enderror
                   </div>
                   <div class="form-group row">
-                    <label for="payment" class="col-sm-2 col-form-label">Payment</label>
+                    <label for="payment" class="col-sm-2 col-form-label">Amount</label>
                     <div class="col-sm-10">
-                      <input type="number" class="form-control" id="payment" name="payment" placeholder="Payment" value="{{ $meetingcharges['payment'] ?? '' }}">
+                      <input type="number" class="form-control" id="payment" name="payment" placeholder="Payment" value="{{ $meetingcharges['amount'] ?? '' }}">
                     </div>
                     @error('payment')
                             <div class="text text-danger">{{ $message }}</div>
@@ -48,7 +60,7 @@
                 <!-- /.card-footer -->
               </form>
             </div>
-</div>
+      </div>
 </div>
 <script>
     $(document).ready(function(){

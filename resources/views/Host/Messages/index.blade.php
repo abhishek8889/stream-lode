@@ -78,7 +78,7 @@
                     <div class="direct-chat-infos clearfix">
                       <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }?>">{{$m['username']}}</span>
                     </div>
-                    <div class="direct-chat-text"<?php if($m['sender_id'] == Auth()->user()->id){ echo 'style="margin-right:0px;text-align: right; margin-left:40%;"'; }else{ echo 'style="margin-left:0px; margin-right:40%;"'; }?> >
+                    <div class="direct-chat-text"<?php if($m['sender_id'] == Auth()->user()->id){ echo 'style="margin-right:0px; margin-left:40%;"'; }else{ echo 'style="margin-left:0px; margin-right:40%;"'; }?> >
                   <?php echo $m['message']; ?>
                     </div>
                     <!-- /.direct-chat-text -->
@@ -141,7 +141,6 @@ $(document).ready(function(){
 $(document).ready(function(){
       $('#message').on('submit',function(e){
          if($('#messageinput').val() == ''){
-            alert('Please enter message')
             return false;
         }
         e.preventDefault();

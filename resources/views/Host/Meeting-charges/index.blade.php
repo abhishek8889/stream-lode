@@ -1,5 +1,20 @@
 @extends('host_layout.master')
 @section('content')
+
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Add Meeting Charges</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+            {{ Breadcrumbs::render('meeting-charges') }}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
 <div class="container">
 <div class="col-12">
         <div class="card">
@@ -23,7 +38,7 @@
                         <tr>
                             <th>Sr. no</th>
                             <th>Duration</th>
-                            <th>Charges</th>
+                            <th>Amount</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -35,7 +50,7 @@
                             <tr >
                                 <td>{{ $count }}.</td>
                                 <td>{{ $mc->duration_in_minutes }} minutes</td>
-                                <td>${{ $mc->payment }}</td>
+                                <td>${{ $mc->amount }}</td>
                                 <td>
                                 <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add/'.$mc->_id) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
                                 <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/delete/'.$mc->_id) }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a>

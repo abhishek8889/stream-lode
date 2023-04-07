@@ -97,7 +97,7 @@
     });
   });
   $("#couponname").change(function(){
-    let random_string = randomString(4, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+   let random_string = randomString(4, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
    let name = $(this).val().toUpperCase();
    let half_name = name.substr(0, 4);
    let coupon_code = '#'+half_name+'-'+random_string;

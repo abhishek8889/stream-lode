@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('percentage_off');
             $table->string('duration');
             $table->string('duration_times');
+            $table->string('expiredate');
             $table->string('status');
             $table->timestamps();
         });

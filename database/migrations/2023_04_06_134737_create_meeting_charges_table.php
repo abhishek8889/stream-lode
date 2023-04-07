@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('meeting_charges', function (Blueprint $table) {
             $table->id();
-            $table->text('host_id');
-            $table->text('30');
-            $table->text('45');
-            $table->text('60');
+            $table->string('host_id');
+            $table->string('duration_in_minutes');
+            $table->string('amount');
+            $table->string('currency');
             $table->timestamps();
         });
     }
