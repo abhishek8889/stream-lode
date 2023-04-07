@@ -17,7 +17,6 @@ class VedioCallController extends Controller
     //
     public function index(Request $req){
         $roomName = $req->segment(2);
-        
         $appoinment_details = HostAppointments::where('video_link_name',$roomName)->first();
         // dd($appoinment_details);
         return view('vediocall.vediocall',compact('roomName','appoinment_details'));

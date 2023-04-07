@@ -27,7 +27,7 @@ class MeetingCharges extends Controller
             $data = MeetingCharge::find($duration['_id']);
             $data->host_id = Auth()->user()->id;
             $data->duration_in_minutes = $req->duration;
-            $data->payment = $req->payment;
+            $data->amount = $req->payment;
             $data->currency = $req->currency;
             $data->update();
             return redirect()->back()->with('success','successfully updated meeting charges');
@@ -35,7 +35,7 @@ class MeetingCharges extends Controller
             $data = new MeetingCharge;
             $data->host_id = Auth()->user()->id;
             $data->duration_in_minutes = $req->duration;
-            $data->payment = $req->payment;
+            $data->amount = $req->payment;
             $data->currency = $req->currency;
             $data->save();
             return redirect()->back()->with('success','successfully saved meeting charges');

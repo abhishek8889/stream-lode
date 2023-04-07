@@ -49,6 +49,9 @@
 body.model-open{
   overflow: hidden;
 }
+.form-group select.form-control {
+    padding: 0px;
+}
 
 @keyframes loader {
   0% {
@@ -216,37 +219,61 @@ $date = date('Y-m-d h:i');
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Schedule a meeting with {{ $host_details['first_name'] }} <span id="meeting_date"></span></h5>
+              <div class="modal-title" id="exampleModalLongTitle">
+                <h5>
+                  Schedule a meeting with {{ $host_details['first_name'] }} {{ $host_details['last_name'] }}
+                </h5>
+                <div class="available_txt text text-info">
+                  Available between <span id="available_start" class="text text-dark "></span> to <span class="text text-dark" id="available_end"></span> on <span id="available_date" class="text text-dark"></span>
+                </div>
+
+              </div>
+
               <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="calendarCloseBtn">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form id="scheduleMeetingForm" action="" >
-              <div class="modal-body">
-                <input type="hidden" name="user_login_status" id="user_login_status" user_id="{{ isset(auth()->user()->id)?auth()->user()->id:''; }}" value="{{ isset(auth()->user()->id)?1:0; }}">
-                <div class="form-group">
-                  <label for="name">Enter your name</label>
-                  <input type="text" class="form-control" id="name"  placeholder="Enter your name" value="{{ Auth::user()->first_name ?? '' }}">
-                </div>
-                <div class="form-group">
-                  <label for="email">Enter your email</label>
-                  <input type="email" class="form-control" id="email"  placeholder="Enter your email" value="{{ Auth::user()->email ?? '' }}" @if(Auth::check()) disabled @endif>
-                </div>
-                <div class="form-group">
-                  <label for="time">Meeting start time</label>
-                  <input type="datetime-local" class="form-control" id="start_time" placeholder="Meetimg time" value=""/>
-                </div>
-               
-                <div class="form-group">
-                  <label for="time">Meeting end time</label>
-                  <input type="datetime-local" class="form-control" id="end_time" placeholder="Meetimg time" value=""/>
-                </div>
-              </div>
-              <div class="modal-footer">
+            <div class="modal-body-wrapper">
+              <form id="scheduleMeetingForm" action="" >
+                <div class="modal-body">
+                  <input type="hidden" name="user_login_status" id="user_login_status" user_id="{{ isset(auth()->user()->id)?auth()->user()->id:''; }}" value="{{ isset(auth()->user()->id)?1:0; }}">
+                  <div class="form-group">
+                    <label for="name">Enter your name</label>
+                    <input type="text" class="form-control" id="name"  placeholder="Enter your name" value="{{ Auth::user()->first_name ?? '' }}">
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Enter your email</label>
+                    <input type="email" class="form-control" id="email"  placeholder="Enter your email" value="{{ Auth::user()->email ?? '' }}" @if(Auth::check()) disabled @endif>
+                  </div>
+                  <!-- Select Duration of time -->
+                  <div class="form-group">
+                    <label for="meeting_duration">Select duration of meeting</label>
+                    <select name="meeting_duration" class="form-control" id="meeting_duration">
+                      @if(isset($host_meeting_charges))
+                        @foreach($host_meeting_charges as $meeting_charge)
+                          <option value="{{ $meeting_charge['duration_in_minutes'] }}">For {{ $meeting_charge['duration_in_minutes'] }} minutes charges will be {{ $meeting_charge['amount'] }}({{ $meeting_charge['currency'] }}) </option>
+                        @endforeach
+                      @endif
+                    </select>
+                  </div>
+                  <!-- End Duration of time -->
+
+                  <div class="form-group">
+                    <label for="time">Meeting start time</label>
+                    <input type="datetime-local" class="form-control" id="start_time" placeholder="Meetimg time" value=""/>
+                  </div>
                 
-                <button type="submit" class="btn btn-primary">Schedule meeting</button>
-              </div>
-            </form>
+                  <div class="form-group">
+                    <label for="time">Meeting end time</label>
+                    <input type="datetime-local" class="form-control" id="end_time" placeholder="Meetimg time" value=""/>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  
+                  <button type="submit" class="btn btn-primary">Schedule meeting</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -258,7 +285,7 @@ $date = date('Y-m-d h:i');
 <section class="reviews-section">
   <div class="container-fluid">
     <div class="section-head text-center">
-      <h2>Revies</h2>
+      <h2>Reviews</h2>
     </div>
     <div class="reviews-wrapper">
       <div class="review-slider">
@@ -361,16 +388,15 @@ $date = date('Y-m-d h:i');
 </section>
 
 <script>
-         $(document).ready(function () {
+        $(document).ready(function () {
           let data = @json($available_host);
-
           $.ajaxSetup({
               headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
               }
           });
           var isLoading = false;
-          var calendar = $('#calendar').fullCalendar({
+          var calendar =  $('#calendar').fullCalendar({
                             // editable: true,
                             events: data,
                             displayEventEnd: true,
@@ -385,13 +411,18 @@ $date = date('Y-m-d h:i');
                             selectable: true,
                             selectHelper: true,
                             eventClick: function (event) {
+                              
                               // $.each(event,function(key, value){
                               //   console.log(key + ' : ' + value);
                               // });
                               // $.fullCalendar.formatDate(event.start, "MM/dd/YYYY")
-                              let start_date_on_banner = $.fullCalendar.formatDate(event.start, "DD-MMM-YYYY");
-
-                              $("span#meeting_date").html(start_date_on_banner);
+                              let available_date = $.fullCalendar.formatDate(event.start, "DD-MMM-YYYY");
+                              let available_start = $.fullCalendar.formatDate(event.start, "HH:mm");
+                              let available_end = $.fullCalendar.formatDate(event.end, "HH:mm");
+                              
+                              $("span#available_date").html('<u>'+ available_date+ '</u>');
+                              $("span#available_start").html('<u>'+available_start+ '</u>');
+                              $("span#available_end").html('<u>'+available_end+ '</u>');
 
                                 if(event.type == 'available_host'){
                                   $("#calendarModal").modal({
@@ -405,89 +436,124 @@ $date = date('Y-m-d h:i');
                                       starttime = event.start._i;
                                     }
                                     // console.log(starttime);
-                                    $('#start_time').val(starttime);
-                                    defaulttimestamp = moment(starttime, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
+                                    // changes after selecting the duration 
+                                    var meet_duration = $("#meeting_duration").val();
+                                    var defaulttimestamp = moment(starttime, "YYYY-MM-DD HH:mm").add(meet_duration, 'minutes').format('YYYY-MM-DD HH:mm');
+                                    if(defaulttimestamp > event.end._i){
+                                      if(event.end._i < starttime ){
+                                        $(".modal-body-wrapper").addClass('p-3 text text-secondary');
+                                        $(".modal-body-wrapper").html("Host's available time is over for today please wait for host's update.");
+                                      
+                                      }else{
+                                        $(".modal-body-wrapper").addClass('p-3 text text-secondary');
+                                        $(".modal-body-wrapper").html("Host's available time is less than its minimum slot please wait for host update.");
+                                      }
+                                    }
+                                    var previous_selected;
+                                    $("select#meeting_duration").on('focus',function(){
+                                        //  change end time and check if it is on available time if it is not give him alert to select small interval
+                                        previous_selected =  this.value;
+                                    }).change(function(){
+                                      var start_time_new = $("#start_time").val(); 
+                                      var defaulttimestamp = moment(start_time_new, "YYYY-MM-DD HH:mm").add($(this).val(), 'minutes').format('YYYY-MM-DD HH:mm');
+                                      if(defaulttimestamp > event.end._i){
+                                            swal({
+                                              title: "Sorry !",
+                                              text: "sorry your slot time is greater than available time.",
+                                              icon: "info",
+                                              button: "Dismiss",
+                                            });
+                                            var defaulttimestamp = moment(start_time_new, "YYYY-MM-DD HH:mm").add(previous_selected, 'minutes').format('YYYY-MM-DD HH:mm');
+                                            $(this).val(previous_selected);
+                                            $('#end_time').val(defaulttimestamp);
+                                            return false;   
+                                        }else{
+                                          $('#end_time').val(defaulttimestamp);
+                                        }
+                                    });
+                                    $('#start_time').val(starttime); // Default start time 
+                                    defaulttimestamp = moment(starttime, "YYYY-MM-DD HH:mm").add(meet_duration, 'minutes').format('YYYY-MM-DD HH:mm');
                                     // console.log(defaulttimestamp);
                                     $('#end_time').val(defaulttimestamp);
                                     $('#start_time').change(function(){
-                                     startdate = $('#start_time').val();
-                                    //  console.log(startdate);
-                                     newDateTime = moment(startdate, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
-                                    // console.log(newDateTime);
-                                     let dateString_ = moment(startdate).format("YYYY-MM-DD HH:mm");
-                                     if(dateString_ > event.end._i){
-                                      swal({
-                                      title: "Sorry !",
-                                      text: "This timestap is not valid",
-                                      icon: "error",
-                                      button: "Dismiss",
-                                  });
-                                      $('#start_time').val(starttime);
-                                     }
-                                    //  console.log(dateString_);
-                                    if(dateString_ < starttime){
-                                      swal({
-                                      title: "Sorry !",
-                                      text: "This timestap is not valid",
-                                      icon: "error",
-                                      button: "Dismiss",
-                                  });
-                                      $('#start_time').val(starttime);
-                                    }else{
-                                      $('#end_time').val(newDateTime);
-                                      $('#end_time').change(function(){
-                                        endtime = $(this).val();
-                                        let endtimeString_ = moment(endtime).format("YYYY-MM-DD HH:mm");
-                                        if(endtimeString_ < newDateTime){
-                                          swal({
-                                      title: "Sorry !",
-                                      text: "Minimum time interval is 30 minutes",
-                                      icon: "error",
-                                      button: "Dismiss",
-                                  });
-                                  $('#end_time').val(newDateTime);
-                                        }
-                                    if(endtimeString_ < starttime){
-                                      swal({
-                                      title: "Sorry !",
-                                      text: "This timestap is not valid",
-                                      icon: "error",
-                                      button: "Dismiss",
-                                  });
-                                  $('#end_time').val(newDateTime);
-                                    }
-                                      });
-                                    }
-                                    });
-                                    $('#end_time').change(function(){
-                                     startdate = $('#start_time').val();
-                                     newDateTime = moment(startdate, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
-                                     console.log(newDateTime);
-                                      let dateString = moment($(this).val()).format("YYYY-MM-DD HH:mm");
-                                      if(dateString < defaulttimestamp){
+                                      var meet_duration = $("#meeting_duration").val();
+                                      startdate = $('#start_time').val();
+                                      //  console.log(startdate);
+                                      newDateTime = moment(startdate, "YYYY-MM-DD HH:mm").add(meet_duration, 'minutes').format('YYYY-MM-DD HH:mm');
+                                      // console.log(newDateTime);
+                                      let dateString_ = moment(startdate).format("YYYY-MM-DD HH:mm");
+                                      if(dateString_ > event.end._i){
                                         swal({
-                                      title: "Sorry !",
-                                      text: "Minimum time interval is 30",
-                                      icon: "error",
-                                      button: "Dismiss",
-                                  });
-                                  $('#end_time').val(newDateTime);
-                                  // console.log(newDateTime);
+                                          title: "Sorry !",
+                                          text: "This timestamp is not valid",
+                                          icon: "error",
+                                          button: "Dismiss",
+                                        });
+                                        $('#start_time').val(starttime);
                                       }
-                                      // console.log(event.end._i)
-                                      if(dateString > event.end._i){
+                                      //  console.log(dateString_);
+                                      if(dateString_ < starttime){
                                         swal({
-                                      title: "Sorry !",
-                                      text: "This timestap is not valid",
-                                      icon: "error",
-                                      button: "Dismiss",
-                                  });
-                                  $('#end_time').val(newDateTime);
-                                  // console.log(newDateTime);
+                                          title: "Sorry !",
+                                          text: "This timestamp is not valid",
+                                          icon: "error",
+                                          button: "Dismiss",
+                                        });
+                                        $('#start_time').val(starttime);
+                                      }else{
+                                        $('#end_time').val(newDateTime);
+                                        $('#end_time').change(function(){
+                                          endtime = $(this).val();
+                                          let endtimeString_ = moment(endtime).format("YYYY-MM-DD HH:mm");
+                                          if(endtimeString_ < newDateTime){
+                                            swal({
+                                              title: "Sorry !",
+                                              text: "Minimum time interval is 30 minutes",
+                                              icon: "error",
+                                              button: "Dismiss",
+                                            });
+                                            $('#end_time').val(newDateTime);
+                                          }
+                                          if(endtimeString_ < starttime){
+                                            swal({
+                                              title: "Sorry !",
+                                              text: "This timestamp is not valid",
+                                              icon: "error",
+                                              button: "Dismiss",
+                                            });
+                                            $('#end_time').val(newDateTime);
+                                          }
+                                        });
                                       }
                                     });
+                                    // $('#end_time').change(function(){
+                                    //  startdate = $('#start_time').val();
+                                    //  newDateTime = moment(startdate, "YYYY-MM-DD HH:mm").add(meet_duration, 'minutes').format('YYYY-MM-DD HH:mm');
+                                    //  console.log(newDateTime);
+                                    //   let dateString = moment($(this).val()).format("YYYY-MM-DD HH:mm");
+                                    //   if(dateString < defaulttimestamp){
+                                    //     swal({
+                                    //       title: "Sorry !",
+                                    //       text: "Minimum time interval is 30",
+                                    //       icon: "error",
+                                    //       button: "Dismiss",
+                                    //     });
+                                    //     $('#end_time').val(newDateTime);
+                                    //     // console.log(newDateTime);
+                                    //   }
+                                    //   // console.log(event.end._i)
+                                    //   if(dateString > event.end._i){
+                                    //     swal({
+                                    //       title: "Sorry !",
+                                    //       text: "This timestamp is not valid",
+                                    //       icon: "error",
+                                    //       button: "Dismiss",
+                                    //     });
+                                    //     $('#end_time').val(newDateTime);
+                                    //     // console.log(newDateTime);
+                                    //   }
+                                    // });
 
-                                    
                                   //  console.log(event.start._i);
                                   $("#scheduleMeetingForm").on('submit',function(e){
                                     e.preventDefault();
@@ -498,7 +564,7 @@ $date = date('Y-m-d h:i');
                                     let email = $("#email").val();
                                     let start_time = $("#start_time").val();
                                     let end_time = $("#end_time").val();
-                                  // console.log(name);
+                                      // console.log(name);
                                       if (!isLoading) {
                                         isLoading = true;
                                         $.ajax({
@@ -520,7 +586,7 @@ $date = date('Y-m-d h:i');
                                                 
                                                 isLoading = false;
                                                 setTimeout(function(){
-                                                    location.reload();
+                                                    // location.reload();
                                                     // $(".loader-wrapper").fadeOut('3000');
                                                     $("#overlayer").fadeOut('3000');
                                                   }
@@ -571,21 +637,20 @@ $date = date('Y-m-d h:i');
                                   });
                                 }
                              }
-                         });
-                         $("#calendarCloseBtn").on('click',function(){
-                          calendar.unselect()
+                          });
+                          $("#calendarCloseBtn").on('click',function(){
+                            calendar.unselect()
                           });
           
-         });
-          
-         function displayMessage(message) {
-             toastr.success(message, 'Event');
-         } 
-       $(document).ready(function(){
+        });
+        function displayMessage(message) {
+            toastr.success(message, 'Event');
+        } 
+        $(document).ready(function(){
         var dt = new Date();
         time = moment(dt).format("YYYY-MM-DD HH:mm");
         console.log(time);
-       });
+        });
         
       </script>
 

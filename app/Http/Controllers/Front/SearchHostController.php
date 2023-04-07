@@ -22,7 +22,7 @@ use Twilio\Rest\Client;
 use App\Events\NotificationsSend;
 use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\VideoGrant;
-
+use App\Models\MeetingCharge;
 class SearchHostController extends Controller
 {
     //
@@ -36,12 +36,18 @@ class SearchHostController extends Controller
     // Host details
 
     public function hostDetail(Request $req , $unique_id){
-
+        
         $host_data = User::where('unique_id',$unique_id)->first();
         $host_details = DB::table('users')->where('unique_id',$unique_id)->first();
+        foreach($host_details['_id'] as $h){
+           $host_id = $h;
+        }
+        
+        $host_meeting_charges = MeetingCharge::where('host_id',$host_id)->get();
         
         //   Available Host
-        $today_date = date("Y-m-d H:m");
+        $today_date = date("Y-m-d H:i");
+        
     //    $date = "2023-02-28 14:30";
         $host_schedule = HostAvailablity::where([['host_id','=',$host_data['_id']],['end','>=',$today_date]])->get(['title','start','end','status']);
         
@@ -110,7 +116,7 @@ class SearchHostController extends Controller
         // }
        
         // dd($available_host);
-        return view('Guests.search-host.host-detail',compact('host_details','available_host'));
+        return view('Guests.search-host.host-detail',compact('host_details','available_host','host_meeting_charges'));
         // return view('Guests.search-host.host-detail',compact('host_details','available_host'));
   
     }
@@ -118,106 +124,125 @@ class SearchHostController extends Controller
     // Schedule meetings 
 
     public function scheduleMeeting(Request $req ){
-      
-        switch ($req->type) {
-            case 'add':
-                //  Appointment data create
-            if(Auth::check()){
-                $newAppointment = new HostAppointments;
-                $newAppointment->host_available_id = $req->available_id;
-                $newAppointment->user_id = $req->user_id;
-                $newAppointment->host_id = $req->host_id;
-                $newAppointment->guest_name = $req->name;
-                $newAppointment->guest_email = $req->email;
-                $newAppointment->start = date('Y-m-d H:i', strtotime($req->start));
-                $newAppointment->end = date('Y-m-d H:i', strtotime($req->end));
-                $newAppointment->status = $req->status;
-                $newAppointment->seen_status = 0;
-                $newAppointment->save();
-                $user = User::find($req->user_id); 
+        $available_id = $req->available_id;
+        $today_date = date("Y-m-d H:i");
+        
+        $host_appointments = HostAppointments::where([['host_available_id','=',$available_id],['end','>=',$today_date]])->get();
+       
+        $meeting_start = date('Y-m-d H:i', strtotime($req->start));
+        $meeting_end = date('Y-m-d H:i', strtotime($req->end));
+        $required_start_time =  strtotime($req->start);
+        $required_end_time =  strtotime($req->end);
+
+        $required_start_time = date('Y-m-d H:i', strtotime('-30 minutes',$required_start_time));
+        $required_end_time = date('Y-m-d H:i', strtotime('+30 minutes',$required_end_time));
+        // return $required_start_time . ' asdfasdfad' . $required_end_time;
+        foreach($host_appointments as $hs){
+            // echo $hs['start'] . '<br>' . $hs['end'];
+            if($hs['end'] < $required_start_time ||  $required_end_time < $hs['start']){
+                // switch ($req->type) {
+                //     case 'add':
+                        //  Appointment data create
+                    if(Auth::check()){
+                        $newAppointment = new HostAppointments;
+                        $newAppointment->host_available_id = $req->available_id;
+                        $newAppointment->user_id = $req->user_id;
+                        $newAppointment->host_id = $req->host_id;
+                        $newAppointment->guest_name = $req->name;
+                        $newAppointment->guest_email = $req->email;
+                        $newAppointment->start = date('Y-m-d H:i', strtotime($req->start));
+                        $newAppointment->end = date('Y-m-d H:i', strtotime($req->end));
+                        $newAppointment->status = $req->status;
+                        $newAppointment->seen_status = 0;
+                        $newAppointment->save();
+                        $user = User::find($req->user_id); 
+                    }else{
+                        $req->validate([
+                            'email' => 'required|unique:users',
+                        ]);
+                        $name = $req->name;
+                        $namestr = str_replace(' ', '', $name);
+                        $pass = substr($namestr, 0, 4).'@'.rand(100,999);
+                        $password = Hash::make($pass);
+                        $data = array(
+                            'email' => $req->email,
+                            'password' => $password,
+                            'first_name' => $name,
+                            'status' => 0
+                        );
+                        $user = User::create($data);
+                        $credentials = array('email'=>$req->email, 'password' => $pass);
+                        Auth::attempt($credentials);
+                        $mailData = [
+                            'email' => $req->email,
+                            'password' => $pass
+                        ];
+                        $passwordmail = Mail::to($req->email)->send(new SendpasswordMail($mailData));
+                        $newAppointment = new HostAppointments;
+                        $newAppointment->host_available_id = $req->available_id;
+                        $newAppointment->user_id = $user->_id;
+                        $newAppointment->host_id = $req->host_id;
+                        $newAppointment->guest_name = $req->name;
+                        $newAppointment->guest_email = $req->email;
+                        $newAppointment->start = date('Y-m-d H:i', strtotime($req->start));
+                        $newAppointment->end = date('Y-m-d H:i', strtotime($req->end));
+                        $newAppointment->status = $req->status;
+                        $newAppointment->seen_status = 0;
+                        $newAppointment->save();
+                        $user = User::find($user->_id); 
+                    }
+                        //  Host availablity update
+                        
+                        $host = User::find($req->host_id);
+                        $uemail = $user->email;
+                        $hostmail = $host->email;
+                        
+                            
+                        $mailData = [
+                            'hostname' => $user->first_name.' '.$user->last_name,
+                            'username' => $user->first_name.' '.$user->last_name,
+                            'start' => $req->start,
+                            'end' => $req->end,
+                        ];
+                        
+                        $mail = Mail::to($uemail)->send(new appoinmentsconfirmation($mailData));
+                        $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
+                        event(new NotificationsSend($req->host_id,$newAppointment));
+                        $meeting_end_time =  strtotime($req->end);
+                        // $updated_host_available_time =  date('Y-m-d H:i', strtotime('+30 minutes',$meeting_end_time));
+                        
+        
+                        // $host_availablity =  HostAvailablity::where('_id',$req->available_id)->first();
+        
+                        // if($host_availablity->end > $updated_host_available_time){
+                        //     $host_availablity->start = $updated_host_available_time;
+                        //     $host_availablity->update();
+                        // }else{
+                        //     $host_availablity->start = date('Y-m-d H:i',$meeting_end_time);
+                        //     $host_availablity->update();
+                        // }
+        
+                        //notifications
+                  
+                        
+                        $event = array(
+                            'id' => $newAppointment['id'],
+                            'start' => $newAppointment['start'],
+                            'end' => $newAppointment['end'],
+                            'status' => $newAppointment['status'],
+                            'type'     =>  'schedule_meeting',
+                            'color'    =>  '#dd8585',
+                            'allDay'   =>  false,
+                        );
+                        //    return $event;
+                       return response()->json($hostmail);
+                    // break;
+                // }
             }else{
-                $req->validate([
-                    'email' => 'required|unique:users',
-                ]);
-                $name = $req->name;
-                $namestr = str_replace(' ', '', $name);
-                $pass = substr($namestr, 0, 4).'@'.rand(100,999);
-                $password = Hash::make($pass);
-                $data = array(
-                    'email' => $req->email,
-                    'password' => $password,
-                    'first_name' => $name,
-                    'status' => 0
-                );
-                $user = User::create($data);
-                $credentials = array('email'=>$req->email, 'password' => $pass);
-                Auth::attempt($credentials);
-                $mailData = [
-                    'email' => $req->email,
-                    'password' => $pass
-                ];
-                $passwordmail = Mail::to($req->email)->send(new SendpasswordMail($mailData));
-                $newAppointment = new HostAppointments;
-                $newAppointment->host_available_id = $req->available_id;
-                $newAppointment->user_id = $user->_id;
-                $newAppointment->host_id = $req->host_id;
-                $newAppointment->guest_name = $req->name;
-                $newAppointment->guest_email = $req->email;
-                $newAppointment->start = date('Y-m-d H:i', strtotime($req->start));
-                $newAppointment->end = date('Y-m-d H:i', strtotime($req->end));
-                $newAppointment->status = $req->status;
-                $newAppointment->seen_status = 0;
-                $newAppointment->save();
-                $user = User::find($user->_id); 
+                return 'this slot is not available';
             }
-                //  Host availablity update
-                
-                $host = User::find($req->host_id);
-                $uemail = $user->email;
-                $hostmail = $host->email;
-                
-                    
-                $mailData = [
-                    'hostname' => $user->first_name.' '.$user->last_name,
-                    'username' => $user->first_name.' '.$user->last_name,
-                    'start' => $req->start,
-                    'end' => $req->end,
-                ];
-                
-                $mail = Mail::to($uemail)->send(new appoinmentsconfirmation($mailData));
-                $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
-                event(new NotificationsSend($req->host_id,$newAppointment));
-                $meeting_end_time =  strtotime($req->end);
-                $updated_host_available_time =  date('Y-m-d H:i', strtotime('+30 minutes',$meeting_end_time));
-                
-
-                $host_availablity =  HostAvailablity::where('_id',$req->available_id)->first();
-
-                if($host_availablity->end > $updated_host_available_time){
-                    $host_availablity->start = $updated_host_available_time;
-                    $host_availablity->update();
-                }else{
-                    $host_availablity->start = date('Y-m-d H:i',$meeting_end_time);
-                    $host_availablity->update();
-                }
-
-                //notifications
-          
-                
-                $event = array(
-                    'id' => $newAppointment['id'],
-                    'start' => $newAppointment['start'],
-                    'end' => $newAppointment['end'],
-                    'status' => $newAppointment['status'],
-                    'type'     =>  'schedule_meeting',
-                    'color'    =>  '#dd8585',
-                    'allDay'   =>  false,
-                );
-                //    return $event;
-               return response()->json($hostmail);
-
-              break;
-            }
+        }
+        die();
     }
     public function searchhost(Request $req){
         if($req->data == null){
