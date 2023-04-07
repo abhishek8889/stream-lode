@@ -41,10 +41,11 @@ class SearchHostController extends Controller
         $host_details = DB::table('users')->where('unique_id',$unique_id)->first();
         
         //   Available Host
-        $today_date = date("Y-m-d H:m");
+        $today_date = date("Y-m-d H:i");
+        // print_r($today_date);
     //    $date = "2023-02-28 14:30";
         $host_schedule = HostAvailablity::where([['host_id','=',$host_data['_id']],['end','>=',$today_date]])->get(['title','start','end','status']);
-        
+        // dd($host_schedule);
         $available_host = array();
         
         if(isset($host_schedule) || !empty($host_schedule)){
@@ -86,8 +87,8 @@ class SearchHostController extends Controller
      
 
         //  Host Meetings 
-
         $host_appointments = HostAppointments::where([['host_id','=',$host_data['_id']],['end','>=',$today_date]])->get(['start','end','status']);
+            // dd($host_appointments);
         if(isset($host_appointments) || !empty($host_appointments)){
             foreach($host_appointments as $meetings){
                 if($schedule->status == 1){
@@ -322,14 +323,7 @@ public function trycode(){
     // );
     // print_r($result);
 
-    $mailData = [
-        'hostname' => '$user->first_name$user->last_name',
-        'username' => '$user->first_name$user->last_name',
-        'start' => '$req->start',
-        'end' => '$req->end',
-    ];
-    $mail = Mail::to('pdeveloper261@gmail.com')->send(new appoinmentsconfirmation($mailData));
-    $hostmail = Mail::to('yashwantchandel06@gmail.com')->send(new HostAppoinmentsMail($mailData));
+    
 
 }
 

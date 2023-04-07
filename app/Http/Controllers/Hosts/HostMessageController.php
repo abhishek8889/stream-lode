@@ -26,9 +26,14 @@ class HostMessageController extends Controller
           if (($key = array_search(Auth::user()->id, $message_id)) !== false) {
             unset($message_id[$key]);
         }
+       if($message_id){ 
           foreach($message_id as $mid){
              $users[] = User::where('_id',$mid)->with('adminmessage',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); })->first(); 
           }
+        }else{
+          $users = array();
+        }
+         
      $host_schedule = HostAppointments::where('host_id',Auth::user()->_id)->groupBy('user_id')->select('guest_email','guest_name','host_id')->get();
       $admin = User::where('status',2)->first();
      // echo $idd;

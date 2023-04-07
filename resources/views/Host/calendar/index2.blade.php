@@ -56,9 +56,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                @if( count($meeting_charges) !== 0 )
-                <button type="submit" class="btn btn-primary">Schedule meeting</button>
-                @endif
+                <button type="submit" class="btn btn-primary" @if( count($meeting_charges) == 0 ) disabled @endif>Schedule meeting</button>
               </div>
             </form>
           </div>
