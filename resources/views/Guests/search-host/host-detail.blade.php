@@ -251,7 +251,7 @@ $date = date('Y-m-d h:i');
                     <select name="meeting_duration" class="form-control" id="meeting_duration">
                       @if(isset($host_meeting_charges))
                         @foreach($host_meeting_charges as $meeting_charge)
-                          <option value="{{ $meeting_charge['duration_in_minutes'] }}">For {{ $meeting_charge['duration_in_minutes'] }} minutes charges will be {{ $meeting_charge['amount'] }}({{ $meeting_charge['currency'] }}) </option>
+                          <option value="{{ $meeting_charge['duration_in_minutes'] }}" amount="{{ $meeting_charge['amount'] }}" currency="{{ $meeting_charge['currency'] }}" >For {{ $meeting_charge['duration_in_minutes'] }} minutes charges will be {{ $meeting_charge['amount'] }}({{ $meeting_charge['currency'] }}) </option>
                         @endforeach
                       @endif
                     </select>
@@ -564,7 +564,8 @@ $date = date('Y-m-d h:i');
                                     let email = $("#email").val();
                                     let start_time = $("#start_time").val();
                                     let end_time = $("#end_time").val();
-                                      // console.log(name);
+                                    let duration = $("#meeting_duration").val();
+                                      // console.log(duration);
                                       if (!isLoading) {
                                         isLoading = true;
                                         $.ajax({
@@ -578,11 +579,12 @@ $date = date('Y-m-d h:i');
                                                       email : email,
                                                       start : start_time,
                                                       end : end_time,
+                                                      duration :duration,
                                                       status : 1,
                                                       type : 'add',
                                               },
                                               success: function (data) {
-                                                // console.log(data);
+                                                console.log(data);
                                                 
                                                 isLoading = false;
                                                 setTimeout(function(){
