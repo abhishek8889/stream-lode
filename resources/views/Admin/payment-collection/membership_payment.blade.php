@@ -50,13 +50,10 @@
                     <tbody>
 
                     <?php
-                    // echo '<pre>';
-                    // print_r($membership_payments_list);
-                    // echo '</pre>';
-                    // die(); 
                         $membership_count = 0;
                     ?>
                     @forelse($membership_payments_list as $data)
+                    @if($data['user'])
                         <?php $membership_count++; ?>
                         <tr>
                            <td><b>{{ $membership_count }}</b></td>
@@ -68,9 +65,9 @@
                             
                            <td class="text-uppercase text-info"><b>{{ $membership_name }}</b></td>
                             @if($data['payment_status'] == 'succesfull')
-                           <td><span class="badge badge-success"> {{ $data['payment_status'] }}</span></td>
-                           @else
-                           <td><span class="badge badge-danger"> {{ $data['payment_status'] }}</span></td>  
+                                <td><span class="badge badge-success"> {{ $data['payment_status'] }}</span></td>
+                            @else
+                                <td><span class="badge badge-danger"> {{ $data['payment_status'] }}</span></td>  
                            @endif
 
                            <td><b>${{ $data['total'] ?? $data['membership_total_amount'] }}</b></td>
@@ -79,12 +76,14 @@
                                 <a href="{{ url('/admin/membership-payment-details/'.$data->user['unique_id']) }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
                            </td>
                         </tr>
+                        @endif
                     @empty
                         <tr>
                             <td>
                                 <b>No data found</b>
                             </td>
                         </tr>
+
                     @endforelse
                         
                     </tbody>
