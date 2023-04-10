@@ -8,4 +8,7 @@ class MeetingCharge extends Model
 {
     use HasFactory;
     protected $table = "meeting_charges";
+    protected $fillable = [
+        'host_id','duration_in_minutes','amount','currency'
+    ];
 }

@@ -8,4 +8,7 @@ class PostNotification extends Model
 {
     use HasFactory;
     protected $table = 'post_notifications';
+    protected $fillable = [
+        'sender_id','message','reciever_id','username'
+    ];
 }

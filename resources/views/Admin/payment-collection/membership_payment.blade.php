@@ -56,11 +56,13 @@
                     // die(); 
                         $membership_count = 0;
                     ?>
+                   
+                   
                     @forelse($membership_payments_list as $data)
                         <?php $membership_count++; ?>
                         <tr>
                            <td><b>{{ $membership_count }}</b></td>
-                           <td><b>{{ $data->user['first_name']. ' ' .$data->user['last_name']  }}</b></td>
+                           <td><b>{{ $data->user['first_name'] . ' ' .$data->user['last_name'] }}</b></td>
                            <td><b>#{{ $data->user['unique_id'] }}</b></td>
                             <?php 
                                 $membership_name = App\Models\MembershipTier::where('_id',$data->user['membership_id'])->get()->value('name');

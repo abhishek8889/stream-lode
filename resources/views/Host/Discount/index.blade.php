@@ -88,7 +88,7 @@
 			    data: {id:id,status:status,_token:"{{ csrf_token() }}"},
 			    success: function(response)
 			         {
-                        console.log(status);
+                        // console.log(status);
                         if(status == 0){
                             $('#customSwitches'+id).attr('status',1);
                         }else{
