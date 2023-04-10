@@ -294,7 +294,7 @@ class SearchHostController extends Controller
                     return 'you can make appointemnt 1st condition';
                 }
                 elseif($hs['start'] < $required_start_time && $hs['end'] < $required_end_time ){
-                    if($hs['start'] )
+                    // if($hs['start'] )
                     // $newAppointment = new HostAppointments;
                     // $newAppointment->host_available_id = $host_available_id;
                     // $newAppointment->user_id = $guest->_id;
@@ -311,7 +311,7 @@ class SearchHostController extends Controller
                     // $newAppointment->status = $appointment_status;
                     // $newAppointment->seen_status = 0;
                     // $newAppointment->save();
-                    // return 'appointement created succesfully in second condition';
+                    return 'appointement created succesfully in second condition';
                 }else{
                     return 'sorry this slot is booked';
                 }
