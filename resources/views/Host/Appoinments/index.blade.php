@@ -190,7 +190,6 @@ display: none;
                   <tbody>
               <?php
               $current_date = date('Y-m-d H:i');
-              
               ?>
                     @if($host_schedule)
                     @forelse ($host_schedule as $hs)
@@ -206,16 +205,16 @@ display: none;
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
                         <td>
-                        
+                       
                         @if($current_date < $hs->end)
                           @if($hs->video_link_name)
-                          <a class="videoconfrencelink" app-id="{{$hs->_id}}" data-id="{{$hs->video_link_name}}" style="cursor:move;">
-                            <span>View Room</span>
+                          <a href="{{ url('delete-appointment/'.$hs->id) }}" class="btn btn-danger"><i class="fa fa-trash "></i></a>
+                          <a class="videoconfrencelink btn btn-success" app-id="{{$hs->_id}}" data-id="{{$hs->video_link_name}}" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="View Room">
                             <i class="fa fa-video-camera" aria-hidden="true"></i>
                           </a>
                           @else
-                          <a class="videoconfrence" data-id="{{$hs->_id}}" style="cursor:move;">
-                            <span>Create Room</span>
+                          <a href="{{ url('delete-appointment/'.$hs->id) }}" class="btn btn-danger"><i class="fa fa-trash "></i></a>
+                          <a class="videoconfrence btn btn-info" data-id="{{$hs->_id}}" style="cursor:pointer;"  data-toggle="tooltip" data-placement="top" title="Create Room">
                             <i class="fa fa-video-camera" aria-hidden="true"></i>
                           </a>
                           @endif

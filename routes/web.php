@@ -307,6 +307,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
    
     //Appoinments
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index'])->name('appoinments');
+    Route::get('delete-appointment/{id}',[AppoinmentsController::class,'deleteAppointment']);
 
     //meeting charges
     Route::get('{id}/meeting-charges',[MeetingCharges::class,'index'])->name('meeting-charges');

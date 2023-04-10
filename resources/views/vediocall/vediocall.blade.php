@@ -9,7 +9,7 @@
   @vite('resources/js/pingStatus.js')
 </head>
 <body>
-  <div id="test" style="display:none;">anjkdfhadjshfk</div>
+  <div id="test" style="display:none;"></div>
   @if($roomName)
     <input type="hidden" id="room-name" value="{{ $roomName }}">
   @endif
@@ -51,7 +51,7 @@
                     </button>
                   </div>
                   <div class="modal-body">
-                    <div class="text text-success">Please click here for payment.</div>
+                    <div class="text text-success" id="clickForPayment">Please click here for payment.</div>
                     
                   </div>
                   <div class="modal-footer">
@@ -129,22 +129,21 @@ margin-right: auto;
         }
       }).then((result) => {
         if (result.isConfirmed) {
-            // $("#paymentModal").modal('show');
-           var user_type = $("#user_type").val();
-           if(user_type == "host"){
-            $("#user_type_div").attr('class','btn btn-success sendPaymentPingBtn');
-            $("#user_type_div").attr('data-toggle','tooltip');
-            $("#user_type_div").attr('data-placement','top');
-            $("#user_type_div").attr('title','Ask for payment');
-            $("#user_type_div").attr('type','host_box');
-            $("#user_type_div").html("<i class='fa-solid fa-dollar-sign'></i>");
-           }else{
-            $("#user_type_div").attr('type','guest_box');
-            
-           }
-            startVedioCall();
-        } else if (result.isDenied) {
-            window.location.href = "{{ url('/') }}";
+          // $("#paymentModal").modal('show');
+          var user_type = $("#user_type").val();
+          if(user_type == "host"){
+          $("#user_type_div").attr('class','btn btn-success sendPaymentPingBtn');
+          $("#user_type_div").attr('data-toggle','tooltip');
+          $("#user_type_div").attr('data-placement','top');
+          $("#user_type_div").attr('title','Ask for payment');
+          $("#user_type_div").attr('type','host_box');
+          $("#user_type_div").html("<i class='fa-solid fa-dollar-sign'></i>");
+          }else{
+          $("#user_type_div").attr('type','guest_box');
+          }
+          startVedioCall();
+        }else if (result.isDenied) {
+          window.location.href = "{{ url('/') }}";
         }
       })
     });
@@ -173,8 +172,6 @@ margin-right: auto;
         }
         });
       });
-      
-      
     });
     // $(".vedio-response").on('change',function(){
     //   alert($(this).html);
