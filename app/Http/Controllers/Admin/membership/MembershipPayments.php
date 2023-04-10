@@ -17,9 +17,9 @@ class MembershipPayments extends Controller
             $response->select('first_name','last_name','membership_id','unique_id');
         }])->orderBy('created_at','DSC')->select()->get();
         // dd($membership_payments_list);
-
+        // $membership_payments_list = array();
+       
         // dd($membership_payments_list);
-
         return view('Admin.payment-collection.membership_payment',compact('membership_payments_list'));
     }
     public function membershipPaymentDetails(Request $req , $unique_id){

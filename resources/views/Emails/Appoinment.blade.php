@@ -30,12 +30,16 @@
                                         </tr>
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                             <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                               Appoinments is fixed with host {{ $mailData['hostname'] ?? '' }} 
+                                               Appoinments is fixed with host name {{ $mailData['hostname'] ?? '' }} 
                                             </td>
                                         </tr>
+                                        <?php 
+                                         $start = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($mailData['start'])));
+                                         $end = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($mailData['end'])));
+                                        ?>
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                             <td class="content-block" itemprop="handler" itemscope="" itemtype="http://schema.org/HttpActionHandler" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                                on {{ $mailData['start'] ?? '' }} to {{$mailData['end'] ?? ''}}
+                                                on {{ $start ?? '' }} to {{$end ?? ''}}
                                             </td>
                                         </tr>
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">

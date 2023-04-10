@@ -27,6 +27,15 @@
             </div>
             <form id="availableHostForm" action="" >
               <div class="modal-body">
+              @if( count($meeting_charges) !== 0 )
+                    <div class="alert alert-info" role="alert">
+                        <p style="font-size: large;">Your meeting charges for @foreach($meeting_charges as $mc) {{ $mc->duration_in_minutes ?? ''}} minutes is ${{ $mc->amount ?? '' }},  @endforeach if you want to add more charges than <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to create meeting charges"> click here </a></p>
+                    </div>
+                    @else
+                    <div class="alert alert-danger" role="alert">
+                        <p style="font-size:large;"> You have to <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to create meeting charges"> create meeting charge </a> before set you availability </p>
+                    </div>
+              @endif
                 <div class="form-group">
                   <label for="time">Title</label>
                   <input type="text" class="form-control" id="title" placeholder="Enter your Title" />
@@ -38,7 +47,6 @@
                 ?>
                 <div class="form-group">
                   <label for="time">Start time</label>
-                  
                   <input type="datetime-local" class="form-control" id="start_time" placeholder="Meetimg time" value="{{ $today_date }}"/>
                 </div>
 
@@ -48,8 +56,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                
-                <button type="submit" class="btn btn-primary">Schedule meeting</button>
+                <button type="submit" class="btn btn-primary" @if( count($meeting_charges) == 0 ) disabled @endif>Schedule meeting</button>
               </div>
             </form>
           </div>
@@ -79,11 +86,11 @@ $(document).ready(function () {
     var isLoading = false;
 
     var calendar = $('#calendar').fullCalendar({
-                    editable: true,
+                    // editable: true,
                     events: "{{ url('/'.auth()->user()->unique_id.'/calendar') }}",
                     // displayEventTime: true,
                     displayEventEnd: true,
-                    editable: true,
+                    // editable: true,
                     header:{
                         left:'prev,next today',
                         center:'title',
@@ -100,6 +107,7 @@ $(document).ready(function () {
                     selectable: true,
                     selectHelper: true,
                     select: function (start, end ,allDay) {
+                              
                         // var title = prompt('Event Title:');
                         $("#calendarModal").modal('show');
                         
@@ -152,8 +160,9 @@ $(document).ready(function () {
                                                 end: data.end,
                                                 allDay: allDay
                                             },true);
-    
+                                            
                                         calendar.fullCalendar('unselect');
+                                        location.reload();
                                         }
                                     }
                                 });
@@ -165,7 +174,8 @@ $(document).ready(function () {
                     eventDrop: function (event, delta) {
                         var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm");
                         var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm");
-                        // console.log(delta);
+                        // console.log(event);
+                        // console.log(start+end);
                         $.ajax({
                             url: "{{ url(auth()->user()->unique_id.'/calendar-response') }}",
                             data: {
@@ -177,6 +187,7 @@ $(document).ready(function () {
                             },
                             type: "POST",
                             success: function (response) {
+                            //   console.log(response);
                                 if(response.error){
                                     displayError(response.error);
                                 }else{
@@ -187,16 +198,18 @@ $(document).ready(function () {
                     },
                     eventClick: function (event) {
                         var deleteMsg = confirm("Do you really want to delete?");
-                        // console.log(event._id);
+                        // console.log(event);
                         if (deleteMsg) {
                             $.ajax({
                                 type: "POST",
                                 url: "{{ url('/'.auth()->user()->unique_id.'/calendar-response') }}",
                                 data: {
-                                        id: event._id,
+                                        id: event.id,
+                                        types: event.type,
                                         type: 'delete'
                                 },
                                 success: function (response) {
+                                    // console.log(response);
                                     calendar.fullCalendar('removeEvents', event._id);
                                     displayMessage("Event Deleted Successfully");
                                 }
@@ -207,6 +220,7 @@ $(document).ready(function () {
                 });
  
     });
+    
       
     /*------------------------------------------
     --------------------------------------------

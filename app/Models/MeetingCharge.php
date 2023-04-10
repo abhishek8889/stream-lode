@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class PostNotification extends Model
+class MeetingCharge extends Model
 {
     use HasFactory;
-    protected $table = 'post_notifications';
+    protected $table = "meeting_charges";
     protected $fillable = [
-        'sender_id','message','reciever_id','username'
+        'host_id','duration_in_minutes','amount','currency'
     ];
 }

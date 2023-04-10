@@ -54,7 +54,7 @@
                     <div class="col-sm-9">
                         <select name="discount_type" id="discount_type" class="form-control">
                             <option value="percent_off" <?php if($coupondata['discount_type']=='percent_off'){ echo 'selected'; } ?> >Percentage Off</option>
-                            <option value="amount_off" <?php if($coupondata['discount_type']=='amount_off'){ echo 'selected'; } ?> >Amount Off</option>
+                            <!-- <option value="amount_off" <?php if($coupondata['discount_type']=='amount_off'){ echo 'selected'; } ?> >Amount Off</option> -->
                         </select>
                         @error('percent_off')
                             <div class="text text-danger">{{ $message }}</div>
@@ -70,7 +70,7 @@
                         <input type="text" id="perentage_off" class="form-control" name="percent_off" placeholder="Enter percentage" value="{{ $coupondata['percent_off'] ?? '' }}"/>  
                     </div>
                 </div>
-                <div class="form-group row" id="discount_amt">
+                <!-- <div class="form-group row" id="discount_amt">
                     <label for="amount_off" class="col-sm-3 col-form-label">Amount Off</label>
                     <div class="col-sm-9">
                         <input type="text" id="amount_off" class="form-control" name="amount_off" placeholder="Enter amount" value="{{ $coupondata['amount_off'] ?? '' }}"/>
@@ -86,7 +86,7 @@
                             <div class="text text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
+                </div> -->
                 <!-- currency code -->
                 <div class="form-group row">
                     <label for="duration" class="col-sm-3 col-form-label">Duration</label>

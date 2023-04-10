@@ -8,14 +8,20 @@ use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\VideoGrant;
 use Twilio\Jwt\Grants\SyncGrant;
 use Twilio\Jwt\Grants\ChatGrant;
-
+use App\Models\HostAppointments;
+use App\Events\SendStreamPaymentRequest;
+use App\Models\User;
 
 class VedioCallController extends Controller
 {
     //
     public function index(Request $req){
         $roomName = $req->segment(2);
-        return view('vediocall.vediocall',compact('roomName'));
+        
+        $appoinment_details = HostAppointments::where('video_link_name',$roomName)->first();
+        // dd($appoinment_details);
+        return view('vediocall.vediocall',compact('roomName','appoinment_details'));
+
     }
     public function passToken(Request $req){
         // dd($req);
@@ -74,5 +80,25 @@ class VedioCallController extends Controller
         );
         
         return response()->json($data);
+    }
+    public function pingForPayment(Request $req){
+        $host = User::find($req->host_id);
+        $host_first_name = $host['first_name'];
+        $host_last_name = $host['last_name'];
+        $host_full_name = $host_first_name . ' ' . $host_last_name;
+        $request_message = "You have to pay ". $req->amountForStream."(".$req->currency.")" . " for " . $host_full_name . " for further session";
+        // Create payment intent and pass to guest for payment
+        // $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
+        // $stripe_payment_intent =  $stripe->paymentIntents->create([
+        //     'amount' => $req->amountForStream,
+        //     'currency' => $req->currency,
+        //     'automatic_payment_methods' => [
+        //       'enabled' => true,
+        //     ],
+        //   ]);
+        // return $stripe_payment_intent;
+        // ($stream_amount,$currency,$appointment_id,$host_id,$message)
+        $test_event = event( new SendStreamPaymentRequest($req->amountForStream,$req->currency,$req->appointment_id,$request_message));
+        // return $test_event;
     }
 }

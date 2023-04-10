@@ -5,22 +5,51 @@ namespace App\Http\Controllers\Hosts;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\HostAvailablity;
+use App\Models\HostAppointments;
 use DB;
+use App\Models\MeetingCharge;
 
 class HostCalendar extends Controller
 {
     //
     public function index(Request $request)
     {
-        
+        $meeting_charges = MeetingCharge::where('host_id',Auth()->user()->id)->get();
+       
+        // dd($available_host);
         if($request->ajax()) {
+          $host_appoinments = HostAppointments::where('host_id',Auth()->user()->id)->get(['id','start','end','status']);
+          foreach($host_appoinments as $meetings){
+                $data[] =  array(
+                    'id'       =>  $meetings['id'],
+                    'start'    =>  $meetings['start'],
+                    'end'      =>  $meetings['end'],
+                    'status'   =>  $meetings['status'],
+                    'type'     =>  'schedule_meeting',
+                    'color'    =>  '#dd8585',
+                    'allDay'   =>  false,
+                );
+        }
+        $host_schedule = HostAvailablity::where('host_id',auth()->user()->id)->get(['id', 'title', 'start','end','status']);
+        foreach($host_schedule as $schedule){
+          $data[] =  array(
+            'id'       => $schedule['id'],
+            'title'    =>  $schedule['title'],
+            'start'    =>  $schedule['start'],
+            'end'      =>  $schedule['end'],
+            'status'   =>  $schedule['status'],
+            'type'     =>  'available_host',
+            'color'    =>  '#6294a7',
+            'allDay'   =>  false,
+        );
+        }
          
-            $data = HostAvailablity::where('host_id',auth()->user()->id)->get(['id', 'title', 'start','end']);
+            // $data = HostAvailablity::where('host_id',auth()->user()->id)->get(['id', 'title', 'start','end']);
             
              return response()->json($data);
         }
        
-        return view('Host.calendar.index2');
+        return view('Host.calendar.index2',compact('meeting_charges'));
     }
     
     public function ajax(Request $request)
@@ -72,13 +101,16 @@ class HostCalendar extends Controller
                       'end' => $request->end,
                 ]);
           
-                return response()->json($event);
+                return response()->json($today_date);
               break;
     
             case 'delete':
+              if($request->types == 'available_host'){
                 $event = HostAvailablity::find($request->id)->delete();
-    
-                return response()->json($event);
+              }else{
+                $event = HostAppointments::find($request->id)->delete();
+              }
+                return response()->json($request->id);
               break;
               
             default:
@@ -89,5 +121,15 @@ class HostCalendar extends Controller
         $message = array('error' => "Sorry but for schedule meeting you have to activate your account by paying invoice got in registered email.");
         return response()->json($message);
       }
+    }
+    public function seenstatus(Request $request){
+      $data = HostAppointments::where([['host_id',Auth()->user()->id],['seen_status',0]])->get();
+        foreach($data as $d){
+            $update = HostAppointments::find($d->_id);
+            $update->seen_status = 1;
+            $update->update();
+        }
+      return response()->json($data);
+
     }
 }
