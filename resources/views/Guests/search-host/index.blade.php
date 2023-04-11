@@ -142,22 +142,23 @@
   $(document).ready(function(){
     $('#searchbtn').click(function(e){
       e.preventDefault();
-      data = $('#searchbox').val();
+      data1 = $('#searchbox').val();
       cat = $('#searchcat').val();
       // console.log(cat);
       // console.log(data);
       $.ajax({
-        method: 'post',
-			  url: '{{url('searchhost')}}',
-			  dataType: 'json',
-			  data: {data:data, cat:cat ,_token: '{{csrf_token()}}'}, 
-        success: function(response)
+          method: 'post',
+          url: '{{url('searchhost')}}',
+          dataType: 'json',
+          data: {data:data1, cat:cat ,_token: '{{csrf_token()}}'}, 
+          success: function(response)
 			{
         // console.log(response);
-        if(cat == 3){
-        var res = response.filter(function (el) {
-          return el != null && el != "";
-        });
+       if(cat == 3){
+            var res = response.filter(function (el) {
+            return el != null && el != "";
+       });
+       if(data1){
         var unique = [];
           var distinct = [];
           for( let i = 0; i < res.length; i++ ){
@@ -166,9 +167,12 @@
               unique[res[i]._id] = 1;
             }
         }
-        data = distinct;
+       }else{
+          distinct = res;
+       }
+          data = distinct;
       }else{
-        data = response;
+          data = response;
       }
                 // console.log(res);
         divdata = [];
@@ -183,7 +187,6 @@
         divdata.push(html);
         });
         $('#hostscount').html('Showing all '+divdata.length+' results');
-        // console.log(divdata.length);
         $('.host-row').html(divdata);
       }
       });

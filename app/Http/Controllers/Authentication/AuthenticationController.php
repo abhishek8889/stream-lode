@@ -215,6 +215,7 @@ class AuthenticationController extends Controller
             $membership_payment->discount_amount = $discount ;
             $membership_payment->total = $total_excluding_discount ;// while we use discount then we fix this and diff beteween unused time charge and new charge from invoice 
             // prices end
+            $membership_payment->payment_type = 'create_membership';
             $membership_payment->payment_status = $createMembership->status;
             $membership_payment->save();
   

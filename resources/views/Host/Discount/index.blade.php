@@ -10,10 +10,10 @@
             <ol class="breadcrumb float-sm-right">
             {{ Breadcrumbs::render('Coupons') }}
             </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
+          </div>
+        </div>
+      </div>
+</div>
 <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -88,7 +88,7 @@
 			    data: {id:id,status:status,_token:"{{ csrf_token() }}"},
 			    success: function(response)
 			         {
-                        console.log(status);
+                        // console.log(status);
                         if(status == 0){
                             $('#customSwitches'+id).attr('status',1);
                         }else{

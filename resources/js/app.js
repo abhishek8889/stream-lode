@@ -32,11 +32,12 @@ import './bootstrap';
        let authid = $('#hostauthid').val();
        let base_url = $('#base_url').val();
        let count1 = parseInt($('#notificationcount').html());
-        if(authid = e.host_id){
+       console.log(authid);
+       console.log(e.host_id);
+        if(authid == e.host_id){
             $('#notificationcount').html(count1 + 1);
             // console.log(e.appoinments);
             $('#notificationbox12').append('<a href="'+base_url+'/Appoinments" class="dropdown-item"><i class="nav-icon fas fa-calendar mr-2"></i>new appointment scheduled with '+e.appoinments.guest_name+'</a>');
-
         }
        
         

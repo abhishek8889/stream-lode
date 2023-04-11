@@ -146,6 +146,8 @@
         $("#duration").on('change',function(){
             if($(this).val() == 'repeating'){
                 $("#duration_in_month").show();
+            }else{
+                $("#duration_in_month").hide();
             }
         });
         

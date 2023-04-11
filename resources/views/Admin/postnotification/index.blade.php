@@ -26,7 +26,7 @@
                     <div class="direct-chat-infos clearfix">
                       <span class="direct-chat-name float-right">{{$m['username']}}</span>
                     </div>
-                    <div class="direct-chat-text" style="margin-right:0px;text-align: right; margin-left:40%;">
+                    <div class="direct-chat-text" style="margin-right:0px; margin-left:40%;">
                     {{$m['message']}}
                     </div>
                     <!-- /.direct-chat-text -->

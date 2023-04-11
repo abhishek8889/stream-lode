@@ -180,121 +180,40 @@ class HostMembershipController extends Controller
     }
 
     public function upgradeSubscriptionProcess(Request $req){
+      // dd($req);
+      try{
+        $user = User::where('_id',auth()->user()->id)->first();
+        $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+        $subscription = '';
+        $membership_details = MembershipTier::where('_id',$req->upgraded_membership_id)->first();
 
-      $user = User::where('_id',auth()->user()->id)->first();
-      $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
-      $subscription = '';
-      $membership_details = MembershipTier::where('_id',$req->upgraded_membership_id)->first();
+        $membership_payment = new MembershipPaymentsData;
+        $str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01235675854abcdefghjijklmnopqrst';
+        $random_order_number = substr(str_shuffle($str_result),0,7);
 
-      $membership_payment = new MembershipPaymentsData;
-      $str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01235675854abcdefghjijklmnopqrst';
-      $random_order_number = substr(str_shuffle($str_result),0,7);
-
-      if($req->payment_method == 'default'){
+        if($req->payment_method == 'default'){
+          
+          $payment_method = PaymentMethods::where('_id',$req->default_payment_method)->get()->value(['stripe_payment_method']);
+          // return $req;
+          // dd($req->default_payment_method);
         
-        $payment_method = PaymentMethods::where('_id',$req->default_payment_method)->get()->value(['stripe_payment_method']);
-        // return $req;
-       
-        if(isset(auth()->user()->subscription_id) && !empty(auth()->user()->subscription_id)){
+          if(isset(auth()->user()->subscription_id) && !empty(auth()->user()->subscription_id)){
 
-        //update customer and make this payment method as default payment method.
-        
-        $customer = $stripe->customers->update(
-          auth()->user()->stripe_customer_id,
-          [
-            'invoice_settings' => [
-            'default_payment_method' => $payment_method,
-            ],
-          ]
-        );
-        
-        // ################### update subscription  ##############################
-
-        $subscription = $stripe->subscriptions->retrieve(auth()->user()->subscription_id);
-        
-        $subscription_update_response = $stripe->subscriptions->update(
-          $subscription->id,
-          [
-            'cancel_at_period_end' => false,
-            'proration_behavior' => 'always_invoice',
-            'items' => [
-              [
-                'id' => $subscription->items->data[0]->id,
-                'price' => $membership_details->price_id,
+          //update customer and make this payment method as default payment method.
+          
+          $customer = $stripe->customers->update(
+            auth()->user()->stripe_customer_id,
+            [
+              'invoice_settings' => [
+              'default_payment_method' => $payment_method,
               ],
-              
-            ],
-          ]
-        );
-        // dd($subscription_update_response);
+            ]
+          );
+          
+          // ################### update subscription  ##############################
 
-        // ################# membership Payment data save ##########################
-
-        $membership_payment->user_id = auth()->user()->id;
-        $membership_payment->inovice_id = $subscription_update_response->latest_invoice;
-        $membership_payment->stripe_payment_method =  $payment_method;
-        $membership_payment->order_id = $random_order_number;
-        $membership_payment->membership_id = $req->upgraded_membership_id;
-        $membership_payment->membership_total_amount = $subscription_update_response->plan->amount / 100;
-        // $membership_payment->discount_coupon_name = null;
-        // $membership_payment->discount_percentage_amount = null;
-        $membership_payment->payment_amount = $subscription_update_response->plan->amount / 100; // while we use discount then we fix this and diff beteween unused time charge and new charge from invoice 
-        $membership_payment->payment_status = $subscription_update_response->status;
-        $membership_payment->save();
-
-        }
-        // dd($subscription_update_response);
-       
-        if($subscription_update_response->status == 'active'){
-          $user->membership_id = $req->upgraded_membership_id;
-          $user->subscription_id = $subscription_update_response->id;
-          $user->update();
-
-          return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you upgraded your membership');
-        
-        }else{
-
-          return redirect(url('/'.auth()->user()->unique_id))->with('error','Sorry your transaction is under process please wait for a while.');
-        
-        }
-      }else{
-        // ###############  While we got new payment method  #####################
-       
-        // attach new card to customer
-        $newPaymentDetail = new PaymentMethods;
-        $paymentMethodAttachStatus = $stripe->paymentMethods->attach(
-          $req->token,
-          ['customer' => auth()->user()->stripe_customer_id]
-        );
-
-        //update customer and make this payment method as default payment method.
-        
-        $customer = $stripe->customers->update(
-          auth()->user()->stripe_customer_id,
-          [
-            'invoice_settings' => [
-            'default_payment_method' => $req->token,
-            ],
-          ]
-        );
-
-   
-        // Save data as a new payment method for same user
-
-        $newPaymentDetail->user_id = auth()->user()->id;
-        $newPaymentDetail->stripe_payment_method = $req->token;
-        $newPaymentDetail->brand = $paymentMethodAttachStatus->card->brand;
-        $newPaymentDetail->last_4 = $paymentMethodAttachStatus->card->last4;
-        $newPaymentDetail->expire_month = $paymentMethodAttachStatus->card->exp_month;
-        $newPaymentDetail->expire_year = $paymentMethodAttachStatus->card->exp_year;
-
-        $newPaymentDetail->save();
-
-        // Update Subscription
-
-        if(isset(auth()->user()->subscription_id) || !empty(auth()->user()->subscription_id)){
           $subscription = $stripe->subscriptions->retrieve(auth()->user()->subscription_id);
-          // dd($subscription);
+          
           $subscription_update_response = $stripe->subscriptions->update(
             $subscription->id,
             [
@@ -309,49 +228,164 @@ class HostMembershipController extends Controller
               ],
             ]
           );
-          // $subscription_update_response
-          //  ###########################  membership payment details save ##################
-
-          $membership_payment->user_id = auth()->user()->id;
-          $membership_payment->inovice_id = $subscription_update_response->latest_invoice;
-          $membership_payment->stripe_payment_method =  $req->token;
-          $membership_payment->order_id = $random_order_number;
-          $membership_payment->membership_id = $req->upgraded_membership_id;
-          $membership_payment->membership_total_amount = $subscription_update_response->plan->amount / 100;
-          // $membership_payment->discount_coupon_name = null;
-          // $membership_payment->discount_percentage_amount = null;
-          $membership_payment->payment_amount = $subscription_update_response->plan->amount / 100; // while we use discount then we fix this and diff beteween unused time charge and new charge from invoice 
-          $membership_payment->payment_status = $subscription_update_response->status;
-          $membership_payment->save();
-        }
-
-        if($subscription_update_response->status == 'active'){
-
-          $user->membership_id = $req->upgraded_membership_id;
-          $user->subscription_id = $subscription_update_response->id;
-          $user->update();
-
-          return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you upgraded your membership');
+          // dd($subscription_update_response);
+          $invoice = $subscription_update_response->latest_invoice;
+            $payment_intent = '';
+            $host_inovice_url = '';
+            $host_invoice_pdf = '';
+            $subtotal = '';
+            $invoice_details = '';
+            if(!empty($invoice)){
+                $invoice_details =  $this->getInvoice($invoice);
+                $subtotal = (int)$invoice_details->subtotal / 100;
+                $payment_intent = $invoice_details->payment_intent;
+                $host_inovice_url = $invoice_details->hosted_invoice_url;
+                $host_invoice_pdf = $invoice_details->invoice_pdf;
+                // send mail for user's email to get activation and payment done
+                // $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf));
+                // dd($mail);
+            }
+          // ################# membership Payment data save ##########################
+            $membership_payment->user_id =  auth()->user()->id;
+            $membership_payment->inovice_id = $subscription_update_response->latest_invoice;
+            $membership_payment->stripe_payment_intent = $payment_intent; 
+            $membership_payment->stripe_payment_method = $payment_method; 
+            $membership_payment->payment_method_id = $req->default_payment_method;
+            $membership_payment->order_id = $random_order_number;
+            $membership_payment->membership_id = $req->upgraded_membership_id;
+            $membership_payment->membership_total_amount = $subscription_update_response->plan->amount / 100;
+            // prices starts
+            $membership_payment->discount_coupon_name = null;
+            $membership_payment->subtotal = $subtotal;
+            $membership_payment->discount_amount = null ;
+            $membership_payment->total = $subtotal ;
+            // prices end
+            $membership_payment->payment_type = 'upgrade_membership';
+            $membership_payment->payment_status = $subscription_update_response->status;
+            $membership_payment->save();
+          }
+          // dd($subscription_update_response);
         
+          if($subscription_update_response->status == 'active'){
+            $user->membership_id = $req->upgraded_membership_id;
+            $user->subscription_id = $subscription_update_response->id;
+            $user->update();
+            return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you upgraded your membership');
+          }else{
+
+            return redirect(url('/'.auth()->user()->unique_id))->with('error','Sorry your transaction is under process please wait for a while.');
+          
+          }
         }else{
+          // ###############  While we got new payment method  #####################
+          // attach new card to customer
+          $newPaymentDetail = new PaymentMethods;
+          $paymentMethodAttachStatus = $stripe->paymentMethods->attach(
+            $req->token,
+            ['customer' => auth()->user()->stripe_customer_id]
+          );
 
-          return redirect(url('/'.auth()->user()->unique_id))->with('error','Sorry your transaction is under process please wait for a while.');
-        
+          //update customer and make this payment method as default payment method.
+          
+          $customer = $stripe->customers->update(
+            auth()->user()->stripe_customer_id,
+            [
+              'invoice_settings' => [
+              'default_payment_method' => $req->token,
+              ],
+            ]
+          );
+    
+          // Save data as a new payment method for same user
+
+          $newPaymentDetail->user_id = auth()->user()->id;
+          $newPaymentDetail->stripe_payment_method = $req->token;
+          $newPaymentDetail->brand = $paymentMethodAttachStatus->card->brand;
+          $newPaymentDetail->last_4 = $paymentMethodAttachStatus->card->last4;
+          $newPaymentDetail->expire_month = $paymentMethodAttachStatus->card->exp_month;
+          $newPaymentDetail->expire_year = $paymentMethodAttachStatus->card->exp_year;
+
+          $newPaymentDetail->save();
+
+          // Update Subscription
+
+          if(isset(auth()->user()->subscription_id) || !empty(auth()->user()->subscription_id)){
+            $subscription = $stripe->subscriptions->retrieve(auth()->user()->subscription_id);
+            // dd($subscription);
+            $subscription_update_response = $stripe->subscriptions->update(
+              $subscription->id,
+              [
+                'cancel_at_period_end' => false,
+                'proration_behavior' => 'always_invoice',
+                'items' => [
+                  [
+                    'id' => $subscription->items->data[0]->id,
+                    'price' => $membership_details->price_id,
+                  ],
+                  
+                ],
+              ]
+            );
+            // $subscription_update_response
+            //  ###########################  membership payment details save ##################
+
+            $invoice = $subscription_update_response->latest_invoice;
+            $payment_intent = '';
+            $host_inovice_url = '';
+            $host_invoice_pdf = '';
+            $subtotal = '';
+            $invoice_details = '';
+            if(!empty($invoice)){
+                $invoice_details =  $this->getInvoice($invoice);
+                $subtotal = (int)$invoice_details->subtotal / 100;
+                $payment_intent = $invoice_details->payment_intent;
+                $host_inovice_url = $invoice_details->hosted_invoice_url;
+                $host_invoice_pdf = $invoice_details->invoice_pdf;
+                // send mail for user's email to get activation and payment done
+                // $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf));
+                // dd($mail);
+            }
+            $membership_payment->user_id =  auth()->user()->id;
+            $membership_payment->inovice_id = $subscription_update_response->latest_invoice;
+            $membership_payment->stripe_payment_intent = $payment_intent; 
+            $membership_payment->stripe_payment_method = $req->token; // stripe payment method
+            $membership_payment->payment_method_id = $newPaymentDetail->id;
+            $membership_payment->order_id = $random_order_number;
+            $membership_payment->membership_id = $req->upgraded_membership_id;
+            $membership_payment->membership_total_amount = $subscription_update_response->plan->amount / 100;
+            // prices starts
+            $membership_payment->discount_coupon_name = null;
+            $membership_payment->subtotal = $subtotal;
+            $membership_payment->discount_amount = null ;
+            $membership_payment->total = $subtotal ;
+            // prices end
+            $membership_payment->payment_type = 'upgrade_membership';
+            $membership_payment->payment_status = $subscription_update_response->status;
+            $membership_payment->save();
+          }
+          if($subscription_update_response->status == 'active'){
+            $user->membership_id = $req->upgraded_membership_id;
+            $user->subscription_id = $subscription_update_response->id;
+            $user->update();
+            return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you upgraded your membership');
+          }else{
+            return redirect(url('/'.auth()->user()->unique_id))->with('error','Sorry your transaction is under process please wait for a while.');
+          }
         }
-        
+      }catch(\Exception $e){
+        return $e->getMessage();
       }
-
-      
     }
-
-    public function getInvoice(){
+    public function getInvoice($invoice_number){
       $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
       $invoice = $stripe->invoices->retrieve(
-        'in_1MeGczSDpE15tSXhwtkQ5WUp',
+       $invoice_number,
         []
       );
-      dd($invoice);
+      // dd($invoice);
+      return $invoice;
     }
+
 
     public function upgrade($id){
         $subscription_list = MembershipTier::where('status',1)->get();

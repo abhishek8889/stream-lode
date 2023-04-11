@@ -113,6 +113,14 @@ Breadcrumbs::for('coupons-create', function (BreadcrumbTrail $trail): void {
     $trail->parent('Coupons');
     $trail->push('Create', route('coupons-create',['id'=> Auth::user()->unique_id]));
 });
+Breadcrumbs::for('meeting-charges', function (BreadcrumbTrail $trail): void {
+    $trail->parent('host-dashboard');
+    $trail->push('meeting-charges', route('meeting-charges',['id'=> Auth::user()->unique_id]));
+});
+Breadcrumbs::for('meeting-charges-add', function (BreadcrumbTrail $trail): void {
+    $trail->parent('meeting-charges');
+    $trail->push('Add', route('add-meeting-charges',['id'=> Auth::user()->unique_id,'idd'=>1]));
+});
 // endhostbreadcrumbs
 ?>
 

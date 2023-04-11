@@ -56,37 +56,38 @@
                     // die(); 
                         $membership_count = 0;
                     ?>
+         
                     @forelse($membership_payments_list as $data)
                         <?php $membership_count++; ?>
                         <tr>
                            <td><b>{{ $membership_count }}</b></td>
-                           <td><b>{{ $data->user['first_name']. ' ' .$data->user['last_name']  }}</b></td>
-                           <td><b>#{{ $data->user['unique_id'] }}</b></td>
+                           <td><b>{{ $data[0]->first_name . ' ' .$data[0]->last_name }}</b></td>
+                           <td><b>#{{ $data[0]->unique_id }}</b></td>
                             <?php 
-                                $membership_name = App\Models\MembershipTier::where('_id',$data->user['membership_id'])->get()->value('name');
+                                $membership_name = App\Models\MembershipTier::where('_id',$data[0]->membership_id)->get()->value('name');
                             ?>
                             
                            <td class="text-uppercase text-info"><b>{{ $membership_name }}</b></td>
-                            @if($data['payment_status'] == 'succesfull')
-                           <td><span class="badge badge-success"> {{ $data['payment_status'] }}</span></td>
+                            @if($data[0]['payments'][0]['payment_status'] == 'succesfull')
+                           <td><span class="badge badge-success"> {{ $data[0]['payments'][0]['payment_status'] }}</span></td>
                            @else
-                           <td><span class="badge badge-danger"> {{ $data['payment_status'] }}</span></td>  
+                           <td><span class="badge badge-danger"> {{ $data[0]['payments'][0]['payment_status'] }}</span></td>  
                            @endif
 
-                           <td><b>${{ $data['total'] ?? $data['membership_total_amount'] }}</b></td>
-                          <td>{{ $data['created_at'] }}</td>
+                           <td><b>${{ $data[0]['payments'][0]['total'] ?? $data[0]['payments'][0]['membership_total_amount'] }}</b></td>
+                          <td>{{ $data[0]['payments'][0]['created_at'] }}</td>
                            <td>
-                                <a href="{{ url('/admin/membership-payment-details/'.$data->user['unique_id']) }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
+                                <a href="{{ url('/admin/membership-payment-details/'.$data[0]->unique_id) }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
                            </td>
                         </tr>
-                    @empty
+                        @empty
                         <tr>
                             <td>
-                                <b>No data found</b>
+                               <h6>No Payments Data Found</h6> 
                             </td>
                         </tr>
                     @endforelse
-                        
+                 
                     </tbody>
                 </table>
             </div>

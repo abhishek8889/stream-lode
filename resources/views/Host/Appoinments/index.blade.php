@@ -179,7 +179,7 @@ display: none;
                 <table class="table table-head-fixed text-nowrap">
                   <thead>
                     <tr>
-                      <th>Sr no.</th>
+                      <th class="text-center">Sr no.</th>
                       <th>Guest Name</th>
                       <th>Start Time</th>
                       <th>End Time</th>
@@ -195,7 +195,7 @@ display: none;
                     @forelse ($host_schedule as $hs)
                       <tr>
                         <?php $count = $count+1; ?>
-                        <td>{{$count}}</td>
+                        <td class="text-center">{{$count}}</td>
                         <td>{{$hs->guest_name}}</td>
                         <?php 
                         $startdate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->start)));
@@ -204,7 +204,7 @@ display: none;
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
-                        <td>
+                        <td class="text-center">
                        
                         @if($current_date < $hs->end)
                           @if($hs->video_link_name)
@@ -356,7 +356,7 @@ $(document).ready(function(){
         data: { status:1,_token: "{{ csrf_token() }}" },
         dataType: 'json',
         success: function(response) {
-          console.log(response);
+          // console.log(response);
           if(response[0]){
             location.reload();
           }

@@ -78,8 +78,8 @@
                     <div class="direct-chat-infos clearfix">
                       <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }?>">{{$m['username']}}</span>
                     </div>
-                    <div class="direct-chat-text"<?php if($m['sender_id'] == Auth()->user()->id){ echo 'style="margin-right:0px;text-align: right; margin-left:40%;"'; }else{ echo 'style="margin-left:0px; margin-right:40%;"'; }?> >
-                  <?php echo $m['message']; ?>
+                    <div class="direct-chat-text"<?php if($m['sender_id'] == Auth()->user()->id){ echo 'style="margin-right:0px; margin-left:40%;"'; }else{ echo 'style="margin-left:0px; margin-right:40%;"'; }?> >
+                      <?php echo $m['message']; ?>
                     </div>
                     <!-- /.direct-chat-text -->
                   </div>
@@ -116,15 +116,15 @@
 
  });
 $(document).ready(function(){
-  reciever_id = $('#reciever_id').val();
-   sender_id = $('#sender_id').val()
+       reciever_id = $('#reciever_id').val();
+       sender_id = $('#sender_id').val()
   //  console.log(sender_id+reciever_id);
   $.ajax({
-   method: 'post',
-   url: '{{ url('host/updatemessage') }}',
-   dataType: 'json',
-   data: {reciever_id:reciever_id ,sender_id:sender_id, _token: '{{csrf_token()}}'},
-   success: function(response)
+          method: 'post',
+          url: '{{ url('host/updatemessage') }}',
+          dataType: 'json',
+          data: {reciever_id:reciever_id ,sender_id:sender_id, _token: '{{csrf_token()}}'},
+          success: function(response)
                     { 
                     let messagecount = parseInt(response.length);
                     let notificationcount = parseInt($('#notificationcount').html());
@@ -135,13 +135,12 @@ $(document).ready(function(){
                     // $('#notificationcount').html(messagecount1-messagecount);
                     }
 
-  });
+          });
 });
 
 $(document).ready(function(){
       $('#message').on('submit',function(e){
          if($('#messageinput').val() == ''){
-            alert('Please enter message')
             return false;
         }
         e.preventDefault();

@@ -127,7 +127,7 @@
         @endforeach
         </div>
       </li>
-       <?php  $appoinments = App\Models\HostAppointments::where([['host_id','63fd8e4d1ad0d9aee603e4d2'],['seen_status',0]])->get(); ?>
+       <?php  $appoinments = App\Models\HostAppointments::where([['host_id',Auth()->user()->id],['seen_status',0]])->get(); ?>
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>

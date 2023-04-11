@@ -311,8 +311,8 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('delete-appointment/{id}',[AppoinmentsController::class,'deleteAppointment']);
 
     //meeting charges
-    Route::get('{id}/meeting-charges',[MeetingCharges::class,'index']);
-    Route::get('{id}/meeting-charges/add/{idd?}',[MeetingCharges::class,'add'])->name('meeting-charges');
+    Route::get('{id}/meeting-charges',[MeetingCharges::class,'index'])->name('meeting-charges');
+    Route::get('{id}/meeting-charges/add/{idd?}',[MeetingCharges::class,'add'])->name('add-meeting-charges');
     Route::post('{id}/meeting-charges/addproc',[MeetingCharges::class,'addproc'])->name('meeting-add');
     Route::get('{id}/meeting-charges/delete/{idd}',[MeetingCharges::class,'delete'])->name('meeting-delete');
 
