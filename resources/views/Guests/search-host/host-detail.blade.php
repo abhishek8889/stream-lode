@@ -585,14 +585,28 @@ $date = date('Y-m-d h:i');
                                               },
                                               success: function (data) {
                                                 console.log(data);
-                                                
                                                 isLoading = false;
+                                                if(data.status == false){
+                                                  setTimeout(function(){
+                                                    $(".loader-wrapper").fadeOut('1000');
+                                                    $("#overlayer").fadeOut('100');
+                                                  }
+                                                    , 1000);
+                                                swal({
+                                                  title: "Slot is already booked.",
+                                                  text: data.message,
+                                                  icon: "info",
+                                                  button: "Dismiss",
+                                                 });
+                                                }else{
                                                 setTimeout(function(){
-                                                    // location.reload();
-                                                    // $(".loader-wrapper").fadeOut('3000');
+                                                    location.reload();
+                                                    $(".loader-wrapper").fadeOut('3000');
                                                     $("#overlayer").fadeOut('3000');
                                                   }
                                                     , 3000);
+                                                }
+                                                
                                             
                                                 // // console.log(data);
                                                 //   calendar.fullCalendar('renderEvent',

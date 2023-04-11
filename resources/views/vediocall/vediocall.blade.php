@@ -7,7 +7,35 @@
   <link rel="stylesheet" href="{{ asset('twilio-assets/site.css') }}">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   @vite('resources/js/pingStatus.js')
+  <style>
+  table {
+    width: 100%;
+}
+
+.form-row-table {
+    margin: 0px 0px 20px;
+}
+
+.form-row-table th {
+    text-align: left;
+}
+
+.form-row-table td {
+    text-align: right;
+}
+
+.form-row-table td,.form-row-table th {
+    padding: 10px;
+}
+.payment-option button#card-button {
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    padding: 7px 20px;
+}
+</style>
 </head>
+
 <body>
   <div id="test" style="display:none;"></div>
   @if($roomName)
@@ -40,20 +68,72 @@
         <button id="button-message"><i class="fa-regular fa-comment"></i></button>
         <button id="button-leave" class="btn btn-danger"><i class="fa-solid fa-phone"></i></button>
         <div id="user_type_div">
-          <!-- payment modal -->
-            <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModal" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered" role="document">
+
+          <!-- //////////////////////////// payment modal /////////////////////////////////////////// -->
+
+            <div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModal" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="guestPaymentModalTitle"></h5>
+                    <h5 class="modal-title" id="guestPaymentModalTitle">Enter you card details</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
+
+                  <!-- //////////////////////////// payment modal  body ///////////////////////// -->
+
                   <div class="modal-body">
-                    <div class="text text-success" id="clickForPayment">Please click here for payment.</div>
-                    
+                    <form id="payment-form" action="{{ url('videocall-payment') }}" method="POST">
+                      @csrf
+                        <div class="form-box">
+                          <div class="charity-content">
+                            <div class="anti-form">
+                                <div class="form-part">
+                                  <!-- card detail -->
+                                  <div class="card-detail payment-option" id="card">
+                                    <div class="form-group">
+                                      <div id="card-elements"></div>
+                                      <div class="text text-danger mt-2" id="card-error-message"></div>
+                                    </div>
+                                    <div class="form-row-table">
+                                     <table>
+                                      <tr>
+                                        <th>Subtotal</th>
+                                        <td>${{ $appoinment_details['meeting_charges']}}</td>
+                                      </tr>
+                                      <tr>
+                                        <th>Meeting duration</th>
+                                        <td>{{ $appoinment_details['duration_in_minutes']}} minutes</td>
+                                      </tr>
+                                      <tr>
+                                        <th>Apply coupon</th>
+                                        <td>-$0</td>
+                                      </tr>
+                                      <tr>
+                                        <th>Total</th>
+                                        <td>${{ $appoinment_details['meeting_charges']}}</td>
+                                      </tr>
+                                     </table>
+                                    </div>
+                                  </div>
+                                  <input type="hidden" name="payment_amount" value="{{ $appoinment_details['meeting_charges']}}"/>
+                                  <input type="hidden" name="currency" value="{{ $appoinment_details['currency'] }}" />
+                                  <div class="paypal-payment payment-option" id="card-pay-btn">
+                                    <div class="button-wrapper">
+                                      <button type="submit" class="btn-main btn btn-primary pay-with-btn" id="card-button" data-secret="{{ $client_secret }}">Pay Now</button>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
                   </div>
+
+                  <!-- //////////////////////////// payment modal  body end ///////////////////////// -->
+
                   <div class="modal-footer">
                   </div>
                 </div>
@@ -109,9 +189,54 @@
 margin-right: auto;
 }
 </style>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('{{ env('STRIPE_PUB_KEY') }}');
+    // console.log(stripe);
+    const elements= stripe.elements();
+    const cardElement= elements.create('card');
+    cardElement.mount('#card-elements');
+
+    const form = document.getElementById('payment-form');
+
+    form.addEventListener('submit', async (e) => {
+		
+    const cardBtn = document.getElementById('card-button');
+    const first_name = $('#first_name').val();
+    const last_name = document.getElementById('last_name');
+
+    const cardHolderName = first_name + ' ' + last_name; 
+        e.preventDefault()
+		
+        cardBtn.disabled = true
+        const { setupIntent, error } = await stripe.confirmCardSetup(
+            cardBtn.dataset.secret, {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: {
+                        name: cardHolderName.value
+                    }   
+                }
+            }
+        )
+   
+        if(error) {
+            cardBtn.disable = false
+            if(error.message != ''){
+              $("#card-error-message").html(error.message);
+            }
+        } else {
+            let token = document.createElement('input')
+            token.setAttribute('type', 'hidden')
+            token.setAttribute('name', 'token')
+            token.setAttribute('value', setupIntent.payment_method)
+            form.appendChild(token)
+            form.submit();
+        }
+    });
+</script>
 
   <script>
-   
     $(document).ready(function(){
       Swal.fire({
         title: 'Are you ready for your session ?',
@@ -132,14 +257,17 @@ margin-right: auto;
           // $("#paymentModal").modal('show');
           var user_type = $("#user_type").val();
           if(user_type == "host"){
-          $("#user_type_div").attr('class','btn btn-success sendPaymentPingBtn');
-          $("#user_type_div").attr('data-toggle','tooltip');
-          $("#user_type_div").attr('data-placement','top');
-          $("#user_type_div").attr('title','Ask for payment');
-          $("#user_type_div").attr('type','host_box');
-          $("#user_type_div").html("<i class='fa-solid fa-dollar-sign'></i>");
+            $("#user_type_div").attr('class','btn btn-success sendPaymentPingBtn');
+            $("#user_type_div").attr('data-toggle','tooltip');
+            $("#user_type_div").attr('data-placement','top');
+            $("#user_type_div").attr('title','Ask for payment');
+            $("#user_type_div").attr('type','host_box');
+            $("#user_type_div").html("<i class='fa-solid fa-dollar-sign'></i>");
           }else{
-          $("#user_type_div").attr('type','guest_box');
+            $("#user_type_div").attr('type','guest_box');
+            @if($appoinment_details['payment_status'] == 0)
+              $("#paymentModal").modal('show');
+            @endif
           }
           startVedioCall();
         }else if (result.isDenied) {
@@ -173,17 +301,7 @@ margin-right: auto;
         });
       });
     });
-    // $(".vedio-response").on('change',function(){
-    //   alert($(this).html);
-    // });
-    // $(document).ready(function(){
-    //     var stream_amount = $(this).val();
-    //     if(stream_amount != '' || stream_amount != null){
-    //       alert(stream_amount);
-    //     }
-    // });
   </script>
-  
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
   <script src="//media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.min.js"></script>

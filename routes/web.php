@@ -66,6 +66,7 @@ use App\Events\Message;
 Route::get('/live-stream/{room_name}',[VedioCallController::class,'index']);
 Route::get('live-stream-token',[VedioCallController::class,'passToken']);
 Route::post('ping-for-payment',[VedioCallController::class,'pingForPayment']);
+Route::post('videocall-payment',[VedioCallController::class,'vedioCallPayment']);
 // Route::post('send-message',function (Request $request){
 //     event(new Message($request->username, $request->message));
 //     return ['success' => true];

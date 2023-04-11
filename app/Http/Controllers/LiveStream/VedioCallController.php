@@ -18,8 +18,11 @@ class VedioCallController extends Controller
     public function index(Request $req){
         $roomName = $req->segment(2);
         $appoinment_details = HostAppointments::where('video_link_name',$roomName)->first();
-        // dd($appoinment_details);
-        return view('vediocall.vediocall',compact('roomName','appoinment_details'));
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
+        $setup_intent = $stripe->setupIntents->create();
+        $client_secret = $setup_intent->client_secret;
+        // dd($appoinment_details['stripe_client_secret']);
+        return view('vediocall.vediocall',compact('roomName','appoinment_details','client_secret'));
 
     }
     public function passToken(Request $req){
@@ -98,6 +101,53 @@ class VedioCallController extends Controller
         // return $stripe_payment_intent;
         // ($stream_amount,$currency,$appointment_id,$host_id,$message)
         $test_event = event( new SendStreamPaymentRequest($req->amountForStream,$req->currency,$req->appointment_id,$request_message));
-        // return $test_event;
+    }
+    public function vedioCallPayment(Request $req){
+        //  create payment intent 
+        try{
+            $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
+
+            // Create customer 
+            $customer =  $stripe->customers->create([
+                'name' => auth()->user()->first_name, // req -> name
+                'email' => auth()->user()->email, // req-> email
+                'payment_method' => $req->token,
+                'invoice_settings' => [
+                'default_payment_method' => $req->token,
+                ],
+                'address' => [
+                'line1' => '510 Townsend St',
+                'postal_code' => '98140',
+                'city' => 'San Francisco',
+                'state' => 'CA',
+                'country' => 'US',
+                ],
+            ]);
+
+            //   #################### Attach payments method with customer ##########################
+    
+            $paymentMethodAttachStatus = $stripe->paymentMethods->attach(
+                $req->token,
+                ['customer' => $customer->id]
+            );
+
+            $stripe_payment_intent =  $stripe->paymentIntents->create([
+                'customer' => $customer->id,
+                'amount' => (int)$req->payment_amount * 100,
+                'currency' => $req->currency,
+                'payment_method' => $req->token,
+                'off_session' => true,
+                'confirm' => true,
+                'description' => 'appointment charges'
+            ]);
+
+            if($stripe_payment_intent == 'succeeded'){
+                //appointement id payment status update
+
+            }
+        }catch(\Exception $e){
+            $error = $e->getMessage();
+        }
+        // return redirect()->back()->with('success','your payment is successful');
     }
 }
