@@ -19,18 +19,18 @@ class HostDiscountController extends Controller
         return view('Host.Discount.createcoupon',compact('coupon_data'));
     }
     public function createproc(Request $req){
-        $req->validate([
-            'coupon_name' => 'required',
-            'coupon_code' => 'required|unique:host_discounts_coupons',
-            'percentage_off' => 'required',
-            'duration' => 'required',
-        ]);
+       
         // print_r($req->all());
         // echo $req->expiredate;
         $middle = strtotime($req->expiredate);
         $expire_new_date = date('Y-m-d', $middle);
         if($req->id == null){
-            
+             $req->validate([
+            'coupon_name' => 'required',
+            'coupon_code' => 'required|unique:host_discounts_coupons',
+            'percentage_off' => 'required',
+            'duration' => 'required',
+        ]);
                 $data = new HostDiscount;
                 $data->coupon_name = $req->coupon_name;
                 $data->coupon_code = $req->coupon_code;
