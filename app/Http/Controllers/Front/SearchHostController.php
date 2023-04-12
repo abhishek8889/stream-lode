@@ -271,53 +271,92 @@ class SearchHostController extends Controller
             $newAppointment->status = $appointment_status;
             $newAppointment->seen_status = 0;
             $newAppointment->save();
+        }elseif($required_start_time <= $host_appointments[count($host_appointments)-1]['end']){
+            // return 'Not a valid start time';
+            // return 'Starting Time'.$required_start_time.' Ending Time'.$required_end_time;
+            
+            foreach($host_appointments as $key => $hs){
+                // return $value .'This is key ' . $hs;
+                // $d[] = $hs['start'];
+                if($hs['start'] >= $required_start_time ){
+                    $oldStart = $host_appointments[$key-1]['end'];
+                    if($oldStart <= $required_start_time && $hs['start'] >= $required_end_time){
+                        $newAppointment = new HostAppointments;
+                        $newAppointment->host_available_id = $host_available_id;
+                        $newAppointment->user_id = $guest->_id;
+                        $newAppointment->host_id = $host_id;
+                        $newAppointment->guest_name = $guest->first_name;
+                        $newAppointment->guest_email = $guest->email;
+                        $newAppointment->start = $meeting_start;
+                        $newAppointment->end = $meeting_end;
+                        $newAppointment->duration_in_minutes = $duration_in_minutes;
+                        $newAppointment->meeting_charges = $host_meeting_charges;
+                        $newAppointment->currency = $required_currency;
+                        $newAppointment->stripe_payment_intent = $stripe_payment_intent->id;
+                        $newAppointment->stripe_client_secret = $stripe_payment_intent->client_secret;
+                        $newAppointment->status = $appointment_status;
+                        $newAppointment->seen_status = 0;
+                        $newAppointment->save();
+                        // return 'Your meeting  has been seduled.';
+                    }else{
+                        return 'This is not working';
+                    }
+                    // return 'OldEndAt '.$oldStart.'New Start at '.$required_start_time;
+                    // return 'prev '.$oldStart.'=>'.$hs['start'].' My Start time '.$required_start_time.' My end Time'.$required_end_time;
+                }
+                // return " We can't shedule meeting  this time";
+                // // if($hs['end'] <= $required_start_time){
+                // //     return $hs['end'].' My time '.$required_start_time.' My end Time'.$required_end_time;
+                // // }
+            }
         }else{
-            // if()
             foreach($host_appointments as $hs){
                 if($hs['start'] > $required_start_time && $hs['end'] > $required_end_time){
-                    // $newAppointment = new HostAppointments;
-                    // $newAppointment->host_available_id = $host_available_id;
-                    // $newAppointment->user_id = $guest->_id;
-                    // $newAppointment->host_id = $host_id;
-                    // $newAppointment->guest_name = $guest->first_name;
-                    // $newAppointment->guest_email = $guest->email;
-                    // $newAppointment->start = $meeting_start;
-                    // $newAppointment->end = $meeting_end;
-                    // $newAppointment->duration_in_minutes = $duration_in_minutes;
-                    // $newAppointment->meeting_charges = $host_meeting_charges;
-                    // $newAppointment->currency = $required_currency;
-                    // $newAppointment->stripe_payment_intent = $stripe_payment_intent->id;
-                    // $newAppointment->stripe_client_secret = $stripe_payment_intent->client_secret;
-                    // $newAppointment->status = $appointment_status;
-                    // $newAppointment->seen_status = 0;
-                    // $newAppointment->save();
-                    return 'you can make appointemnt 1st condition';
+                    $newAppointment = new HostAppointments;
+                    $newAppointment->host_available_id = $host_available_id;
+                    $newAppointment->user_id = $guest->_id;
+                    $newAppointment->host_id = $host_id;
+                    $newAppointment->guest_name = $guest->first_name;
+                    $newAppointment->guest_email = $guest->email;
+                    $newAppointment->start = $meeting_start;
+                    $newAppointment->end = $meeting_end;
+                    $newAppointment->duration_in_minutes = $duration_in_minutes;
+                    $newAppointment->meeting_charges = $host_meeting_charges;
+                    $newAppointment->currency = $required_currency;
+                    $newAppointment->stripe_payment_intent = $stripe_payment_intent->id;
+                    $newAppointment->stripe_client_secret = $stripe_payment_intent->client_secret;
+                    $newAppointment->status = $appointment_status;
+                    $newAppointment->seen_status = 0;
+                    $newAppointment->save();
+                    // return 'This is first type of condition';
                 }
                 elseif($hs['start'] < $required_start_time && $hs['end'] < $required_end_time ){
                     if($hs['start'] )
-                    // $newAppointment = new HostAppointments;
-                    // $newAppointment->host_available_id = $host_available_id;
-                    // $newAppointment->user_id = $guest->_id;
-                    // $newAppointment->host_id = $host_id;
-                    // $newAppointment->guest_name = $guest->first_name;
-                    // $newAppointment->guest_email = $guest->email;
-                    // $newAppointment->start = $meeting_start;
-                    // $newAppointment->end = $meeting_end;
-                    // $newAppointment->duration_in_minutes = $duration_in_minutes;
-                    // $newAppointment->meeting_charges = $host_meeting_charges;
-                    // $newAppointment->currency = $required_currency;
-                    // $newAppointment->stripe_payment_intent = $stripe_payment_intent->id;
-                    // $newAppointment->stripe_client_secret = $stripe_payment_intent->client_secret;
-                    // $newAppointment->status = $appointment_status;
-                    // $newAppointment->seen_status = 0;
-                    // $newAppointment->save();
-                    // return 'appointement created succesfully in second condition';
+                    $newAppointment = new HostAppointments;
+                    $newAppointment->host_available_id = $host_available_id;
+                    $newAppointment->user_id = $guest->_id;
+                    $newAppointment->host_id = $host_id;
+                    $newAppointment->guest_name = $guest->first_name;
+                    $newAppointment->guest_email = $guest->email;
+                    $newAppointment->start = $meeting_start;
+                    $newAppointment->end = $meeting_end;
+                    $newAppointment->duration_in_minutes = $duration_in_minutes;
+                    $newAppointment->meeting_charges = $host_meeting_charges;
+                    $newAppointment->currency = $required_currency;
+                    $newAppointment->stripe_payment_intent = $stripe_payment_intent->id;
+                    $newAppointment->stripe_client_secret = $stripe_payment_intent->client_secret;
+                    $newAppointment->status = $appointment_status;
+                    $newAppointment->seen_status = 0;
+                    $newAppointment->save();
+                    // return 'second condition of appointment';
                 }else{
                     return 'sorry this slot is booked';
                 }
-            }
+                // }
+            // }
             // return $host_appointments;
             return 'meeting start' . $meeting_start . 'meeting_end ' . $meeting_end;
+            }
             
         }
 
@@ -478,3 +517,6 @@ public function trycode(){
 }
 
 }
+
+
+
