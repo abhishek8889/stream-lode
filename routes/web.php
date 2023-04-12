@@ -39,7 +39,7 @@ use App\Http\Controllers\Hosts\HostStreamController;
 use App\Http\Controllers\Hosts\WebsocketController;
 use App\Http\Controllers\Hosts\HostDiscountController;
 use App\Http\Controllers\Hosts\MeetingCharges;
-
+use App\Http\Controllers\Hosts\HostPaymentMethodsController;
 use Google\Service\ServiceConsumerManagement\Authentication;
 
 use App\Http\Controllers\LiveStream\VedioCallController;
@@ -328,6 +328,11 @@ Route::group(['middleware'=>['auth','Host']],function(){
 
     //upgrade membership
     Route::get('{id}/upgrademembership',[HostMembershipController::class,'upgrade']);
+
+    //Host payment methods
+    Route::get('/{id}/payment-methods',[HostPaymentMethodsController::class,'index']);
+    Route::get('delete-payment-methods/{id}',[HostPaymentMethodsController::class,'deletePaymentMethod']);
+    
 });
 
 // Email Template 

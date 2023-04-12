@@ -13,7 +13,8 @@ use App\Models\PaymentMethods;
 use App\Models\MembershipPaymentsData;
 use Carbon\Carbon;
 use DB;
-
+use Mail;
+use App\Mail\HostMembershipUpdateMail;
 
 class HostMembershipController extends Controller
 {
@@ -186,7 +187,7 @@ class HostMembershipController extends Controller
         $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
         $subscription = '';
         $membership_details = MembershipTier::where('_id',$req->upgraded_membership_id)->first();
-
+        // dd($membership_details['name']);
         $membership_payment = new MembershipPaymentsData;
         $str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01235675854abcdefghjijklmnopqrst';
         $random_order_number = substr(str_shuffle($str_result),0,7);
@@ -209,7 +210,6 @@ class HostMembershipController extends Controller
               ],
             ]
           );
-          
           // ################### update subscription  ##############################
 
           $subscription = $stripe->subscriptions->retrieve(auth()->user()->subscription_id);
@@ -241,8 +241,9 @@ class HostMembershipController extends Controller
                 $payment_intent = $invoice_details->payment_intent;
                 $host_inovice_url = $invoice_details->hosted_invoice_url;
                 $host_invoice_pdf = $invoice_details->invoice_pdf;
+                $name = auth()->user()->first_name . ' ' . auth()->user()->last_name;
                 // send mail for user's email to get activation and payment done
-                // $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf));
+                $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf));
                 // dd($mail);
             }
           // ################# membership Payment data save ##########################
@@ -270,11 +271,9 @@ class HostMembershipController extends Controller
             $user->membership_id = $req->upgraded_membership_id;
             $user->subscription_id = $subscription_update_response->id;
             $user->update();
-            return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you upgraded your membership');
+            return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you update your membership');
           }else{
-
-            return redirect(url('/'.auth()->user()->unique_id))->with('error','Sorry your transaction is under process please wait for a while.');
-          
+            return redirect(url('/'.auth()->user()->unique_id))->with('success','We got your request for membership upgradation please check your registered email for confirmation of payment.');
           }
         }else{
           // ###############  While we got new payment method  #####################
@@ -341,8 +340,9 @@ class HostMembershipController extends Controller
                 $payment_intent = $invoice_details->payment_intent;
                 $host_inovice_url = $invoice_details->hosted_invoice_url;
                 $host_invoice_pdf = $invoice_details->invoice_pdf;
+                $name = auth()->user()->first_name . ' ' . auth()->user()->last_name;
                 // send mail for user's email to get activation and payment done
-                // $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf));
+                $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf));
                 // dd($mail);
             }
             $membership_payment->user_id =  auth()->user()->id;
@@ -367,9 +367,9 @@ class HostMembershipController extends Controller
             $user->membership_id = $req->upgraded_membership_id;
             $user->subscription_id = $subscription_update_response->id;
             $user->update();
-            return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you upgraded your membership');
+            return redirect(url('/'.auth()->user()->unique_id))->with('success','Congratulations you update your membership');
           }else{
-            return redirect(url('/'.auth()->user()->unique_id))->with('error','Sorry your transaction is under process please wait for a while.');
+            return redirect(url('/'.auth()->user()->unique_id))->with('success','We got your request for membership upgradation please check your registered email for confirmation of payment.');
           }
         }
       }catch(\Exception $e){

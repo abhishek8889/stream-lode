@@ -50,8 +50,9 @@ class MembershipPayments extends Controller
        
         return view('Admin.payment-collection.membership_payment_detail',compact('membership_payments_details'));
     }
-    public function refund(Request $req, $membership_payment_id){
-        $membership_payment_data = MembershipPaymentsData::where('_id',$membership_payment_id)->with([
+    public function refund(Request $req){
+        // return $req->id;
+        $membership_payment_data = MembershipPaymentsData::where('_id',$req->id)->with([
             'user' => function($response){
                 $response->select('first_name','last_name','email');
             },'membership_details' => function($response){
@@ -65,7 +66,6 @@ class MembershipPayments extends Controller
         $order_id = $membership_payment_data['order_id'];
         $amount = $membership_payment_data['payment_amount'];
 
-        
         
         $payment_intent = $membership_payment_data->stripe_payment_intent;
         $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));

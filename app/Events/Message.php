@@ -27,7 +27,7 @@ class Message implements ShouldBroadcast
     }
     public function broadcastOn()
     {
-        return new PrivateChannel('chat.'.$sender_id);
+        return new PrivateChannel('chat');
     }
 
     public function broadcastAs()

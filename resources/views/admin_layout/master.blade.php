@@ -143,12 +143,6 @@
             <i class="fas fa-user mr-2"></i> Logout
           </a>
           <div class="dropdown-divider"></div>
-          @if(auth()->user()->status == 2)
-          <a href="{{ url('/'.auth()->user()->unique_id)}}" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> Go to Host Dashboard
-          </a>
-          @endif
-          <div class="dropdown-divider"></div>
         </div>
       </li>
       <!--  -->

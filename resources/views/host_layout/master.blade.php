@@ -363,6 +363,17 @@
               
             </ul>
           </li>
+          <!-- payment methods -->
+          <li class="nav-item ">
+            <a href="{{ url( '/'.auth()->user()->unique_id.'/payment-methods') }}" class="nav-link active">
+            <i class="fas fa-file-invoice-dollar nav-icon"></i>
+              <p>
+                Payment Methods
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+          <!-- payment method end -->
           <li class="nav-item ">
             <a href="#" class="nav-link active">
             <i class="fas fa-file-invoice-dollar nav-icon"></i>

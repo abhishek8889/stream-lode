@@ -182,6 +182,8 @@ function roomJoined(room) {
       document.querySelector('.vedio-response-text').style.display = "block";
       document.querySelector('.vedio-response-text').innerHTML =' You are succesfully joined with '+participant.identity;
       timerIntervalId = setInterval(counterStart, 1000);  
+      localStorage.setItem("video_call_time", timerIntervalId);
+
       setTimeout(function(){
       document.querySelector('.vedio-response-text').style.display = "none";
         document.querySelector('.vedio-response-text').innerHTML = '';

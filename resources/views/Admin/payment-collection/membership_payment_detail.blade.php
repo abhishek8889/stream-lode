@@ -23,7 +23,6 @@
                 <div class="row">
                     <div class="col-12">
                     <h4>
-                       
                         <i class="fas fa-edit"></i> Membership Payment Detail Page 
                         @if($membership_payments_details['payment_status'] == 'succesfull' )
                         <div class="btn btn-success ml-2">{{ $membership_payments_details['payment_status'] }}</div>
@@ -115,11 +114,11 @@
                  @endforeach
             </div>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-     <script>
+    <script>
         $(document).ready(function(){
             $('.Refund').click(function(){
                 url = $(this).attr('url');
-                // console.log(url);
+                console.log(url);
                 Swal.fire({
                       title: 'Are you sure!',
                       showCancelButton: true,
@@ -136,5 +135,5 @@
                     })
             })
         })
-     </script>
+    </script>
 @endsection

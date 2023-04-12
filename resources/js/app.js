@@ -2,7 +2,7 @@ import './bootstrap';
 
     window.Echo.channel('chat')
     .listen('.message',(e)=>{
-        // console.log(e);
+        console.log(e);
         let count = parseInt($('#messagecount').html());
         let count1 = parseInt($('#notificationcount').html());
        let authid = $('#hostauthid').val();

@@ -164,6 +164,7 @@ class HostStreamController extends Controller
         return view('Host.Appoinments.join_room');
     }
     public function sendlink(Request $req){
+        
         $appoinments = HostAppointments::where('_id',$req->id)->with('user')->first();
         $mailData = [
             'host_name' => $appoinments->user['first_name'].' '.$appoinments->user['last_name'],
