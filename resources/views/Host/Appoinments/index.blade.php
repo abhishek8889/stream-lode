@@ -183,6 +183,7 @@ display: none;
                       <th>Guest Name</th>
                       <th>Start Time</th>
                       <th>End Time</th>
+                      <th>Payment Status</th>
                       <th class="text-center">Action</th>
                     </tr>
                   </thead>
@@ -204,6 +205,7 @@ display: none;
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
+                        <td class="text-center">@if($hs->payment_status == 1) <span class="badge badge-pill badge-success" >Success</span> @else <span class="badge badge-pill badge-danger" > pending</span> @endif</td>
                         <td class="text-center">
                        
                         @if($current_date < $hs->end)

@@ -46,7 +46,10 @@
                       <td>
                         {{ $u[0]['unique_id'] ?? '' }}
                       </td>
-                      <td><span class="badge bg-danger"  data-toggle="modal" data-target="#exampleModal{{ $u[0]['id'] }}">Appoinments</span></td>
+                      <td>
+                      <!-- <a href="{{ url('admin/meetings') }}/{{ $u[0]['unique_id'] }}" class="btn btn-info"><i class="fa fa-eye"></i></a> -->
+                      <span class="badge bg-danger"  data-toggle="modal" data-target="#exampleModal{{ $u[0]['id'] }}">Appoinments</span>
+                      </td>
                     </tr>
 
                    

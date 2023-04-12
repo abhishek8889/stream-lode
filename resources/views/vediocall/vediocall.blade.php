@@ -111,7 +111,7 @@
                                         <td>{{ $appoinment_details['duration_in_minutes']}} minutes</td>
                                       </tr>
                                       <tr>
-                                        <th><button type="button" class="btn btn-info" style="width:165px; border-radius:0px; background-color:rgb(66 106 137);" id="discount-button">Discount</button> </th>
+                                        <th><button type="button" class="btn btn-info" style="width:165px; border-radius:0px; background-color:rgb(66 106 137);" id="discount-button">Apply Coupon</button> </th>
                                         <td><input type="text" id ="couponcode" host_id = "{{ $appoinment_details['host_id'] }}" amount= "{{ $appoinment_details['meeting_charges'] }}" ><br><span class="text-danger" id="error-response"></span></td>
                                       </tr>
                                       <tr>
@@ -126,6 +126,7 @@
                                     </div>
                                   </div>
                                   <input type="hidden" name="appoinment_id" value="{{ $appoinment_details['_id'] }}">
+                                  <input type="hidden" name="host_id" value="{{ $appoinment_details['host_id'] }}">
                                   <input type="hidden" name="subtotal" value="{{ $appoinment_details['meeting_charges']}}"/>
                                   <input type="hidden" id="discount_code" name="discount_code" value="">
                                   <input type="hidden" id="discount_price" name="discount_amount" value="">
@@ -266,7 +267,7 @@ margin-right: auto;
     const cardHolderName = first_name + ' ' + last_name; 
         e.preventDefault()
 		
-        cardBtn.disabled = true
+        // cardBtn.disabled = true
         const { setupIntent, error } = await stripe.confirmCardSetup(
             cardBtn.dataset.secret, {
                 payment_method: {

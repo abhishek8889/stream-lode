@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\users\GuestController;
 
 use App\Http\Controllers\Admin\discount\DiscountController;
 use App\Http\Controllers\Admin\mettings\MeetingsController;
+use App\Http\Controllers\Admin\Streams\StreamPayments;
 
 
 
@@ -212,8 +213,14 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(MembershipPayments::class)->group(function(){
             Route::post('/paymentsearch','search')->name('paymentsearch');
         });
-    
-
+     
+        //StreamPayments
+        Route::controller(StreamPayments::class)->group(function(){
+            Route::get('/stream-payments','index')->name('stream-payments');
+        });
+        Route::controller(StreamPayments::class)->group(function(){
+            Route::get('/stream-payments/{id}','paymentdetail')->name('stream-payments-detail');
+        });
         // Discount 
 
         Route::controller(DiscountController::class)->group(function(){
@@ -233,6 +240,9 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         });
         Route::controller(MeetingsController::class)->group(function(){
             Route::get('/meetings','index')->name('meetings');
+        });
+        Route::controller(MeetingsController::class)->group(function(){
+            Route::get('/meetings/{id}','detail')->name('meeting-detail');
         });
         Route::controller(PostNotificationController::class)->group(function(){
             Route::get('/postnotice','index')->name('postnotification');
@@ -316,6 +326,9 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('{id}/meeting-charges/add/{idd?}',[MeetingCharges::class,'add'])->name('add-meeting-charges');
     Route::post('{id}/meeting-charges/addproc',[MeetingCharges::class,'addproc'])->name('meeting-add');
     Route::get('{id}/meeting-charges/delete/{idd}',[MeetingCharges::class,'delete'])->name('meeting-delete');
+    
+    //StreamPayment
+
 
     //Vedio chat
     Route::get('{id}/vedio-conference/{userid}',[HostStreamController::class,'index']); 

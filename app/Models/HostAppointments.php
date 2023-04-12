@@ -21,5 +21,11 @@ class HostAppointments extends Model
     public function usermessages(){
         return $this->hasMany(Messages::class,'sender_id','user_id');
     }
+    public function payments(){
+        return $this->hasOne(StreamPayment::class,'appoinment_id','_id');
+    }
+    public function guest(){
+        return $this->hasOne(User::class,'_id','user_id');
+    }
    
 }

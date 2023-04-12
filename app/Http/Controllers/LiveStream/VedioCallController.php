@@ -155,6 +155,7 @@ class VedioCallController extends Controller
                     $streamPayment->discount_amount = $req->discount_amount;
                     $streamPayment->total = $req->subtotal - $req->discount_amount;
                     $streamPayment->appoinment_id = $req->appoinment_id;
+                    $streamPayment->host_id = $req->host_id;
                     $streamPayment->save();
 
                     //discount_code 
@@ -173,6 +174,7 @@ class VedioCallController extends Controller
         }catch(\Exception $e){
             $error = $e->getMessage();
         }
+        // print_r($error);
         // print_r($stripe_payment_intent['id']);
          
     }
