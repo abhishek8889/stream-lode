@@ -11,10 +11,10 @@ use App\Models\User;
 class MeetingsController extends Controller
 {
   public function index(){
-    $data = HostAppointments::with('user')->get()->toArray();
+    $data1 = HostAppointments::with('user')->get()->toArray();
     
     // dd($data);
-    foreach($data as $d){
+    foreach($data1 as $d){
       $userdata[] = $d['user'];
     }
      $data = array_unique($userdata,SORT_REGULAR);
@@ -28,5 +28,8 @@ class MeetingsController extends Controller
     // echo '</pre>';
     // die();
     return view('Admin.mettings.index',compact('user'));
+  }
+  public function detail($id){
+
   }
 }

@@ -70,5 +70,7 @@ class User extends Authenticatable
     public function adminmessage(){
         return $this->hasMany(Messages::class,'sender_id','_id')->where('status',1);
     }
-  
+    public function streampayment(){
+        return $this->hasMany(StreamPayment::class,'host_id','_id');
+    }
 }

@@ -297,7 +297,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link active">
+                <a href="{{ url('/admin/stream-payments') }}" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Stream Payments</p>
                 </a>
@@ -348,6 +348,7 @@
               </li>
             </ul>
           </li>
+          
           <!-- Discount Code -->
           <!-- <li class="nav-item ">
             <a href="index.html" class="nav-link active">

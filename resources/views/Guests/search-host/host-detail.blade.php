@@ -390,7 +390,6 @@ $date = date('Y-m-d h:i');
 <script>
         $(document).ready(function () {
           let data = @json($available_host);
-          // console.log(data);
           $.ajaxSetup({
               headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

@@ -183,6 +183,7 @@ display: none;
                       <th>Guest Name</th>
                       <th>Start Time</th>
                       <th>End Time</th>
+                      <th>Payment Status</th>
                       <th class="text-center">Action</th>
                     </tr>
                   </thead>
@@ -204,6 +205,7 @@ display: none;
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
+                        <td class="text-center">@if($hs->payment_status == 1) <span class="badge badge-pill badge-success" >Success</span> @else <span class="badge badge-pill badge-danger" > pending</span> @endif</td>
                         <td class="text-center">
                        
                         @if($current_date < $hs->end)
@@ -257,7 +259,7 @@ display: none;
                 <label for="roomLink">Click this link to join or store this for future use</label> -->
                 <!-- <Button class="btn btn-dark" id="send-link">Send Link</Button>
                 <label for="send-link"> Send link to guest by click on Send link after refresh this will disappear from here </label> -->
-               <p class="link-text" > <a class="text-primary" id="send-link">Click here</a> if your want to send link to guest  </p>
+               <p class="link-text" > <a class="text-primary" id="send-link" style="cursor:pointer;">Click here</a> if you want to send this link to guest .</p>
               </div>
               </div>
             </div>
