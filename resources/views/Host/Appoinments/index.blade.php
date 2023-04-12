@@ -179,7 +179,7 @@ display: none;
                 <table class="table table-head-fixed text-nowrap">
                   <thead>
                     <tr>
-                      <th>Sr no.</th>
+                      <th class="text-center">Sr no.</th>
                       <th>Guest Name</th>
                       <th>Start Time</th>
                       <th>End Time</th>
@@ -190,13 +190,12 @@ display: none;
                   <tbody>
               <?php
               $current_date = date('Y-m-d H:i');
-              
               ?>
                     @if($host_schedule)
                     @forelse ($host_schedule as $hs)
                       <tr>
                         <?php $count = $count+1; ?>
-                        <td>{{$count}}</td>
+                        <td class="text-center">{{$count}}</td>
                         <td>{{$hs->guest_name}}</td>
                         <?php 
                         $startdate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->start)));
@@ -205,17 +204,17 @@ display: none;
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
-                        <td>
-                        
+                        <td class="text-center">
+                       
                         @if($current_date < $hs->end)
                           @if($hs->video_link_name)
-                          <a class="videoconfrencelink" app-id="{{$hs->_id}}" data-id="{{$hs->video_link_name}}" style="cursor:move;">
-                            <span>View Room</span>
+                          <a href="{{ url('delete-appointment/'.$hs->id) }}" class="btn btn-danger"><i class="fa fa-trash "></i></a>
+                          <a class="videoconfrencelink btn btn-success" app-id="{{$hs->_id}}" data-id="{{$hs->video_link_name}}" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="View Room">
                             <i class="fa fa-video-camera" aria-hidden="true"></i>
                           </a>
                           @else
-                          <a class="videoconfrence" data-id="{{$hs->_id}}" style="cursor:move;">
-                            <span>Create Room</span>
+                          <a href="{{ url('delete-appointment/'.$hs->id) }}" class="btn btn-danger"><i class="fa fa-trash "></i></a>
+                          <a class="videoconfrence btn btn-info" data-id="{{$hs->_id}}" style="cursor:pointer;"  data-toggle="tooltip" data-placement="top" title="Create Room">
                             <i class="fa fa-video-camera" aria-hidden="true"></i>
                           </a>
                           @endif
@@ -357,7 +356,7 @@ $(document).ready(function(){
         data: { status:1,_token: "{{ csrf_token() }}" },
         dataType: 'json',
         success: function(response) {
-          console.log(response);
+          // console.log(response);
           if(response[0]){
             location.reload();
           }

@@ -39,7 +39,8 @@
                                         <input type="text" class="form-control" id="description" name="description" placeholder="Description">   
                                     </div> 
                                     <div class="form-group">
-                                        <button class="btn btn-success">Submit</button>
+                                        <button class="btn btn-success" id="submit">Submit</button>
+                                        <button type="button" class="btn btn-danger" id ="addnew" style="display:none;" >Add New</button>
                                        
                                     </div>                           
                                 </div>
@@ -89,6 +90,8 @@
 <script>
     $(document).ready(function(){
         $('.edit-tag').click(function(){
+          $('#addnew').css('display','');
+          $('#submit').html('Update');
         id = $(this).attr('data-id');
         $.ajax({
             method: 'post',
@@ -127,6 +130,15 @@
             }
         });
         });
+    });
+    $(document).ready(function(){
+      $('#addnew').click(function(){
+                $(this).css('display','none');
+                $('#feature_name').val('');
+                $('#description').val('');
+                $('#id').val('');
+                $('#submit').html('Submit');
+      });
     });
     
 </script>

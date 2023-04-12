@@ -86,11 +86,11 @@ $(document).ready(function () {
     var isLoading = false;
 
     var calendar = $('#calendar').fullCalendar({
-                    editable: true,
+                    // editable: true,
                     events: "{{ url('/'.auth()->user()->unique_id.'/calendar') }}",
                     // displayEventTime: true,
                     displayEventEnd: true,
-                    editable: true,
+                    // editable: true,
                     header:{
                         left:'prev,next today',
                         center:'title',
@@ -107,6 +107,7 @@ $(document).ready(function () {
                     selectable: true,
                     selectHelper: true,
                     select: function (start, end ,allDay) {
+                              
                         // var title = prompt('Event Title:');
                         $("#calendarModal").modal('show');
                         
@@ -173,7 +174,8 @@ $(document).ready(function () {
                     eventDrop: function (event, delta) {
                         var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm");
                         var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm");
-                        // console.log(delta);
+                        // console.log(event);
+                        // console.log(start+end);
                         $.ajax({
                             url: "{{ url(auth()->user()->unique_id.'/calendar-response') }}",
                             data: {
@@ -185,6 +187,7 @@ $(document).ready(function () {
                             },
                             type: "POST",
                             success: function (response) {
+                            //   console.log(response);
                                 if(response.error){
                                     displayError(response.error);
                                 }else{
@@ -195,16 +198,18 @@ $(document).ready(function () {
                     },
                     eventClick: function (event) {
                         var deleteMsg = confirm("Do you really want to delete?");
-                        // console.log(event._id);
+                        // console.log(event);
                         if (deleteMsg) {
                             $.ajax({
                                 type: "POST",
                                 url: "{{ url('/'.auth()->user()->unique_id.'/calendar-response') }}",
                                 data: {
-                                        id: event._id,
+                                        id: event.id,
+                                        types: event.type,
                                         type: 'delete'
                                 },
                                 success: function (response) {
+                                    // console.log(response);
                                     calendar.fullCalendar('removeEvents', event._id);
                                     displayMessage("Event Deleted Successfully");
                                 }

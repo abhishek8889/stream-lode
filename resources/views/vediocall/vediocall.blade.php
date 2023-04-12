@@ -7,9 +7,42 @@
   <link rel="stylesheet" href="{{ asset('twilio-assets/site.css') }}">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   @vite('resources/js/pingStatus.js')
+  <style>
+
+   #couponcode{
+     border: 2px solid;
+   padding: 6px;
+   } 
+  table {
+    width: 100%;
+}
+
+.form-row-table {
+    margin: 0px 0px 20px;
+}
+
+.form-row-table th {
+    text-align: left;
+}
+
+.form-row-table td {
+    text-align: right;
+}
+
+.form-row-table td,.form-row-table th {
+    padding: 10px;
+}
+.payment-option button#card-button {
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    padding: 7px 20px;
+}
+</style>
 </head>
+
 <body>
-  <div id="test" style="display:none;">anjkdfhadjshfk</div>
+  <div id="test" style="display:none;"></div>
   @if($roomName)
     <input type="hidden" id="room-name" value="{{ $roomName }}">
   @endif
@@ -40,20 +73,79 @@
         <button id="button-message"><i class="fa-regular fa-comment"></i></button>
         <button id="button-leave" class="btn btn-danger"><i class="fa-solid fa-phone"></i></button>
         <div id="user_type_div">
-          <!-- payment modal -->
-            <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModal" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered" role="document">
+
+          <!-- //////////////////////////// payment modal /////////////////////////////////////////// -->
+
+            <div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModal" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="guestPaymentModalTitle"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
+                    <h5 class="modal-title" id="guestPaymentModalTitle">Enter you card details</h5>
+                   
                     </button>
                   </div>
+
+                  <!-- //////////////////////////// payment modal  body ///////////////////////// -->
+
                   <div class="modal-body">
-                    <div class="text text-success">Please click here for payment.</div>
-                    
+                    <form id="payment-form" action="{{ url('videocall-payment') }}" method="POST">
+                      @csrf
+                        <div class="form-box">
+                          <div class="charity-content">
+                            <div class="anti-form">
+                                <div class="form-part">
+                                  <!-- card detail -->
+                                  <div class="card-detail payment-option" id="card">
+                                    <div class="form-group">
+                                      <div id="card-elements"></div>
+                                      <div class="text text-danger mt-2" id="card-error-message"></div>
+                                    </div>
+                                    <div class="form-row-table">
+                                     <table>
+                                      <tr>
+                                        <th>Subtotal</th>
+                                        <td>${{ $appoinment_details['meeting_charges']}}</td>
+                                      </tr>
+                                      <tr>
+                                        <th>Meeting duration</th>
+                                        <td>{{ $appoinment_details['duration_in_minutes']}} minutes</td>
+                                      </tr>
+                                      <tr>
+                                        <th><button type="button" class="btn btn-info" style="width:165px; border-radius:0px; background-color:rgb(66 106 137);" id="discount-button">Discount</button> </th>
+                                        <td><input type="text" id ="couponcode" host_id = "{{ $appoinment_details['host_id'] }}" amount= "{{ $appoinment_details['meeting_charges'] }}" ><br><span class="text-danger" id="error-response"></span></td>
+                                      </tr>
+                                      <tr>
+                                        <th>Discount amount</th>
+                                        <td>-$ <span id="discount-amount" >0</span></td>
+                                      </tr>
+                                      <tr>
+                                        <th>Total</th>
+                                        <td>$ <span id="final_amount">{{ $appoinment_details['meeting_charges']}}</span> </td>
+                                      </tr>
+                                     </table>
+                                    </div>
+                                  </div>
+                                  <input type="hidden" name="appoinment_id" value="{{ $appoinment_details['_id'] }}">
+                                  <input type="hidden" name="subtotal" value="{{ $appoinment_details['meeting_charges']}}"/>
+                                  <input type="hidden" id="discount_code" name="discount_code" value="">
+                                  <input type="hidden" id="discount_price" name="discount_amount" value="">
+                                  <input type="hidden" id="payment_amount" name="payment_amount" value="{{ $appoinment_details['meeting_charges']}}">
+                                  <input type="hidden" name="currency" value="{{ $appoinment_details['currency'] }}" />
+                                  <div class="paypal-payment payment-option" id="card-pay-btn">
+                                    <div class="button-wrapper">
+                                      <button type="submit" class="btn-main btn btn-primary pay-with-btn" id="card-button" data-secret="{{ $client_secret }}">Pay Now</button>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
                   </div>
+
+                  <!-- //////////////////////////// payment modal  body end ///////////////////////// -->
+
                   <div class="modal-footer">
                   </div>
                 </div>
@@ -109,9 +201,100 @@
 margin-right: auto;
 }
 </style>
+<script>
+    $(document).ready(function(){
+      $('#couponcode').hide();
+      $('#discount-button').click(function(){
+        $('#couponcode').toggle();
+      });
+      $('#couponcode').on('change',function(){
+        let coupon_code = $(this).val();
+        let host_id = $(this).attr('host_id');
+        let amount = $(this).attr('amount');
+       if(coupon_code == ""){
+        $('#error-response').html('');
+        $('#discount-amount').html(0);
+        $('#final_amount').html(amount);
+        $('#discount_code').val('');
+        $('#discount_price').val('');
+        $('#payment_amount').val(amount);
+        return false;
+       }
+        $.ajax({
+          method: 'post',
+          url: '{{ url('coupon-check') }}',
+          dataType: 'json',
+          data: {amount:amount,coupon_code:coupon_code ,host_id:host_id, _token: '{{csrf_token()}}'},
+          success: function(response){
+            // console.log(response);
+            if(response.status == true){
+            $('#error-response').html('');
+              $('#discount-amount').html(response.discount_amount);
+              $('#final_amount').html(response.total_amount);
+              $('#discount_code').val(response.coupon_code);
+              $('#discount_price').val(response.discount_amount);
+              $('#payment_amount').val(response.total_amount);
+              // console.log(true);
+            }
+            if(response.status == false){
+            $('#error-response').html(response.response);
+            $('#discount-amount').html(response.discount_amount);
+              $('#final_amount').html(response.total_amount);
+              // console.log(false);
+            }
+          }
+        })
+      });
+    });
+  </script>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('{{ env('STRIPE_PUB_KEY') }}');
+    // console.log(stripe);
+    const elements= stripe.elements();
+    const cardElement= elements.create('card');
+    cardElement.mount('#card-elements');
+
+    const form = document.getElementById('payment-form');
+
+    form.addEventListener('submit', async (e) => {
+		
+    const cardBtn = document.getElementById('card-button');
+    const first_name = $('#first_name').val();
+    const last_name = document.getElementById('last_name');
+
+    const cardHolderName = first_name + ' ' + last_name; 
+        e.preventDefault()
+		
+        cardBtn.disabled = true
+        const { setupIntent, error } = await stripe.confirmCardSetup(
+            cardBtn.dataset.secret, {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: {
+                        name: cardHolderName.value
+                    }   
+                }
+            }
+        )
+   
+        if(error) {
+            cardBtn.disable = false
+            if(error.message != ''){
+              $("#card-error-message").html(error.message);
+            }
+        } else {
+            let token = document.createElement('input')
+            token.setAttribute('type', 'hidden')
+            token.setAttribute('name', 'token')
+            token.setAttribute('value', setupIntent.payment_method)
+            form.appendChild(token)
+            form.submit();
+        }
+    });
+</script>
 
   <script>
-   
     $(document).ready(function(){
       Swal.fire({
         title: 'Are you ready for your session ?',
@@ -129,22 +312,24 @@ margin-right: auto;
         }
       }).then((result) => {
         if (result.isConfirmed) {
-            // $("#paymentModal").modal('show');
-           var user_type = $("#user_type").val();
-           if(user_type == "host"){
+          // $("#paymentModal").modal('show');
+          var user_type = $("#user_type").val();
+          if(user_type == "host"){
             $("#user_type_div").attr('class','btn btn-success sendPaymentPingBtn');
             $("#user_type_div").attr('data-toggle','tooltip');
             $("#user_type_div").attr('data-placement','top');
             $("#user_type_div").attr('title','Ask for payment');
             $("#user_type_div").attr('type','host_box');
             $("#user_type_div").html("<i class='fa-solid fa-dollar-sign'></i>");
-           }else{
+          }else{
             $("#user_type_div").attr('type','guest_box');
-            
-           }
-            startVedioCall();
-        } else if (result.isDenied) {
-            window.location.href = "{{ url('/') }}";
+            @if($appoinment_details['payment_status'] == 0)
+              $("#paymentModal").modal('show');
+            @endif
+          }
+          startVedioCall();
+        }else if (result.isDenied) {
+          window.location.href = "{{ url('/') }}";
         }
       })
     });
@@ -173,20 +358,9 @@ margin-right: auto;
         }
         });
       });
-      
-      
     });
-    // $(".vedio-response").on('change',function(){
-    //   alert($(this).html);
-    // });
-    // $(document).ready(function(){
-    //     var stream_amount = $(this).val();
-    //     if(stream_amount != '' || stream_amount != null){
-    //       alert(stream_amount);
-    //     }
-    // });
   </script>
-  
+ 
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
   <script src="//media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.min.js"></script>

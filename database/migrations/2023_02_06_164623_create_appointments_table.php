@@ -19,6 +19,11 @@ return new class extends Migration
             $table->string('title');
             $table->date('start');
             $table->date('end');
+            $table->string('duration_in_minutes');
+            $table->string('meeting_charges'); 
+            $table->string('currency'); 
+            $table->string('stripe_payment_intent');
+            $table->string('stripe_client_secret');
             $table->integer('status');
             $table->timestamps();
         });

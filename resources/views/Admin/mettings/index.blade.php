@@ -72,20 +72,23 @@
                               </div>
                               <div class="modal-body">
                               <div class="card">
-                                        <div class="card-body p-0">
+                                        <div class="card-body p-0" style="max-height: 400px; overflow: auto;">
                                             <table class="table table-striped">
                                             <thead>
                                                 <tr>
+                                                  <th>S.No.</th>
                                                 <th >Guest Name</th>
                                                 <th>Email</th>
                                                 <th>Starting time</th>
                                                 <th>End time</th>
                                                 </tr>
                                             </thead>
-
+                                    <?php $count = 0; ?>
                                             <tbody>
                                                 @forelse($u[0]['appoinments'] as $ap)
+                                                <?php $count++ ?>
                                                 <tr>
+                                                  <td>{{ $count }}</td>
                                                 <td>{{ $ap['guest_name'] }}</td>
                                                 <td>{{$ap['guest_email']}}</td>
                                                 <td>

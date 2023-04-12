@@ -13,13 +13,26 @@ class MembershipPayments extends Controller
 {
     public function membershipPaymentList(){
     
-        $membership_payments_list = MembershipPaymentsData::with(['user' => function($response){
-            $response->select('first_name','last_name','membership_id','unique_id');
-        }])->orderBy('created_at','DSC')->select()->get();
+        // $membership_payments_list = MembershipPaymentsData::with(['user' => function($response){
+        //     $response->select('first_name','last_name','membership_id','unique_id');
+        // }])->orderBy('created_at','DSC')->select()->get();
         // dd($membership_payments_list);
+        // $membership_payments_list = array();
 
-        // dd($membership_payments_list);
-
+        $membership_payments = MembershipPaymentsData::get();
+        $user_id = array();
+        foreach($membership_payments as $mp){
+            array_push($user_id,$mp->user_id);
+        }
+       $id = array_unique($user_id);
+    //    dd($id);
+        if($id){
+        foreach($id as $id){
+        $membership_payments_list[] = User::where('_id',$id)->with(['payments' => function($response){ $response->orderBy('created_at','DSC'); } ])->get();
+        }
+        }else{
+        $membership_payments_list = array();
+        }
         return view('Admin.payment-collection.membership_payment',compact('membership_payments_list'));
     }
     public function membershipPaymentDetails(Request $req , $unique_id){

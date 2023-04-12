@@ -66,6 +66,8 @@ use App\Events\Message;
 Route::get('/live-stream/{room_name}',[VedioCallController::class,'index']);
 Route::get('live-stream-token',[VedioCallController::class,'passToken']);
 Route::post('ping-for-payment',[VedioCallController::class,'pingForPayment']);
+Route::post('videocall-payment',[VedioCallController::class,'vedioCallPayment']);
+Route::post('/coupon-check',[VedioCallController::class,'CouponCheck']);
 // Route::post('send-message',function (Request $request){
 //     event(new Message($request->username, $request->message));
 //     return ['success' => true];
@@ -307,6 +309,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
    
     //Appoinments
     Route::get('{id}/Appoinments',[AppoinmentsController::class,'index'])->name('appoinments');
+    Route::get('delete-appointment/{id}',[AppoinmentsController::class,'deleteAppointment']);
 
     //meeting charges
     Route::get('{id}/meeting-charges',[MeetingCharges::class,'index'])->name('meeting-charges');
