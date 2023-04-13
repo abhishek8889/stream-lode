@@ -58,17 +58,18 @@
         $mnotification = App\Models\Messages::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->distinct('sender_id')->get()->toArray();
           
         @endphp
+        <input type="hidden" id="base-url" value="{{ url('') }}">
           <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
           <i class="far fa-bell"></i><span class="badge badge-warning navbar-badge messagecount">{{ count($messagess) ?? 0 }}</span>
         </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;" id="guestmessage">
          <input type="hidden" id="authid" value="{{Auth::user()->id}}">
          @foreach($mnotification as $m)
         @php
         $user = App\Models\User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id',Auth()->user()->id); })->first();
         @endphp
-          <a href="{{ url('message/'.$user['unique_id']) }}" class="dropdown-item">
+          <a href="{{ url('message/'.$user['unique_id']) }}" class="dropdown-item" id="{{ $m[0] }}" >
             <div class="media">
               <div class="media-body">
                 <p class="text-sm"><b>{{ count($user['adminmessage']) ?? '' }} new message from {{ $user['first_name'] ?? '' }}</b></p>

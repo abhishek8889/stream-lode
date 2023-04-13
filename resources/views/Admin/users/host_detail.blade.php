@@ -305,6 +305,7 @@
                     {
                       // console.log(response);
                       $('#messageinput').val('');
+                      
                       // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
                     }
         });
@@ -323,6 +324,7 @@
                     {
                     let messagecount = parseInt(response.length);
                     // let notificationcount = parseInt($('#notificationcount').html());
+                    $('#'+reciever_id).hide();
                     let messagecount1 = parseInt($('#messagecount').html());
                     $('#messagecount').html(messagecount1-messagecount);
                     // $('#notificationcount').html(messagecount1-messagecount);

@@ -170,7 +170,7 @@ class VedioCallController extends Controller
                     return redirect()->back()->with('success','your payment is successful');
 
             }
-            return "outside the condition";
+            // return "outside the condition";
         }catch(\Exception $e){
             $error = $e->getMessage();
         }

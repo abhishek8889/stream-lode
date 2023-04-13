@@ -30,7 +30,7 @@
   <!-- <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  @vite(['resources/css/app.css' , 'resources/js/app.js'])
+  @vite(['resources/css/app.css' , 'resources/js/adminapp.js'])
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -91,7 +91,7 @@
         @php
         $user = App\Models\User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id',Auth()->user()->id); })->first();
         @endphp
-          <a href="{{ url('/admin/host-details/'.$user['unique_id']) }}" class="dropdown-item">
+          <a href="{{ url('/admin/host-details/'.$user['unique_id']) }}" class="dropdown-item" id="{{ $m[0] }}">
             <div class="media">
               <div class="media-body">
                 <p class="text-sm"><b>{{ count($user['adminmessage']) ?? '' }} new message from {{ $user['first_name'] ?? '' }}</b></p>
@@ -270,6 +270,7 @@
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            <input type="hidden" id="base_url" value="{{ url('') }}">
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{ route('generate-discount') }}" class="nav-link active">
