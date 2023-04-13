@@ -1,11 +1,6 @@
 @extends('guest_layout.master')
 @section('content')
-<pre>
-<?php 
-// print_r($messages);
-// print_r($host_detail);
- ?>
-</pre>
+
 <div class="page-content page-container" id="page-content">
     <div class="padding">
         <div class="row container d-flex justify-content-center">
@@ -93,6 +88,7 @@ $(document).ready(function(){
      success: function(response)
                       { 
                         // console.log(response);
+                        $('#'+sender_id).hide();
                         let count = parseInt(response.length);
                         // console.log(count);
                         let messagecount =  parseInt($('.messagecount').html());

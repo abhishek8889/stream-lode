@@ -116,7 +116,7 @@
         @php
         $user = App\Models\User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id',Auth()->user()->id); })->first();
         @endphp
-          <a href="{{ url(Auth()->user()->unique_id.'/message/'.$user['_id']) }}" class="dropdown-item">
+          <a href="{{ url(Auth()->user()->unique_id.'/message/'.$user['_id']) }}" class="dropdown-item" id="{{ $m[0] }}">
             <div class="media">
               <div class="media-body" id="messages-notification">
                 <p class="text-sm"><b>{{ count($user['adminmessage']) ?? '' }} new message from {{ $user['first_name'] ?? '' }}</b></p>

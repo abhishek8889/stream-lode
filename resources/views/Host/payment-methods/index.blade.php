@@ -8,7 +8,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-            {{ Breadcrumbs::render('Coupons') }}
+            {{ Breadcrumbs::render('payment-methods') }}
             </ol>
           </div>
         </div>

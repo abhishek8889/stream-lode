@@ -30,6 +30,10 @@ class MeetingsController extends Controller
     return view('Admin.mettings.index',compact('user'));
   }
   public function detail($id){
-
-  }
+     
+      $host = User::where('unique_id',$id)->first();
+      $data = HostAppointments::where('host_id',$host->_id)->orderBy('created_at','DSC')->with('user')->get();
+      // dd($data);
+   return view('Admin.mettings.appoinments_detail',compact('data'));
+    }
 }

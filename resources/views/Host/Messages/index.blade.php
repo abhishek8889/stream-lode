@@ -126,6 +126,8 @@ $(document).ready(function(){
           data: {reciever_id:reciever_id ,sender_id:sender_id, _token: '{{csrf_token()}}'},
           success: function(response)
                     { 
+                      // console.log(sender_id);
+                      $('#'+reciever_id).hide();
                     let messagecount = parseInt(response.length);
                     let notificationcount = parseInt($('#notificationcount').html());
                     let messagecount1 = parseInt($('#messagecount').html());

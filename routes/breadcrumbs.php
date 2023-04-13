@@ -66,6 +66,10 @@ Breadcrumbs::for('meetings', function (BreadcrumbTrail $trail): void {
     $trail->parent('admin-dashboard');
     $trail->push('Appoinments', route('meetings'));
 });
+Breadcrumbs::for('meetings-detail', function (BreadcrumbTrail $trail): void {
+    $trail->parent('meetings');
+    $trail->push('Detail', route('meeting-detail',['id'=>1]));
+});
 Breadcrumbs::for('Admin-setting', function (BreadcrumbTrail $trail): void {
     $trail->parent('admin-dashboard');
     $trail->push('General-Setting', route('admin-general-setting'));
@@ -73,6 +77,14 @@ Breadcrumbs::for('Admin-setting', function (BreadcrumbTrail $trail): void {
 Breadcrumbs::for('admin-changepassword', function (BreadcrumbTrail $trail): void {
     $trail->parent('admin-dashboard');
     $trail->push('Change-Password', route('changepassword'));
+});
+Breadcrumbs::for('stream-payment', function (BreadcrumbTrail $trail): void {
+    $trail->parent('admin-dashboard');
+    $trail->push('Stream-payment', route('stream-payments'));
+});
+Breadcrumbs::for('stream-payment-detail', function (BreadcrumbTrail $trail): void {
+    $trail->parent('stream-payment');
+    $trail->push('Detail', route('stream-payments-detail',['id'=>1]));
 });
 
 // end adminbreadcrumbs
@@ -120,6 +132,10 @@ Breadcrumbs::for('meeting-charges', function (BreadcrumbTrail $trail): void {
 Breadcrumbs::for('meeting-charges-add', function (BreadcrumbTrail $trail): void {
     $trail->parent('meeting-charges');
     $trail->push('Add', route('add-meeting-charges',['id'=> Auth::user()->unique_id,'idd'=>1]));
+});
+Breadcrumbs::for('payment-methods', function (BreadcrumbTrail $trail): void {
+    $trail->parent('host-dashboard');
+    $trail->push('payment-methods', route('payment-methods',['id'=> Auth::user()->unique_id]));
 });
 // endhostbreadcrumbs
 ?>

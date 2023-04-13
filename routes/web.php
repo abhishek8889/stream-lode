@@ -344,7 +344,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('{id}/upgrademembership',[HostMembershipController::class,'upgrade']);
 
     //Host payment methods
-    Route::get('/{id}/payment-methods',[HostPaymentMethodsController::class,'index']);
+    Route::get('/{id}/payment-methods',[HostPaymentMethodsController::class,'index'])->name('payment-methods');
     Route::get('delete-payment-methods/{id}',[HostPaymentMethodsController::class,'deletePaymentMethod']);
     
 });
