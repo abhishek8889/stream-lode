@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MembershipPaymentsData;
 use App\Models\User;
+use App\Models\Visitor;
 
 class AdminDashController extends Controller
 {
@@ -19,7 +20,8 @@ class AdminDashController extends Controller
         $total_membership_amount = array_sum($payments);
         /// Users count
         $users = User::get();
+        $Visitors = Visitor::count();
 
-       return view("Admin.Dashboard.index",compact('total_membership_amount','users'));
+       return view("Admin.Dashboard.index",compact('total_membership_amount','users','Visitors'));
     }
 }
