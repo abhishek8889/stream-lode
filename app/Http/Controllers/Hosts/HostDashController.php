@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MembershipTier;
 use App\Models\MembershipPaymentsData;
+use App\Models\{HostAppointments,MeetingCharge};
 use App\Models\User;
-
+use Carbon\Carbon;
 class HostDashController extends Controller
 {
     public function index(){
@@ -35,6 +36,19 @@ class HostDashController extends Controller
                 }
             }
         }
-        return view('Host.Dashboard.index',compact('membership_details'));
+       $CurrentDate = date('Y-m-d');
+       $TotalAppoitments =  HostAppointments::where('host_id',auth()->user()->id)->get()->count();
+       $TodayAppoitments = HostAppointments::where('start','LIKE',"%{$CurrentDate}%")->where('host_id',auth()->user()->id)->count();
+       $LiveDuration = MeetingCharge::where('host_id',auth()->user()->id)->get(['duration_in_minutes','amount'])->toArray(); 
+       $Totalvctime = array();
+       $TotalAmount = array();
+       for($i=0; $i< count($LiveDuration); $i++){
+        $Totalvctime[] = $LiveDuration[$i]['duration_in_minutes'];
+        $TotalAmount[] = $LiveDuration[$i]['amount'];
+       }
+        return view('Host.Dashboard.index',compact('membership_details','TotalAppoitments','TodayAppoitments','Totalvctime','TotalAmount'));
+    }
+    public function trycode(){
+        // $res=HostAppointments::where('id','!=','sdg98')->delete();
     }
 }

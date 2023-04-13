@@ -13,20 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        //
-        Schema::create('streams_payment', function (Blueprint $table) {
+        Schema::create('visitors', function (Blueprint $table) {
             $table->id();
-            $table->string('appointment_id');
-            $table->string('stripe_payment_intent');
-            $table->string('subtotal');
-            $table->string('discount_coupon_name');
-            $table->string('discount_amount');
-            $table->string('total');
-            $table->string('status');
+            $table->string('ip_address');
             $table->timestamps();
         });
     }
-    
 
     /**
      * Reverse the migrations.
@@ -35,7 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
-        Schema::dropIfExists('streams_payment');
+        Schema::dropIfExists('visitors');
     }
 };

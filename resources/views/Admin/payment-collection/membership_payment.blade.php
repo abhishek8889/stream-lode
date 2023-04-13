@@ -50,14 +50,11 @@
                     <tbody>
 
                     <?php
-                    // echo '<pre>';
-                    // print_r($membership_payments_list);
-                    // echo '</pre>';
-                    // die(); 
                         $membership_count = 0;
                     ?>
          
                     @forelse($membership_payments_list as $data)
+                    @if($data['user'])
                         <?php $membership_count++; ?>
                         <tr>
                            <td><b>{{ $membership_count }}</b></td>
@@ -86,6 +83,7 @@
                                <h6>No Payments Data Found</h6> 
                             </td>
                         </tr>
+
                     @endforelse
                  
                     </tbody>
