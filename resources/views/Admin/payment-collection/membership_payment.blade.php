@@ -54,7 +54,7 @@
                     ?>
          
                     @forelse($membership_payments_list as $data)
-                    @if($data['user'])
+        
                         <?php $membership_count++; ?>
                         <tr>
                            <td><b>{{ $membership_count }}</b></td>

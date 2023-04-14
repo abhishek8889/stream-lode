@@ -333,7 +333,7 @@
             <a href="{{ url('/'.auth()->user()->unique_id.'/Appoinments') }}" class="nav-link active">
             <i class="far fa-calendar-check nav-icon"></i>
               <p>
-                Appoinments
+                Appointments
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -363,12 +363,23 @@
               
             </ul>
           </li>
-          <!-- payment methods -->
+
+          <!-- payments -->
           <li class="nav-item ">
-            <a href="{{ url( '/'.auth()->user()->unique_id.'/payment-methods') }}" class="nav-link active">
+            <a href="{{ url('/'.auth()->user()->unique_id.'/payment-methods') }}" class="nav-link active">
             <i class="fas fa-file-invoice-dollar nav-icon"></i>
               <p>
-                Payment Methods
+                Payments Methods
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+           
+          </li>
+          <li class="nav-item ">
+            <a href="{{ url('/'.auth()->user()->unique_id.'/stream-payments') }}" class="nav-link active">
+            <i class="fas fa-file-invoice-dollar nav-icon"></i>
+              <p>
+              Stream Payments
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>

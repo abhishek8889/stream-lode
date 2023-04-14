@@ -41,6 +41,7 @@ use App\Http\Controllers\Hosts\WebsocketController;
 use App\Http\Controllers\Hosts\HostDiscountController;
 use App\Http\Controllers\Hosts\MeetingCharges;
 use App\Http\Controllers\Hosts\HostPaymentMethodsController;
+use App\Http\Controllers\Hosts\NotificationController;
 use Google\Service\ServiceConsumerManagement\Authentication;
 
 use App\Http\Controllers\LiveStream\VedioCallController;
@@ -111,7 +112,7 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-Route::get('/trycode',[HostDashController::class,'trycode']);
+Route::get('/trycode',[SearchHostController::class,'trycode']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
@@ -343,9 +344,14 @@ Route::group(['middleware'=>['auth','Host']],function(){
     //upgrade membership
     Route::get('{id}/upgrademembership',[HostMembershipController::class,'upgrade']);
 
+    //Notifications
+
+    Route::get('{id}/notifications',[NotificationController::class,'index']);
+
     //Host payment methods
     Route::get('/{id}/payment-methods',[HostPaymentMethodsController::class,'index'])->name('payment-methods');
     Route::get('delete-payment-methods/{id}',[HostPaymentMethodsController::class,'deletePaymentMethod']);
+    Route::get('{id}/stream-payments',[HostPaymentMethodsController::class,'streampayments'])->name('host-stream-payments');
     
 });
 

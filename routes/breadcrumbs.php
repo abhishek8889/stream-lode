@@ -137,6 +137,10 @@ Breadcrumbs::for('payment-methods', function (BreadcrumbTrail $trail): void {
     $trail->parent('host-dashboard');
     $trail->push('payment-methods', route('payment-methods',['id'=> Auth::user()->unique_id]));
 });
+Breadcrumbs::for('host-stream-payment', function (BreadcrumbTrail $trail): void {
+    $trail->parent('host-dashboard');
+    $trail->push('stream-payments', route('host-stream-payments',['id'=> Auth::user()->unique_id]));
+});
 // endhostbreadcrumbs
 ?>
 

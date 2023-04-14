@@ -289,10 +289,15 @@ class SearchHostController extends Controller
     }
   
 public function trycode(){
-   $data = HostAppointments::get();
-    foreach($data as $d){
-        HostAppointments::find($d->id)->delete();
-    }
+//    $data = HostAppointments::get();
+//     foreach($data as $d){
+//         HostAppointments::find($d->id)->delete();
+//     }
+$appoinment_details = HostAppointments::find('6437e5459c88c595fa0ef7c2');
+// print_r($appoinment_details);
+if(empty($appoinment_details)){
+    echo 'error';
+}
 }
 
 }

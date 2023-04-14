@@ -155,6 +155,7 @@ display: none;
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
+          <h3>Appoinments</h3>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -168,8 +169,7 @@ display: none;
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Appoinments</h3>
-
+            
                 <div class="card-tools">
                 
                 </div>
@@ -177,18 +177,19 @@ display: none;
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0" style="height: 450px;">
                 <table class="table table-head-fixed text-nowrap">
-                  <thead>
+                  <thead class="text-center">
                     <tr>
                       <th class="text-center">Sr no.</th>
                       <th>Guest Name</th>
                       <th>Start Time</th>
                       <th>End Time</th>
+                      <th>Duration</th>
                       <th>Payment Status</th>
                       <th class="text-center">Action</th>
                     </tr>
                   </thead>
                   <?php $count = 0; ?>
-                  <tbody>
+                  <tbody class="text-center">
               <?php
               $current_date = date('Y-m-d H:i');
               ?>
@@ -196,7 +197,7 @@ display: none;
                     @forelse ($host_schedule as $hs)
                       <tr>
                         <?php $count = $count+1; ?>
-                        <td class="text-center">{{$count}}</td>
+                        <td class="text-center">{{$count}}.</td>
                         <td>{{$hs->guest_name}}</td>
                         <?php 
                         $startdate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->start)));
@@ -205,9 +206,9 @@ display: none;
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
+                        <td>{{ $hs->duration_in_minutes ?? 0 }}</td>
                         <td class="text-center">@if($hs->payment_status == 1) <span class="badge badge-pill badge-success" >Success</span> @else <span class="badge badge-pill badge-danger" > pending</span> @endif</td>
                         <td class="text-center">
-                       
                         @if($current_date < $hs->end)
                           @if($hs->video_link_name)
                           <a href="{{ url('delete-appointment/'.$hs->id) }}" class="btn btn-danger"><i class="fa fa-trash "></i></a>
@@ -221,7 +222,11 @@ display: none;
                           </a>
                           @endif
                           @else
+                          @if($hs->payment_status == 1)
+                            <span class="badge badge-pill badge-success">Completed</span>
+                          @else
                          <span class="badge badge-pill badge-danger">Expired</span>
+                         @endif
                           @endif
                         </td>
                        
