@@ -176,7 +176,6 @@ class VedioCallController extends Controller
         }
         // print_r($error);
         // print_r($stripe_payment_intent['id']);
-         
     }
     public function CouponCheck(Request $req){
         $date = date('Y-m-d');

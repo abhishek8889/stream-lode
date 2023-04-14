@@ -41,6 +41,8 @@ use App\Http\Controllers\Hosts\WebsocketController;
 use App\Http\Controllers\Hosts\HostDiscountController;
 use App\Http\Controllers\Hosts\MeetingCharges;
 use App\Http\Controllers\Hosts\HostPaymentMethodsController;
+use App\Http\Controllers\Hosts\HostStripeAccountRegisteration;
+
 use Google\Service\ServiceConsumerManagement\Authentication;
 
 use App\Http\Controllers\LiveStream\VedioCallController;
@@ -295,6 +297,13 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/upgrade-subscription/{slug}',[HostMembershipController::class,'upgradeSubscriptionDetail'])->name('upgrade-subscription');
     Route::post('/{id}/upgrade-to-new-subscription',[HostMembershipController::class,'upgradeSubscriptionProcess'])->name('upgrade-to-new-subscription');
     
+
+    // Register your account to stripe for the payment
+    Route::get('/{id}/register-account',[HostStripeAccountRegisteration::class,'index'])->name('register-account');
+    Route::get('/{id}/edit-account',[HostStripeAccountRegisteration::class,'editAccount'])->name('edit-account');
+    Route::post('/register-host-stripe-account',[HostStripeAccountRegisteration::class,'registerAccount']);
+    
+
     //Discount
     Route::get('/{id}/coupons',[HostDiscountController::class,'index'])->name('host-coupons');
     Route::get('/{id}/coupons/create/{did?}',[HostDiscountController::class,'create'])->name('coupons-create');

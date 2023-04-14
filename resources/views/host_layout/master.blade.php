@@ -319,6 +319,31 @@
               
             </ul>
           </li>
+          <!-- Register Account -->
+          <li class="nav-item ">
+            <a href="#" class="nav-link active">
+            <i class="fas fa-file-invoice-dollar nav-icon"></i>
+              <p>
+                Register Your Account
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ url( '/'.auth()->user()->unique_id.'/register-account') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Register</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ url( '/'.auth()->user()->unique_id.'/edit-account') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Edit</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Register Account End -->
           <!-- calendar -->
           <li class="nav-item ">
             <a href="{{ url('/'.auth()->user()->unique_id.'/calendar') }}" class="nav-link active">
