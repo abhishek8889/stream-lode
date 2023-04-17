@@ -355,5 +355,8 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('{id}/stream-payments',[HostPaymentMethodsController::class,'streampayments'])->name('host-stream-payments');
     
 });
+Route::post('Authcheck',function(){
+    return Auth::check();
+});
 
 // Email Template 

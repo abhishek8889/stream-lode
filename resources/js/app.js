@@ -1,8 +1,12 @@
 import './bootstrap';
 
-    window.Echo.private('chat.{recieverid}')
+let sender_iddd = $('#sender_id').val();
+let reciever_iddd = $('#reciever_id').val();
+
+    window.Echo.channel('chat'+reciever_iddd)
     .listen('.message',(e)=>{
         console.log(e);
+        console.log(sender_iddd);
         let base_url = $('#base_url').val();
         let count = parseInt($('#messagecount').html());
         let count1 = parseInt($('#notificationcount').html());
@@ -25,7 +29,7 @@ import './bootstrap';
            
             }
         if(e.reciever_id == "public"){
-            $('#admin_notification').append('<tr><td><a href="'+base_url+'/Appoinments">You got a new message from '+e.username+'</a><br></td><tr>');
+            $('#admin_notification').append('<tr><td><a href="'+base_url+'/Appoinments">You got a new appointment from '+e.username+'</a><br></td><tr>');
             $('#notificationcount').html(count1 + 1);
             // console.log(count1);
         }
@@ -43,5 +47,13 @@ import './bootstrap';
             $('#appointmentnotification').append('<tr><td><a href="'+base_url+'/Appoinments">You got a new appointment from '+e.appoinments.guest_name+' for '+e.appoinments.duration_in_minutes+' minutes </a><br><span>'+e.appoinments.created_at+'</span></td><tr>');
         }   
     });
-
+    let sender_id = $('#sender_id').val();
+    Echo.private('conversation')
+    .listen('.message', (e) => {
+        console.log(e);
+    });
+// var channel = Pusher.subscribe('conversation.'+sender_id);
+// channel.bind('PrivateEvent', function(data) {
+//   console.log(data);
+// });
     

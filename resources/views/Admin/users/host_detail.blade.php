@@ -286,31 +286,31 @@
     $('.summernote').summernote();
     });
 
-    $(document).ready(function(){
-      $('#message').on('submit',function(e){
-        if($('#messageinput').val() == ''){
-            // alert('Please enter message')
-            return false;
-        }
-        e.preventDefault();
-       let formdata = new FormData(this);
-        $.ajax({
-          method: 'post',
-                    url: '{{url('/admin/message')}}',
-                    data: formdata,
-                    dataType: 'json',
-                    contentType: false,
-                    processData: false,
-                    success: function(response)
-                    {
-                      // console.log(response);
-                      $('#messageinput').val('');
+    // $(document).ready(function(){
+    //   $('#message').on('submit',function(e){
+    //     if($('#messageinput').val() == ''){
+    //         // alert('Please enter message')
+    //         return false;
+    //     }
+    //     e.preventDefault();
+    //    let formdata = new FormData(this);
+    //     $.ajax({
+    //       method: 'post',
+    //                 url: '{{url('/admin/message')}}',
+    //                 data: formdata,
+    //                 dataType: 'json',
+    //                 contentType: false,
+    //                 processData: false,
+    //                 success: function(response)
+    //                 {
+    //                   // console.log(response);
+    //                   $('#messageinput').val('');
                       
                       
-                    }
-        });
-      });
-    });
+    //                 }
+    //     });
+    //   });
+    // });
 
     $(document).ready(function(){
      sender_id = $('#sender_id').val();

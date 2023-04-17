@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Messages;
 use App\Events\Message;
+use App\Events\MessageCreated;
 use DB;
 use Hash;
 use Auth;
@@ -124,7 +125,7 @@ class HostController extends Controller
         $reciever_id = $req->reciever_id;
         // $username = $req->username;
         $messages = $req->message;
-        event(new Message($username, $messages,$sender_id,$reciever_id));
+        // event(new Message($username, $messages,$sender_id,$reciever_id));
         $message = new Messages();
         $message->reciever_id = $req->reciever_id;
         $message->sender_id = $req->sender_id;
@@ -132,6 +133,7 @@ class HostController extends Controller
         $message->message = $req->message;
         $message->status = 1;
         $message->save();
+        broadcast(new MessageCreated($message));
         return response()->json('message sent');
     }
     public function seenmessage(Request $req){
