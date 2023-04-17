@@ -313,7 +313,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
 
     //hostMessage
     Route::get('/{id}/message/{uid?}',[HostMessageController::class,'index']);
-    Route::get('/{id}/hostmessage/{uid}',[HostMessageController::class,'hostmessage']);
+    // Route::get('/{id}/hostmessage/{uid}',[HostMessageController::class,'hostmessage']);
     Route::post('send-message',[HostMessageController::class,'message']);
 
     Route::post('host/updatemessage',[HostMessageController::class,'update']);
