@@ -347,6 +347,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
     //Notifications
 
     Route::get('{id}/notifications',[NotificationController::class,'index']);
+    Route::post('{id}/seenupdate',[NotificationController::class,'seenupdate']);
 
     //Host payment methods
     Route::get('/{id}/payment-methods',[HostPaymentMethodsController::class,'index'])->name('payment-methods');

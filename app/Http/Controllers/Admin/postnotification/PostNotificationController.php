@@ -27,7 +27,8 @@ class PostNotificationController extends Controller
             $message->message = $request->message;
             $message->reciever_id = 'hosts';
             $message->username = $request->username;
+            $message->seen_users = array();
             $message->save();
-        return response()->json('done');
+        return response()->json($message);
     }
 }

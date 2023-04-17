@@ -24,9 +24,10 @@ import './bootstrap';
             $('#messages').append('<div class="direct-chat-msg"><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-left">'+e.username.first_name+'</span> </div> <div class="direct-chat-text" style="margin-left:0px; margin-right:40%;">'+e.message+'</div></div>');
            
             }
-        if(e.reciever_id === "public"){
-            $('#notificationbox').append('<div class="direct-chat-msg right" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+e.username+'</span></div><div class="direct-chat-text" style="margin-right:0px; margin-left:40%;">'+e.message+'</div></div>');
+        if(e.reciever_id == "public"){
+            $('#admin_notification').append('<tr><td><a href="'+base_url+'/Appoinments">You got a new message from '+e.username+'</a><br></td><tr>');
             $('#notificationcount').html(count1 + 1);
+            // console.log(count1);
         }
        
     });
@@ -35,13 +36,12 @@ import './bootstrap';
        let authid = $('#hostauthid').val();
        let base_url = $('#base_url').val();
        let count1 = parseInt($('#notificationcount').html());
-       console.log(authid);
-       console.log(e.host_id);
+
         if(authid == e.host_id){
             $('#notificationcount').html(count1 + 1);
             // console.log(e.appoinments);
-            $('#notificationbox12').append('<a href="'+base_url+'/Appoinments" class="dropdown-item"><i class="nav-icon fas fa-calendar mr-2"></i>new appointment scheduled with '+e.appoinments.guest_name+'</a>');
-        }
-       
-        
+            $('#appointmentnotification').append('<tr><td><a href="'+base_url+'/Appoinments">You got a new appointment from '+e.appoinments.guest_name+' for '+e.appoinments.duration_in_minutes+' minutes </a><br><span>'+e.appoinments.created_at+'</span></td><tr>');
+        }   
     });
+
+    

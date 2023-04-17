@@ -169,7 +169,8 @@ class VedioCallController extends Controller
                     $streamPayment->appoinment_id = $req->appoinment_id;
                     $streamPayment->host_id = $req->host_id;
                     $streamPayment->save();
-
+        $test_event = event( new SendStreamPaymentRequest($payment_amount,$req->currency,$req->appoinment_id,'start_time'));
+                    
                     //discount_code 
                     $discount_amount = $discount_off;
                     $coupon_code = $req->discount_code;
@@ -179,6 +180,7 @@ class VedioCallController extends Controller
                     $appoinments = HostAppointments::find($req->appoinment_id);
                     $appoinments->payment_status = 1;
                     $appoinments->update();
+                    
                     return redirect()->back()->with('success','your payment is successful');
 
             }
