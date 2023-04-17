@@ -106,6 +106,7 @@ class VedioCallController extends Controller
     }
     public function vedioCallPayment(Request $req){
         //  create payment intent 
+  
         try{
             $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
 
