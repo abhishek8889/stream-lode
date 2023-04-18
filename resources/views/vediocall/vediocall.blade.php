@@ -53,7 +53,7 @@
     <input type="hidden" id="user_type" value="guest">
     @endif
   @else
-  <input type="hidden" id="user_type" value="guest">
+  <input type="hidden" id="user_type" value="notlogin">
   @endif
   <input type="hidden" id="stream_amount" value="" />
   <div id="controls">
@@ -187,7 +187,7 @@
         </div>
       </div>
     <!-- Ask for payment modal end -->
-    
+    <div class="alert-login" value="{{ auth()->user()->_id ?? ''}}"></div>
     <!-- <div id="log"></div> -->
   </div>
 
@@ -202,6 +202,7 @@
 margin-right: auto;
 }
 </style>
+
 <script>
     $(document).ready(function(){
       $('#couponcode').hide();
@@ -318,6 +319,7 @@ margin-right: auto;
           if (result.isConfirmed) {
             // $("#paymentModal").modal('show');
             var user_type = $("#user_type").val();
+            
             if(user_type == "host"){
               $("#user_type_div").attr('class','btn btn-success sendPaymentPingBtn');
               $("#user_type_div").attr('data-toggle','tooltip');
@@ -337,6 +339,20 @@ margin-right: auto;
             window.location.href = "{{ url('/') }}";
           }
         });
+      }else if(user_type == "notlogin"){
+                  Swal.fire({
+            title: 'Warning ?',
+            text: "Sorry we did not find you in our system. Please login first",
+            icon: 'warning',
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.replace("/login");
+            }
+          })
       }else{
         Swal.fire({
         title: 'Are you ready for your session ?',
@@ -412,7 +428,6 @@ margin-right: auto;
 
 
 // Leave video call local storage null button
-
   </script>
 
 
