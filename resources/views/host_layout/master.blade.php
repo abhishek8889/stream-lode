@@ -127,20 +127,25 @@
         @endforeach
         </div>
       </li>
-       <?php  $appoinments = App\Models\HostAppointments::where([['host_id',Auth()->user()->id],['seen_status',0]])->get(); ?>
-      <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
+       <?php  $appoinments = App\Models\HostAppointments::where([['host_id',Auth()->user()->id],['seen_status',0]])->get();
+        $notification = App\Models\PostNotification::get()->toArray();
+        $data = array();
+          foreach($notification as $d){
+                if (in_array(Auth()->user()->id, $d['seen_users'])){
+                  }else{
+                    array_push($data,$d);
+                  }
+          }
+       ?>
+      <li class="nav-item ">
+        <a class="nav-link"  href="{{ url('/'.Auth()->user()->id.'/notifications') }}">
           <i class="far fa-bell"></i>
           
-          <span class="badge badge-warning navbar-badge" id="notificationcount" >{{ count($appoinments) }}</span>
+          <span class="badge badge-warning navbar-badge" id="notificationcount" >{{ count($appoinments)+count($data) }}</span>
         </a>
        
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notificationbox12" style="max-height: 171px; overflow: auto;">
           <span class="dropdown-item dropdown-header"></span>
-          <div class="dropdown-divider"></div>
-          <a href="" class="dropdown-item" data-toggle="modal" data-toggle="modal" data-target="#exampleModalCenter123">
-            <i class="fas fa-envelope mr-2"></i><span id=""></span> new notification from admin side
-          </a>
           <div class="dropdown-divider"></div>
         
           @foreach($appoinments as $ap)
@@ -194,31 +199,7 @@
   <!-- /.navbar -->
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter123" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Admin Notifications</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" style="max-height: 200px; overflow: auto;">
-     @php 
 
-     $adminnotifications = App\Models\PostNotification::orderBy('created_at','desc')->get();
-    
-     @endphp
-    @foreach($adminnotifications as $an)
-    <p><span>{{$an->username}}:</span> {{$an->message}} </p> 
-    @endforeach
-   
-  </div>
-      <div class="modal-footer">
-      </div>
-    </div>
-  </div>
-</div>
 
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -358,7 +339,7 @@
             <a href="{{ url('/'.auth()->user()->unique_id.'/Appoinments') }}" class="nav-link active">
             <i class="far fa-calendar-check nav-icon"></i>
               <p>
-                Appoinments
+                Appointments
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -388,12 +369,23 @@
               
             </ul>
           </li>
-          <!-- payment methods -->
+
+          <!-- payments -->
           <li class="nav-item ">
-            <a href="{{ url( '/'.auth()->user()->unique_id.'/payment-methods') }}" class="nav-link active">
+            <a href="{{ url('/'.auth()->user()->unique_id.'/payment-methods') }}" class="nav-link active">
             <i class="fas fa-file-invoice-dollar nav-icon"></i>
               <p>
-                Payment Methods
+                Payments Methods
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+           
+          </li>
+          <li class="nav-item ">
+            <a href="{{ url('/'.auth()->user()->unique_id.'/stream-payments') }}" class="nav-link active">
+            <i class="fas fa-file-invoice-dollar nav-icon"></i>
+              <p>
+              Stream Payments
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>

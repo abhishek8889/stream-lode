@@ -106,6 +106,18 @@ class VedioCallController extends Controller
         $test_event = event( new SendStreamPaymentRequest($req->amountForStream,$req->currency,$req->appointment_id,$request_message));
     }
     public function vedioCallPayment(Request $req){
+        //appointment and discount data
+        $appoinment_details = HostAppointments::find($req->appoinment_id);
+        if(empty($appoinment_details)){
+           return redirect()->back()->with('error','error occured');
+        }
+        $discount_details = HostDiscount::where('coupon_code',$req->discount_code)->first();
+        if($discount_details){
+            $discount_off = $appoinment_details->meeting_charges*$discount_details->percentage_off/100;
+        }else{
+            $discount_off = 0;
+        }
+        $payment_amount = $appoinment_details->meeting_charges - $discount_off;
         //  create payment intent 
     
         try{
@@ -140,7 +152,7 @@ class VedioCallController extends Controller
 
             $stripe_payment_intent =  $stripe->paymentIntents->create([
                 'customer' => $customer->id,
-                'amount' => (int)$req->payment_amount * 100,
+                'amount' => (int)$payment_amount * 100,
                 'currency' => $req->currency,
                 'payment_method' => $req->token,
                 'on_behalf_of' => $host_stripe_account_id,
@@ -159,16 +171,17 @@ class VedioCallController extends Controller
                     $streamPayment->host_stripe_account_id = $host_stripe_account_id;
                     $streamPayment->stripe_payment_method = $req->token;
                     $streamPayment->currency = $req->currency;
-                    $streamPayment->subtotal = $req->subtotal;
+                    $streamPayment->subtotal = $appoinment_details->meeting_charges;
                     $streamPayment->coupon_code = $req->discount_code;
-                    $streamPayment->discount_amount = $req->discount_amount;
-                    $streamPayment->total = $req->subtotal - $req->discount_amount;
+                    $streamPayment->discount_amount = $discount_off;
+                    $streamPayment->total = $payment_amount;
                     $streamPayment->appoinment_id = $req->appoinment_id;
                     $streamPayment->status = 'successfull';
                     $streamPayment->save();
-
+        $test_event = event( new SendStreamPaymentRequest($payment_amount,$req->currency,$req->appoinment_id,'start_time'));
+                    
                     //discount_code 
-                    $discount_amount = $req->discount_amount;
+                    $discount_amount = $discount_off;
                     $coupon_code = $req->discount_code;
                     $user_create = $this->coupon_update($discount_amount,$coupon_code);
 
@@ -176,6 +189,7 @@ class VedioCallController extends Controller
                     $appoinments = HostAppointments::find($req->appoinment_id);
                     $appoinments->payment_status = 1;
                     $appoinments->update();
+                    
                     return redirect()->back()->with('success','your payment is successful');
 
             }
@@ -183,7 +197,7 @@ class VedioCallController extends Controller
         }catch(\Exception $e){
             $error = $e->getMessage();
         }
-        print_r($error);
+        return redirect()->back()->with('error',$error);
         // print_r($stripe_payment_intent['id']);
     }
     public function CouponCheck(Request $req){

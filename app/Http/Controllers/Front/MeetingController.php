@@ -37,7 +37,7 @@ class MeetingController extends Controller
       $message->message = $req->message;
       $message->status = 1;
       $message->save();
-      return response()->json('message sent');
+      return response()->json($message);
     }
     public function messageseen(Request $req){
         $query = Messages::where([['reciever_id',$req->reciever_id],['sender_id',$req->sender_id],['status',1]])->get();

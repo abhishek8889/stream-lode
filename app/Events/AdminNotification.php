@@ -10,24 +10,28 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NotificationsSend implements ShouldBroadcast
+class AdminNotification implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $host_id;
-    public $appoinments;
 
-    public function __construct($host_id,$appoinments)
+    public $username;
+    public $message;
+    public $sender_id;
+    public $reciever_id;
+
+    public function __construct($username,$message,$sender_id,$reciever_id)
     {  
-        $this->host_id = $host_id;
-        $this->appoinments = $appoinments;
+        $this->username = $username;
+        $this->message = $message;
+        $this->sender_id = $sender_id;
+        $this->reciever_id = $reciever_id;
     }
     public function broadcastOn()
     {
-        return new Channel('notifications'.$this->host_id);
+        return new Channel('adminnotification');
     }
-
     public function broadcastAs()
     {
-        return 'notification';
+        return 'adminnotification';
     }
 }

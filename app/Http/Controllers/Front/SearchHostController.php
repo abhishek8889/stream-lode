@@ -8,12 +8,12 @@ use App\Models\User;
 use App\Models\Tags;
 use App\Models\Messages;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\appoinmentsconfirmation;
+use App\Mail\AppoinmentsConfirmation;
 use App\Mail\HostAppoinmentsMail;
 use App\Mail\SendpasswordMail;
 use App\Models\HostAvailablity;
+use App\Models\PostNotification;
 use App\Models\HostAppointments;
-use App\Models\Discounts\HostDiscount;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Hash;
@@ -23,6 +23,7 @@ use App\Events\NotificationsSend;
 use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\VideoGrant;
 use App\Models\MeetingCharge;
+use App\Events\AppoinmentNotification;
 class SearchHostController extends Controller
 {
     //
@@ -232,7 +233,7 @@ class SearchHostController extends Controller
                 'end' => $meeting_end,
             ];
             
-            $mail = Mail::to($uemail)->send(new appoinmentsconfirmation($mailData));
+            $mail = Mail::to($uemail)->send(new AppoinmentsConfirmation($mailData));
             $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
             event(new NotificationsSend($host_id,$newAppointment));
             return array('status'=> true , 'message' => 'You have succesfully scheduled your apoointment with host');
@@ -289,10 +290,7 @@ class SearchHostController extends Controller
     }
   
 public function trycode(){
-   $data = HostAppointments::get();
-    foreach($data as $d){
-        HostAppointments::find($d->id)->delete();
-    }
+   
 }
 
 }

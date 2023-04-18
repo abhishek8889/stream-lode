@@ -132,13 +132,13 @@
                 <ul class="nav nav-pills">
                   <!-- <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Activity</a></li>
                   <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Timeline</a></li> -->
-                  <li class="nav-item"><a class="nav-link active" href="#settings" data-toggle="tab">Settings</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Message</a></li>
+                  <li class="nav-item"><a class="nav-link " href="#settings" data-toggle="tab">Settings</a></li>
+                  <li class="nav-item"><a class="nav-link active" href="#timeline" data-toggle="tab">Message</a></li>
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
                 <div class="tab-content">
-                    <div class="tab-pane active" id="settings">
+                    <div class="tab-pane" id="settings">
                         <form action="{{ url('/admin/host-generals-update') }}" method="POST" class="form-horizontal">
                         @csrf  
                         <input type="hidden" value="{{ $host_detail['_id'] }} " name="id">
@@ -231,7 +231,7 @@
                           </div>
                         </form>
                     </div>
-                    <div class="tab-pane" id="timeline">
+                    <div class="tab-pane active" id="timeline">
                    
                     <div class="card direct-chat direct-chat-primary">
              
@@ -305,8 +305,7 @@
                     {
                       // console.log(response);
                       $('#messageinput').val('');
-                      
-                      // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
+                      $('#messages').append('<div class="direct-chat-msg" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+response.username+'</span></div><div class="direct-chat-text" style="margin-right:0px; margin-left:40%;">'+response.message+'</div></div>'); 
                     }
         });
       });

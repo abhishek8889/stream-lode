@@ -12,13 +12,16 @@ class StreamPayments extends Controller
 {
     public function index(){
     $stream_payments = StreamPayment::with('appoinments','appoinments.user')->get();
+    $userdata = array();
     foreach($stream_payments as $d){
         $userdata[] = $d['appoinments']['user'];
       }
-      $data = array_unique($userdata,SORT_REGULAR);
-     foreach($data as $d){
-      $stream_data[] =  User::where('_id',$d['_id'])->with('appoinments',function($response){ $response->orderBy('created_at','DSC'); })->with('streampayment',function($response){ $response->orderBy('created_at','DSC'); })->get();
-     }
+            $data = array_unique($userdata,SORT_REGULAR);
+      $stream_data = array();
+        foreach($data as $d){
+        $stream_data[] =  User::where('_id',$d['_id'])->with('appoinments',function($response){ $response->orderBy('created_at','DSC'); })->with('streampayment',function($response){ $response->orderBy('created_at','DSC'); })->get();
+        }
+   
     // dd($data);
    
     return view('Admin.payment-collection.stream_payment',compact('stream_data'));

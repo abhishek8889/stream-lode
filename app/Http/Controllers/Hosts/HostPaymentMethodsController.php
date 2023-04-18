@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Hosts;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethods;
+use App\Models\StreamPayment;
 
 class HostPaymentMethodsController extends Controller
 {
@@ -22,5 +23,10 @@ class HostPaymentMethodsController extends Controller
     
         $payment_method->delete();
         return redirect()->back()->with('success','Your card is succesfully deleted');
+    }
+    public function streampayments(){
+        $stream_payments = StreamPayment::where('host_id',Auth()->user()->id)->with('appoinments')->orderBy('created_at','DSC')->get();
+        // dd($stream_payments);
+        return view('Host/payment-methods.stream_payments',compact('stream_payments'));
     }
 }

@@ -209,7 +209,7 @@ margin-right: auto;
       $('#discount-button').click(function(){
         $('#couponcode').toggle();
       });
-      $('#couponcode').on('change',function(){
+      $('#couponcode').on('keyup',function(){
         let coupon_code = $(this).val();
         let host_id = $(this).attr('host_id');
         let amount = $(this).attr('amount');
@@ -330,8 +330,7 @@ margin-right: auto;
             }else{
               $("#user_type_div").attr('type','guest_box');
               @if($appoinment_details['payment_status'] == 0)
-                $("#paymentModal").modal({backdrop: 'static'}
-);
+                $("#paymentModal").modal({backdrop: 'static'});
               @endif
             }
             startVedioCall();
