@@ -13,7 +13,7 @@ class MeetingsController extends Controller
   public function index(){
     $data1 = HostAppointments::with('user')->get()->toArray();
     
-    // dd($data);
+    // dd($data1);
     foreach($data1 as $d){
       $userdata[] = $d['user'];
     }

@@ -68,7 +68,7 @@ class HostMessageController extends Controller
       $message->message = $req->message;
       $message->status = 1;
       $message->save();
-      return response()->json('message sent');
+      return response()->json($message);
     }
     public function hostmessage($id,$uid){
       $messages = Messages::where([['reciever_id',Auth::user()->id],['sender_id',$uid]])->orWhere([['reciever_id',$uid],['sender_id',Auth::user()->id]])->get();

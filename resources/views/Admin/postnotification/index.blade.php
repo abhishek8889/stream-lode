@@ -70,6 +70,7 @@
                 {
                   // console.log(response);
                     $('#messageinput').val('');
+                    $('#notificationbox').append('<div class="direct-chat-msg right" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+response.username+'</span></div><div class="direct-chat-text" style="margin-right:0px; margin-left:40%;">'+response.message+'</div></div>'); 
                     toastr.options =
 
                   {

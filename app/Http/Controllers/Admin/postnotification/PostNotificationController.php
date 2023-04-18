@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Messages;
 use App\Models\PostNotification;
 use App\Events\Message;
+use App\Events\AdminNotification;
 
 class PostNotificationController extends Controller
 {
@@ -18,7 +19,7 @@ class PostNotificationController extends Controller
     }
     public function sendmessage(Request $request){
         // print_r($request->all());
-        event(new Message($request->username, $request->message,$request->sender_id,'public'));
+        event(new AdminNotification($request->username, $request->message,$request->sender_id,'public'));
         $request->validate([
             'message' => 'required'
         ]);

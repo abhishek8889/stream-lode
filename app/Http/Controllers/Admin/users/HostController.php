@@ -132,7 +132,7 @@ class HostController extends Controller
         $message->message = $req->message;
         $message->status = 1;
         $message->save();
-        return response()->json('message sent');
+        return response()->json($message);
     }
     public function seenmessage(Request $req){
         $update = Messages::where([['reciever_id',$req->sender_id],['sender_id',$req->reciever_id],['status',1]])->get();

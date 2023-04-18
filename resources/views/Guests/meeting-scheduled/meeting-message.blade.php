@@ -70,6 +70,7 @@ $(document).ready(function(){
          {
            // console.log(response);
            $('#messageinput').val('');
+           $('#messages').append('<div class="direct-chat-msg ml-0" id ="messages"><b>'+response.username+'</b>:<div class="direct-chat-text">'+response.message+'</div></div>');
            // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
          }
         });
