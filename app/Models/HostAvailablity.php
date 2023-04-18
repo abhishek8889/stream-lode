@@ -11,7 +11,7 @@ class HostAvailablity extends Model
     protected $table = 'host_availablity';
     
     protected $fillable = [
-        'host_id','title', 'start','end','status'
+        'host_id','title', 'start','end','status',
     ];
 
 }

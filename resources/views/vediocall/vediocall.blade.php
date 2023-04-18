@@ -71,10 +71,10 @@
         <button id="button-mic" class="active"><i class="fa-solid fa-microphone"></i></button>
         <button id="button-preview" class="active"><i class="fa-sharp fa-solid fa-video"></i></button>
         <button id="button-message"><i class="fa-regular fa-comment"></i></button>
-        <button id="button-leave" class="btn btn-danger"><i class="fa-solid fa-phone"></i></button>
+        <button id="button-leave" class="btn btn-danger done-call" guest-email="{{$appoinment_details['guest_email'] ?? ''}}"><i class="fa-solid fa-phone"></i></button>
         <div id="user_type_div">
 
-          <!-- //////////////////////////// payment modal /////////////////////////////////////////// -->
+          <!-- //////////////////////////// payment modal \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
 
             <div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModal" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -290,7 +290,8 @@ margin-right: auto;
             token.setAttribute('name', 'token')
             token.setAttribute('value', setupIntent.payment_method)
             form.appendChild(token)
-            form.submit();
+            form.submit();  
+            startVedioCall();   //Add  start video call fucntion here for start video call after payment submit
         }
     });
 </script>
@@ -327,7 +328,8 @@ margin-right: auto;
             }else{
               $("#user_type_div").attr('type','guest_box');
               @if($appoinment_details['payment_status'] == 0)
-                $("#paymentModal").modal('show');
+                $("#paymentModal").modal({backdrop: 'static'}
+);
               @endif
             }
             startVedioCall();
@@ -368,10 +370,13 @@ margin-right: auto;
             }else{
               $("#user_type_div").attr('type','guest_box');
               @if($appoinment_details['payment_status'] == 0)
-                $("#paymentModal").modal('show');
+                $("#paymentModal").modal({backdrop: 'static'});
               @endif
             }
-            startVedioCall();
+            @if ($appoinment_details['payment_status'] == 1)
+              startVedioCall();         // add start video call function here!
+            @endif
+            // startVedioCall();        // Comment start cideo call function from here!
           }else if (result.isDenied) {
             window.location.href = "{{ url('/') }}";
           }
@@ -404,7 +409,35 @@ margin-right: auto;
         });
       });
     });
+
+
+// Leave video call local storage null button
+
   </script>
+
+
+<!-- script for save time duration of video call  -->
+
+<script>
+  $(document).ready(function() {
+    $('.done-call').on('click', function (){
+      if($('#user_type').val() == 'guest'){
+        total_duration = $('.run-time').html();
+        const room_id = $('#room-name').val();
+        $.ajax({
+          method: 'post',
+          url: "{{ url('call_duration') }}", 
+          dataType: 'json',
+          data: {room_id: room_id, total_duration: total_duration, _token: '{{ csrf_token() }}'},
+          success: function(response){
+            console.warn(response);
+          }
+        });
+      }
+    });
+  });
+</script>
+<!-- End script video call duration -->
  
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>

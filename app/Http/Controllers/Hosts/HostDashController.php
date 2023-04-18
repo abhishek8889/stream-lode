@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MembershipTier;
 use App\Models\MembershipPaymentsData;
-use App\Models\{HostAppointments,MeetingCharge};
+use App\Models\{HostAppointments,MeetingCharge,StreamPayment};
 use App\Models\User;
 use Carbon\Carbon;
 class HostDashController extends Controller
@@ -38,15 +38,21 @@ class HostDashController extends Controller
         }
        $CurrentDate = date('Y-m-d');
        $TotalAppoitments =  HostAppointments::where('host_id',auth()->user()->id)->get()->count();
-       $TodayAppoitments = HostAppointments::where('start','LIKE',"%{$CurrentDate}%")->where('host_id',auth()->user()->id)->count();
-       $LiveDuration = MeetingCharge::where('host_id',auth()->user()->id)->get(['duration_in_minutes','amount'])->toArray(); 
-       $Totalvctime = array();
+       $TodayAppoitments = HostAppointments::where('start','LIKE',"%{$CurrentDate}%")->where('host_id',auth()->user()->id)->count(); 
+       $StreamPayment = StreamPayment::where('host_id',auth()->user()->id)->get(['total'])->toArray();
+       $duration = HostAppointments::where('host_id',auth()->user()->id)->get(['total_duration'])->toArray();
+       $Total_duration = array();
+       for($i=0;$i< count($duration); $i++){
+        if(count($duration[$i]) == 2){
+            $Total_duration[]= $duration[$i]['total_duration'];
+        }
+       }              
+    
        $TotalAmount = array();
-       for($i=0; $i< count($LiveDuration); $i++){
-        $Totalvctime[] = $LiveDuration[$i]['duration_in_minutes'];
-        $TotalAmount[] = $LiveDuration[$i]['amount'];
+       for($i=0; $i< count($StreamPayment); $i++){
+        $TotalAmount[] = $StreamPayment[$i]['total'];
        }
-        return view('Host.Dashboard.index',compact('membership_details','TotalAppoitments','TodayAppoitments','Totalvctime','TotalAmount'));
+        return view('Host.Dashboard.index',compact('membership_details','TotalAppoitments','TodayAppoitments','TotalAmount','Total_duration'));
     }
     public function trycode(){
         // $res=HostAppointments::where('id','!=','sdg98')->delete();

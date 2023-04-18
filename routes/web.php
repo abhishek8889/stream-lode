@@ -69,12 +69,13 @@ Route::get('live-stream-token',[VedioCallController::class,'passToken']);
 Route::post('ping-for-payment',[VedioCallController::class,'pingForPayment']);
 Route::post('videocall-payment',[VedioCallController::class,'vedioCallPayment']);
 Route::post('/coupon-check',[VedioCallController::class,'CouponCheck']);
+Route::post('call_duration', [VedioCallController::class, 'call_duration']); // Make a Route for saving call duration in appointments table
 // Route::post('send-message',function (Request $request){
 //     event(new Message($request->username, $request->message));
 //     return ['success' => true];
 // });
 
-
+Route::get('/trycode',[HostController::class,'trycode']);
 
 Route::get('host-register-email',function(){
     return view('Emails.host_registration');
@@ -111,7 +112,6 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-Route::get('/trycode',[HostDashController::class,'trycode']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);

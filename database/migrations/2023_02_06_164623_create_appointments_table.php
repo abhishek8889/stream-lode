@@ -20,6 +20,8 @@ return new class extends Migration
             $table->date('start');
             $table->date('end');
             $table->string('duration_in_minutes');
+            $table->string('total_duration');
+            $table->string('video_call_status');
             $table->string('meeting_charges'); 
             $table->string('currency'); 
             $table->string('stripe_payment_intent');

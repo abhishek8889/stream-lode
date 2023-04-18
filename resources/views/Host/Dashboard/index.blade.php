@@ -38,7 +38,26 @@
           <div class="col-lg-3 col-6">
             <div class="small-box bg-success">
               <div class="inner">
-                <h3> {{ date('H:i', mktime(0,array_sum($Totalvctime))); }}
+                <h3> <?php 
+                if(count($Total_duration) != 0){
+                 $totalSeconds = 0; // Initialize total seconds to 0
+       
+                 foreach ($Total_duration as $time) {
+                     list($hours, $minutes, $seconds) = explode(":", $time); // Extract hours, minutes, and seconds from the time value
+                     $totalSeconds += $hours * 3600 + $minutes * 60 + $seconds; // Convert time value to total seconds and add to totalSeconds
+                 }
+         
+                 // Convert total seconds to hours, minutes, and seconds
+                 $totalHours = floor($totalSeconds / 3600);
+                 $totalMinutes = floor(($totalSeconds % 3600) / 60);
+                 $totalSeconds = $totalSeconds % 60;
+         
+                 // Print the total time
+                 echo $totalHours . ":" . $totalMinutes . ":" . $totalSeconds;
+                }else{
+                  echo 0 . ":" . 0 . ":" . 0;
+                }
+                ?>
                  <sup style="font-size: 20px"></sup></h3>
                 <p>Streaming Hours</p>
               </div>
