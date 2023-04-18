@@ -16,17 +16,21 @@ return new class extends Migration
         //
         Schema::create('streams_payment', function (Blueprint $table) {
             $table->id();
-            $table->string('appointment_id');
             $table->string('stripe_payment_intent');
+            $table->string('stripe_payment_method');
             $table->string('subtotal');
-            $table->string('discount_coupon_name');
+            $table->string('coupon_code');
             $table->string('discount_amount');
             $table->string('total');
+            $table->string('appoinment_id');
+            $table->string('currency');
+            $table->string('host_id');
+            $table->string('guest_id');
+            $table->string('host_stripe_account_id');
             $table->string('status');
             $table->timestamps();
         });
     }
-    
 
     /**
      * Reverse the migrations.

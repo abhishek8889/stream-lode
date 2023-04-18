@@ -13,7 +13,7 @@ use App\Events\SendStreamPaymentRequest;
 use App\Models\User;
 use App\Models\StreamPayment;
 use App\Models\Discounts\HostDiscount;
-
+use App\Models\HostStripeAccount;
 class VedioCallController extends Controller
 {
     //
@@ -106,8 +106,11 @@ class VedioCallController extends Controller
     }
     public function vedioCallPayment(Request $req){
         //  create payment intent 
-  
+    
         try{
+            $host_id = $req->host_id;
+            $host_stripe_account_id = HostStripeAccount::where('host_id',$host_id)->value('stripe_account_num');
+            
             $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
 
             // Create customer 
@@ -139,6 +142,7 @@ class VedioCallController extends Controller
                 'amount' => (int)$req->payment_amount * 100,
                 'currency' => $req->currency,
                 'payment_method' => $req->token,
+                'on_behalf_of' => $host_stripe_account_id,
                 'off_session' => true,
                 'confirm' => true,
                 'description' => 'appointment charges'
@@ -148,7 +152,10 @@ class VedioCallController extends Controller
                
                 //appointement id payment status update
                     $streamPayment = new StreamPayment;
+                    $streamPayment->host_id = $req->host_id;
+                    $streamPayment->guest_id = auth()->user()->id;
                     $streamPayment->stripe_payment_intent = $stripe_payment_intent['id'];
+                    $streamPayment->host_stripe_account_id = $host_stripe_account_id;
                     $streamPayment->stripe_payment_method = $req->token;
                     $streamPayment->currency = $req->currency;
                     $streamPayment->subtotal = $req->subtotal;
@@ -156,7 +163,7 @@ class VedioCallController extends Controller
                     $streamPayment->discount_amount = $req->discount_amount;
                     $streamPayment->total = $req->subtotal - $req->discount_amount;
                     $streamPayment->appoinment_id = $req->appoinment_id;
-                    $streamPayment->host_id = $req->host_id;
+                    $streamPayment->status = 'successfull';
                     $streamPayment->save();
 
                     //discount_code 

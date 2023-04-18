@@ -8,6 +8,7 @@ use App\Models\MembershipTier;
 use App\Models\MembershipPaymentsData;
 use App\Models\{HostAppointments,MeetingCharge};
 use App\Models\User;
+use App\Models\HostStripeAccount;
 use Carbon\Carbon;
 class HostDashController extends Controller
 {
@@ -36,19 +37,37 @@ class HostDashController extends Controller
                 }
             }
         }
-       $CurrentDate = date('Y-m-d');
-       $TotalAppoitments =  HostAppointments::where('host_id',auth()->user()->id)->get()->count();
-       $TodayAppoitments = HostAppointments::where('start','LIKE',"%{$CurrentDate}%")->where('host_id',auth()->user()->id)->count();
-       $LiveDuration = MeetingCharge::where('host_id',auth()->user()->id)->get(['duration_in_minutes','amount'])->toArray(); 
-       $Totalvctime = array();
-       $TotalAmount = array();
-       for($i=0; $i< count($LiveDuration); $i++){
-        $Totalvctime[] = $LiveDuration[$i]['duration_in_minutes'];
-        $TotalAmount[] = $LiveDuration[$i]['amount'];
-       }
+        $check_host_account_register_status = $this->checkHostStripeAccountRegisterStatus(auth()->user()->id);
+        $CurrentDate = date('Y-m-d');
+        $TotalAppoitments =  HostAppointments::where('host_id',auth()->user()->id)->get()->count();
+        $TodayAppoitments = HostAppointments::where('start','LIKE',"%{$CurrentDate}%")->where('host_id',auth()->user()->id)->count();
+        $LiveDuration = MeetingCharge::where('host_id',auth()->user()->id)->get(['duration_in_minutes','amount'])->toArray(); 
+        $Totalvctime = array();
+        $TotalAmount = array();
+        for($i=0; $i< count($LiveDuration); $i++){
+            $Totalvctime[] = $LiveDuration[$i]['duration_in_minutes'];
+            $TotalAmount[] = $LiveDuration[$i]['amount'];
+        }
         return view('Host.Dashboard.index',compact('membership_details','TotalAppoitments','TodayAppoitments','Totalvctime','TotalAmount'));
     }
     public function trycode(){
         // $res=HostAppointments::where('id','!=','sdg98')->delete();
+    }
+    public function checkHostStripeAccountRegisterStatus($host_id){
+        $account_details = HostStripeAccount::where('host_id',$host_id)->first();
+        if(!empty($account_details)){
+            $account_num = $account_details['stripe_account_num'];
+            $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
+            $stripe_account_details = $stripe->accounts->retrieve($account_num,[]);
+            // dd($stripe_account_details);
+            if($stripe_account_details->payouts_enabled == true){
+                $account_details->active_status = 'true';
+                $account_details->update();
+            }else{
+                $account_details->active_status = 'false';
+                $account_details->update();
+            }
+        }
+        return true;
     }
 }

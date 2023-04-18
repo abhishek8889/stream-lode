@@ -8,6 +8,7 @@ use App\Models\HostAvailablity;
 use App\Models\HostAppointments;
 use DB;
 use App\Models\MeetingCharge;
+use App\Models\HostStripeAccount;
 
 class HostCalendar extends Controller
 {
@@ -15,7 +16,8 @@ class HostCalendar extends Controller
     public function index(Request $request)
     {
         $meeting_charges = MeetingCharge::where('host_id',Auth()->user()->id)->get();
-       
+        $host_stripe_account_details = HostStripeAccount::where('host_id',auth()->user()->id)->first();
+        // dd($host_stripe_account_details);
         // dd($available_host);
         if($request->ajax()) {
           $host_appoinments = HostAppointments::where('host_id',Auth()->user()->id)->get(['id','start','end','status']);
@@ -49,7 +51,7 @@ class HostCalendar extends Controller
              return response()->json($data);
         }
        
-        return view('Host.calendar.index2',compact('meeting_charges'));
+        return view('Host.calendar.index2',compact('meeting_charges','host_stripe_account_details'));
     }
     
     public function ajax(Request $request)

@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
 use App\Models\MembershipTier;
+use App\Models\HostStripeAccount;
 
 class User extends Authenticatable
 {
@@ -73,4 +74,5 @@ class User extends Authenticatable
     public function streampayment(){
         return $this->hasMany(StreamPayment::class,'host_id','_id');
     }
+    
 }

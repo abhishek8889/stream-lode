@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers\Hosts;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MainController;
 use Illuminate\Http\Request;
 use DateTime;
 use App\Models\HostStripeAccount;
 use Mail;
 use App\Mail\HostStripeRegisterTermsOfService;
+use Auth;
 class HostStripeAccountRegisteration extends Controller
 {
-    // protected $user_name;
-    // public function __construct()
-    // {
-    //     $this->middleware(function ($request, $next) {
-    //         $this->user_name = Auth::user()->first_name;
-
-    //         return $next($request);
-    //     });
-    //     // echo $user_name;
-    // }
+    
     public function index(){
         return view('Host.register-account.index');
     }
@@ -48,28 +41,27 @@ class HostStripeAccountRegisteration extends Controller
             'bank_acc_region' => 'required',
             'region_currency' => 'required',
         ],[
-        'first_name.required' =>'First name is required',
-        'last_name.required' =>'Last name is required',
-        'dob.required' => 'Date of birth is required',
-        'personal_contact.required' => 'Personal contact number is required',
-        'city.required' => 'City is required',
-        'line1.required' => 'Street/Line address is required',
-        'state.required' => 'State is required',
-        'ssn.required' => 'SSN is requird',
-        'postal_code.required' => 'Postal Code is required',
-        'email.required' => 'Email is required',
-        'business_phone.required' => 'Business phone is required',
-        // 'business_site.required' => 'Business site is required',
-        'mcc.required' =>'MCC is required',
-        'country.required' => 'Country is required',
-        'account_holder_name.required' => 'Account holder name is required',
-        'bank_acc_number.required' => 'Bank account number is required',
-        'acc_routing_num.required' => 'Routing number is required',
-        'bank_acc_region.required' => 'Bank region is required',
-        'region_currency.required' => 'Region Currency is required',
+            'first_name.required' =>'First name is required',
+            'last_name.required' =>'Last name is required',
+            'dob.required' => 'Date of birth is required',
+            'personal_contact.required' => 'Personal contact number is required',
+            'city.required' => 'City is required',
+            'line1.required' => 'Street/Line address is required',
+            'state.required' => 'State is required',
+            'ssn.required' => 'SSN is requird',
+            'postal_code.required' => 'Postal Code is required',
+            'email.required' => 'Email is required',
+            'business_phone.required' => 'Business phone is required',
+            // 'business_site.required' => 'Business site is required',
+            'mcc.required' =>'MCC is required',
+            'country.required' => 'Country is required',
+            'account_holder_name.required' => 'Account holder name is required',
+            'bank_acc_number.required' => 'Bank account number is required',
+            'acc_routing_num.required' => 'Routing number is required',
+            'bank_acc_region.required' => 'Bank region is required',
+            'region_currency.required' => 'Region Currency is required',
         ]
         );
-        
         $dob = explode("-",$req->dob);
         $date = $dob[2];
         $year = $dob[0];
@@ -79,7 +71,7 @@ class HostStripeAccountRegisteration extends Controller
         // Express type account : 
 
         ////////////////////////////////////////////////////////////////
-        ///////////////////// Custom Type Account //////////////////////
+        /////////////////////  Custom Type Account  ////////////////////
         ////////////////////////////////////////////////////////////////
 
         $stripe_acc_create = $stripe->accounts->create([
@@ -127,8 +119,8 @@ class HostStripeAccountRegisteration extends Controller
         if(!empty($stripe_acc_create->id)){
             $link_acount = $stripe->accountLinks->create([
                 'account' => $stripe_acc_create->id,
-                'refresh_url' => 'https://campus.sagmetic.com/trycode',
-                'return_url' => 'https://campus.sagmetic.com/trycode',
+                'refresh_url' => url('/'.auth()->user()->unique_id.'/register-account'),
+                'return_url' => url('/'.auth()->user()->unique_id),
                 'type' => 'account_onboarding',
             ]);
             if($link_acount->url){
@@ -159,6 +151,7 @@ class HostStripeAccountRegisteration extends Controller
             $host_stripe_data->region_currency = $req->region_currency ;
             $host_stripe_data->active_status = 'false';
             $host_stripe_data->save();
+            return redirect($link_acount->url);
             return redirect()->back()->with('success','Please check your registered email for acceptance of terms of service and activate your account.');
         }else{
             return redirect()->back()->with('error','Please try again there is something error.');

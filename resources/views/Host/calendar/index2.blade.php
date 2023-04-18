@@ -27,15 +27,29 @@
             </div>
             <form id="availableHostForm" action="" >
               <div class="modal-body">
-              @if( count($meeting_charges) !== 0 )
-                    <div class="alert alert-info" role="alert">
-                        <p style="font-size: large;">Your meeting charges for @foreach($meeting_charges as $mc) {{ $mc->duration_in_minutes ?? ''}} minutes is ${{ $mc->amount ?? '' }},  @endforeach if you want to add more charges than <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to create meeting charges"> click here </a></p>
+                @if(count($meeting_charges) == 0 || empty($host_stripe_account_details))
+                    @if(count($meeting_charges) == 0 )
+                    <div class="alert alert-danger" role="alert">
+                        <p style="font-size:large;"> You have to <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to create meeting charges"> create meeting charge </a> before set your availability. </p>
+                    </div>
+                    @endif
+                    @if(empty($host_stripe_account_details))
+                    <div class="alert alert-danger" role="alert">
+                        <p style="font-size:large;"> You have to <a href="{{ url(Auth()->user()->unique_id.'/register-account') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to register your account"> register your account </a> so you can get video stream payments from guests. </p>
+                    </div>
+                    @endif
+                @else
+                    @if($host_stripe_account_details['active_status'] == 'false')
+                    <div class="alert alert-danger" role="alert">
+                        <p style="font-size:large;"> Your account is not activate please <a href="{{ url(auth()->user()->unique_id.'/') }}">refresh your dashboard</a>
+                         or accept terms of service got in your registered email so you can get video stream payments from guests. </p>
                     </div>
                     @else
-                    <div class="alert alert-danger" role="alert">
-                        <p style="font-size:large;"> You have to <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to create meeting charges"> create meeting charge </a> before set you availability </p>
-                    </div>
-              @endif
+                    <div class="alert alert-info" role="alert">
+                        <p style="font-size: large;">Your meeting charges for @foreach($meeting_charges as $mc) {{ $mc->duration_in_minutes ?? ''}} minutes is ${{ $mc->amount ?? '' }},  @endforeach if you want to add more charges than <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to create meeting charges"> click here </a></p>
+                    </div>  
+                    @endif 
+                @endif
                 <div class="form-group">
                   <label for="time">Title</label>
                   <input type="text" class="form-control" id="title" placeholder="Enter your Title" />
@@ -56,7 +70,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" @if( count($meeting_charges) == 0 ) disabled @endif>Schedule meeting</button>
+                <button type="submit" class="btn btn-primary" @if( count($meeting_charges) == 0 || empty($host_stripe_account_details)) disabled @else @if($host_stripe_account_details['active_status'] == 'false') disabled @endif @endif>Schedule meeting</button>
               </div>
             </form>
           </div>
