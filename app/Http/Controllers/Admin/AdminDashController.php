@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\MembershipPaymentsData;
 use App\Models\User;
 use App\Models\Visitor;
-
+use DB;
 class AdminDashController extends Controller
 {
     public function index(){
@@ -23,9 +23,19 @@ class AdminDashController extends Controller
                 $total_membership_amount = array_sum($payments);
             }
         }
-        // Users count
-        $users = User::get();
+        $total_membership_amount = array_sum($payments);
+        /// Users count
+        $users = User::where('status','!=',2)->get();
         $Visitors = Visitor::count();
-        return view("Admin.Dashboard.index",compact('total_membership_amount','users','Visitors'));
+
+        //  Count total streaming Income
+        $streams_payment = DB::table('streams_payment')->where('total','!=',null)->get(['total']);
+        $streamspayment = array();
+        for($i = 0; $i < count($streams_payment); $i++){
+            if(count($streams_payment[$i]) == 2){
+                $streamspayment[] = $streams_payment[$i]['total'];
+            }
+        }
+       return view("Admin.Dashboard.index",compact('total_membership_amount','users','Visitors','streamspayment'));
     }
 }

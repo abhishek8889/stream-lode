@@ -38,24 +38,34 @@ if (!navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
 }
 
 // counter start function
-  // let hour = 0;
-  // let minutes = 0;
-  // let seconds = 0;
-  function counterStart(){
-      let timer_div = document.getElementById('vedio-timer');
-      seconds = ++seconds;
-      if(seconds > 59){
-          seconds = 0;
-          minutes = minutes + 1;
-          if(minutes > 60){
-            minutes = 0;
-            hour = hour + 1;
-          }
+
+// ###############################################  COUNTER START FUNCTION ###############################################
+  function counterStart() {
+    if (localStorage.getItem('seconds') !== null) {
+      seconds = parseInt(localStorage.getItem('seconds'));
+      minutes = parseInt(localStorage.getItem('minutes'));
+      hour = parseInt(localStorage.getItem('hour'));
+    }
+    let timer_div = document.getElementById('vedio-timer');
+  
+    seconds = seconds + 1;
+    if (seconds > 59) {
+      seconds = 0;
+      minutes = minutes + 1;
+      if (minutes >= 60) {
+        minutes = 0;
+        hour = hour + 1;
       }
-      // timer_div.innerHTML = '<div class="run-time">' + hour + ':' + minutes + ':' + seconds + '</div>';
-      timer_div.innerHTML = `<div class="run-time"> ${hour}:${minutes}:${seconds}</div>`;
-      
+    }
+  
+    localStorage.setItem('seconds', seconds);
+    localStorage.setItem('minutes', minutes);
+    localStorage.setItem('hour', hour);
+  
+    // Update the HTML content with the current timer values
+    timer_div.innerHTML = `<div class="run-time">${hour}:${minutes}:${seconds}</div>`;
   }
+  
   function counterStop(){
     if(timerIntervalId){
       clearInterval(timerIntervalId);
@@ -69,6 +79,7 @@ window.addEventListener('beforeunload', leaveRoomIfJoined);
 
 
 function startVedioCall(){
+  
   $.getJSON("http://127.0.0.1:8000/live-stream-token", function(data) {
     console.log(data);
     identity = data.identity;
@@ -108,58 +119,51 @@ function startVedioCall(){
 //======================  New Code for End Call Start ================================================
 
 document.getElementById('button-leave').onclick = function () {
-  
+ 
+  localStorage.clear(); /////////////// Add Local Storage Clear \\\\\\\\\\\\\\\\\\\\\
   let timerInterval;
-  
   Swal.fire({
     title: "You've left the meeting",
-    html: 'I will close in <b>50</b> seconds.', // Updated time value to 50
-    timer: 50000, // Updated timer value to 50000 milliseconds (50 seconds)
+    html: 'I will close in <b>50</b> seconds.',
+    timer: 50000,
     timerProgressBar: true,
-    showConfirmButton: true, // Added to hide the default "OK" button
+    showConfirmButton: true,
     confirmButtonText: 'Returning to home screen',
-    buttonsStyling: false, // Added to disable the default button styling
+    buttonsStyling: false,
     showCancelButton: true,
     cancelButtonColor: '#0000',
     cancelButtonText: 'Rejoin',
     customClass: {
-      confirmButton: 'btn btn-info mx-2', // Added custom class for "Return to Home Page" button
-      cancelButton: 'btn btn-warning ' // Added custom class for "Rejoin" button
+      confirmButton: 'btn btn-info mx-2',
+      cancelButton: 'btn btn-warning'
     },
-    
     didOpen: () => {
-      // Swal.showLoading();
       const b = Swal.getHtmlContainer().querySelector('b');
       timerInterval = setInterval(() => {
-        const seconds = Math.ceil(Swal.getTimerLeft() / 1000); // Convert remaining time to seconds
-        b.textContent = seconds; // Update time value in seconds
+        const seconds = Math.ceil(Swal.getTimerLeft() / 1000);
+        b.textContent = seconds;
       }, 100);
     },
     willClose: () => {
       clearInterval(timerInterval);
     },
-    showCloseButton: false, // Added to hide the default close button
-    /* Read more about handling dismissals below */
+    showCloseButton: false,
   }).then((result) => {
-    // This happens when the model close by the timer
-    if (result.dismiss === Swal.DismissReason.timer) {
+    if (result.dismiss === Swal.DismissReason.timer || result.isConfirmed) {
+      localStorage.clear();
       window.location.replace('/');
     }
-    if (result.isConfirmed) {
-      
-      window.location.replace('/');
-    } 
     if(result.dismiss === Swal.DismissReason.cancel){
       // Here we right our rejoin code to meating
+      localStorage.clear();
       window.location.reload(true);
     }
-    // console.log(result);
   });
   counterStop();
   activeRoom.disconnect();
-    };
-
-//======================  New Code for End Call End   ================================================
+ 
+};
+//======================  New Code for End Call End   ===========================
   });
 }
 
@@ -175,15 +179,14 @@ function roomJoined(room) {
     var existing_participant = document.getElementById(participant.identity);
     participantNum = parseInt(participantNum) + 1;
     let participantJoined =  participantNum;
-    ///////// join message ////////////////
-    if(participantJoined > 1 ){
+    /////////// join message \\\\\\\\\\\
+    if(participantJoined == 2 ){ // Here I replace > 1 with ==2  because it makes Time faster
       participantDiv.setAttribute("id", participant.identity);
       participantDiv.setAttribute("class", 'main-screen remote-participant');
       document.querySelector('.vedio-response-text').style.display = "block";
       document.querySelector('.vedio-response-text').innerHTML =' You are succesfully joined with '+participant.identity;
-      timerIntervalId = setInterval(counterStart, 1000);  
-      localStorage.setItem("video_call_time", timerIntervalId);
-
+      timerIntervalId = setInterval(counterStart, 1000);  //  Here set timer as timeIntervalId
+      // localStorage.setItem("video_call_time", timerIntervalId);      // Comment local storage from here !!!!
       setTimeout(function(){
       document.querySelector('.vedio-response-text').style.display = "none";
         document.querySelector('.vedio-response-text').innerHTML = '';
@@ -225,11 +228,12 @@ function roomJoined(room) {
     participant.removeAllListeners();
     const participantDiv = document.getElementById(participant.identity);
     participantDiv.remove();
+    // counterStop();        // ################## add a counter to stop the timer ##################
   };
   // handle cleanup when a participant disconnects
   room.on("participantDisconnected", handleDisconnectedParticipant);
 
-  //////////////////////////////////////////// my code end ////////////////////////////////////////////
+  //////////////////////////////////////////// my code end \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   
   const videoResponse = document.getElementById('video-response');
   const micResponse = document.getElementById('mic-response');
@@ -258,7 +262,7 @@ function roomJoined(room) {
     }
   });
 
-  ///////////////////////////////////// Handle remote participant /////////////////////////////////////
+  ///////////////////////////////////// Handle remote participant \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
   // Draw local video, if not already previewing
 
@@ -266,9 +270,12 @@ function roomJoined(room) {
     if (!previewContainer.querySelector('video')) {
       attachParticipantTracks(room.localParticipant, previewContainer);
     }
+   
     room.on('participantDisconnected', function(participant) {
+      
       log("Participant '" + participant.identity + "' left the room");
       detachParticipantTracks(participant);
+      log("Participant '" + participant.identity + "'Left the room'");
     });
 
     // When we are disconnected, stop capturing local video
@@ -284,9 +291,9 @@ function roomJoined(room) {
       // document.getElementById('button-leave').style.display = 'none';
     });
   }
-  ///////////////////////////////// Camera functionality for on and off //////////////////////////////// 
+  ///////////////////////////////// Camera functionality for on and off \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ 
 
-  document.getElementById('button-preview').onclick = function(participant) {
+   document.getElementById('button-preview').onclick = function(participant) {
     
     var previewContainer = document.getElementById('remote-media');
     var localpreviewContainer = previewContainer.firstChild;

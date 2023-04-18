@@ -23,6 +23,7 @@ class VedioCallController extends Controller
         $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
         $setup_intent = $stripe->setupIntents->create();
         $client_secret = $setup_intent->client_secret;
+        // dd($appoinment_details);
         // dd($appoinment_details['stripe_client_secret']);
         return view('vediocall.vediocall',compact('roomName','appoinment_details','client_secret'));
 
@@ -115,8 +116,8 @@ class VedioCallController extends Controller
 
             // Create customer 
             $customer =  $stripe->customers->create([
-                'name' => auth()->user()->first_name, // req -> name
-                'email' => auth()->user()->email, // req-> email
+                'name' => auth()->user()->first_name,   // req -> name
+                'email' => auth()->user()->email,       // req-> email
                 'payment_method' => $req->token,
                 'invoice_settings' => [
                 'default_payment_method' => $req->token,
@@ -182,7 +183,7 @@ class VedioCallController extends Controller
         }catch(\Exception $e){
             $error = $e->getMessage();
         }
-        // print_r($error);
+        print_r($error);
         // print_r($stripe_payment_intent['id']);
     }
     public function CouponCheck(Request $req){
@@ -266,4 +267,49 @@ class VedioCallController extends Controller
         }
         }
     }
+    // Function for call_duration in DB appoitments
+    public function call_duration(Request $request){
+        if($request->total_duration){
+            $appointment = HostAppointments::where('video_link_name', $request->room_id)->first();
+    
+            if($appointment){
+                if ($appointment->total_duration != null) {
+                    $time1 = $appointment->total_duration;
+                    $time2 = $request->total_duration;
+                
+                    // Extract hours, minutes, and seconds from time values
+                    $time1Parts = explode(':', $time1);
+                    $time2Parts = explode(':', $time2);
+                
+                    // Convert hours, minutes, and seconds to seconds
+                    $time1InSeconds = ($time1Parts[0] * 3600) + ($time1Parts[1] * 60) + $time1Parts[2];
+                    $time2InSeconds = ($time2Parts[0] * 3600) + ($time2Parts[1] * 60) + $time2Parts[2];
+                
+                    // Sum the seconds
+                    $totalSeconds = $time1InSeconds + $time2InSeconds;
+                
+                    // Convert the total seconds back to time format
+                    $hours = floor($totalSeconds / 3600);
+                    $minutes = floor(($totalSeconds % 3600) / 60);
+                    $seconds = $totalSeconds % 60;
+                
+                    $totalTime = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
+
+                    $appointment->total_duration = $totalTime;
+                    $appointment->video_call_status = 'done';
+                    $appointment->save();
+                }else{
+                    $appointment->total_duration = $request->total_duration;
+                    $appointment->video_call_status = 'done';
+                    $appointment->save();
+                }
+                return response()->json('done');
+            } else {
+                return response()->json('Appointment not found.');
+            }
+        } else {
+            return response()->json('Total duration is empty.');
+        }
+    }
+    
 }

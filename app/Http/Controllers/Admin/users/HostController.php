@@ -26,7 +26,16 @@ class HostController extends Controller
         return view('Admin.users.host_detail',compact('host_detail','message'));
     }
     public function hostDelete($id){
-        DB::table('users')->where('unique_id', $id)->delete();
+        $data = User::where('unique_id', $id)->first();
+        $id = $data['_id'];     // Get Id from unique_id and delete host records
+        DB::table('users')->where('_id', $id)->delete();
+        DB::table('appointments')->where('host_id',$id)->delete();
+        DB::table('host_availablity')->where('host_id',$id)->delete();
+        DB::table('host_discounts_coupons')->where('host_id',$id)->delete();
+        DB::table('meeting_charges')->where('host_id',$id)->delete();
+        DB::table('tags')->where('user_id',$id)->delete();
+        DB::table('messages')->where('reciever_id', $id)->delete();
+        DB::table('messages')->where('sender_id', $id)->delete();
         return redirect('/admin/host-list')->with('success','User is deleted succesfully');
     }
     public function hostGeneralsUpdate(Request $req){
@@ -142,5 +151,28 @@ class HostController extends Controller
             $res->update();
         }
         return response()->json($update);
+    }
+    public function trycode(){
+        $data = DB::table('streams_payment')->where('total','!=',null)->get(['total']);
+        $streamayment = array();
+        for($i = 0; $i < count($data); $i++){
+            $streamayment[] = $data[$i]['total'];
+        }
+        print_r(array_sum($streamayment));
+        // // echo ' This try code is available in Host Controller Line number 153.';
+        // $id = '643e4a8a13a8b7af480d704e';
+        // // DB::table('users')->where('_id',$id)->delete();
+        // // DB::table('appointments')->where('host_id',$id)->delete();
+        // // DB::table('host_availablity')->where('host_id',$id)->delete();
+        // // DB::table('host_discounts_coupons')->where('host_id',$id)->delete();
+        // // DB::table('meeting_charges')->where('host_id',$id)->delete();
+        // // DB::table('tags')->where('user_id',$id)->delete();
+        // // DB::table('messages')->where('sender_id', $id)->delete();
+        // $data = DB::table('messages')->where('receiver_id', '643e4a8a13a8b7af480d704e')->get();
+
+        // // echo 'Done to delete';
+        echo '<pre>';
+        // print_r($data);
+        echo '</pre>';
     }
 }
