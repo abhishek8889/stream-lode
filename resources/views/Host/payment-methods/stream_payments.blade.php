@@ -40,8 +40,6 @@ $data = array();
                     </div>
                     <!-- /.col -->
                     <div class="col-sm-4 invoice-col">
-                                <b>stripe_payment_intent: #{{ $sp->stripe_payment_intent }}</b><br>
-                                <br>
                                 <b>Payment On : </b>{{ $sp->created_at }} <br>
                                 <b>Duration: </b>{{ $sp->appoinments['duration_in_minutes'] }} minutes    
                     </div>

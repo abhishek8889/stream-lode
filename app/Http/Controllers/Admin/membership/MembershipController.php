@@ -20,13 +20,9 @@ class MembershipController extends Controller
     }
     public function addMembershipTier(){
         $features = MembershipFeature::get();
-        // $data = MembershipTier::get();
-        // dd($data);
-        // echo $data[0]['membership_features'];
         return view('Admin.membership.add_membership_tier',compact('features'));
     }
     public function addMembershipTierProc(Request $req){
-        // dd($req->all());
         $membership = new MembershipTier;
         // $membership_logo_name = '';
         // $membership_logo_url = '';
@@ -78,8 +74,6 @@ class MembershipController extends Controller
         $membership->type = $req->membership_type;
         if($req->membership_type == 'recurring'){
             $membership->interval =  $req->interval_time;
-        }else{
-            $membership->type = 'one-time';
         }
         $membership->amount = $req->price;
         $membership->membership_features = $req->membership_fetaures;

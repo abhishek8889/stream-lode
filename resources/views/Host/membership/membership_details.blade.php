@@ -40,24 +40,26 @@
                                 <p class="text-muted"><b>valid upto: </b> {{ $is_expired }}</p>
 
                                 
-                              @if($membership_tier_details['membership_features'])  <p class="text-muted"><b>Features: </b>@foreach($membership_tier_details['membership_features'] as $mt)
+                              @if($membership_tier_details['membership_features'])  <p class="text-muted"><b>Features: </b><?php  $x = 0; ?>@foreach($membership_tier_details['membership_features'] as $mt)
                                 @php
+                                $x = $x+1;
                                 $data = App\Models\MembershipFeature::find($mt);
                                 @endphp  
                                 @if($data)
-                                {{ $data['description'] ?? '' }},
+                                 <div class="feature-point"><span>{{ $x }} :</span> <span class="feature-details">{{ $data['description'] ?? '' }}.</span> </div> <br> 
                                 @endif
                               @endforeach</p>
                               @endif
                               <p class="text-muted"><b>Description: </b> {{ $membership_tier_details['description'] }} </p>
-                            
                               </div>
                         </div>
                     </div>
                     <div class="card-footer">
-                    <a href="{{ url('/'.auth()->user()->unique_id) }}" class="btn btn-info">Go to dashboard</a>
-                    <a href="{{ url('/'.auth()->user()->unique_id.'/upgrademembership') }}" class="btn btn-danger">Upgrade Plan</a>
-                    </div>
+                    <a href="{{ url('/'.auth()->user()->unique_id.'/pause-subscription') }}" class="btn btn-danger">Pause Subscription</a>
+                    <a href="{{ url('/'.auth()->user()->unique_id.'/cancel-subscription') }}" class="btn btn-danger">Cancel Subscription</a>
+                    
+                    <a href="{{ url('/'.auth()->user()->unique_id.'/upgrademembership') }}" class="btn btn-info float-right">Upgrade Plan</a>
+                  </div>
                 </div>
             </div>
         </div>

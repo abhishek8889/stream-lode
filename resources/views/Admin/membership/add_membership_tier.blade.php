@@ -60,7 +60,6 @@
                     <div class="col-sm-9">
                         <select id="" class="form-control" id="inputEmail3" name="membership_type">
                             <option value="recurring">Recurring</option>
-                            <option value="one-time">one time</option>
                         </select>
                     </div>
                 </div>

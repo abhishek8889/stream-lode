@@ -297,6 +297,9 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/upgrade-subscription',[HostMembershipController::class,'upgradeSubscription'])->name('upgrade-subscription');
     Route::get('/{id}/upgrade-subscription/{slug}',[HostMembershipController::class,'upgradeSubscriptionDetail'])->name('upgrade-subscription');
     Route::post('/{id}/upgrade-to-new-subscription',[HostMembershipController::class,'upgradeSubscriptionProcess'])->name('upgrade-to-new-subscription');
+   
+    Route::get('/{id}/pause-subscription/',[HostMembershipController::class,'pauseSubscription'])->name('pause-subscription');
+    Route::get('/{id}/cancel-subscription/',[HostMembershipController::class,'cancelSubscription'])->name('cancel-subscription');
     
 
     // Register your account to stripe for the payment

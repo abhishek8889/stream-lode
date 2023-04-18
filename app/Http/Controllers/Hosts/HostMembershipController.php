@@ -392,5 +392,23 @@ class HostMembershipController extends Controller
         // dd($subscription_list);
         return view('Host.membership.upgrade_membershipnew',compact('subscription_list'));
     }
+    public function cancelSubscription(Request $req){
+      $subscription_id = auth()->user()->subscription_id;
+      $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
+      $stripe->subscriptions->cancel(
+        $subscription_id,
+        []
+      );
+      return redirect()->back()->with('success','You have succesfully canceled your subscription');
+    }
+    public function pauseSubscription(Request $req){
+      $subscription_id = auth()->user()->subscription_id;
+      $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
+      $stripe->subscriptions->update(
+        $subscription_id,
+        ['pause_collection' => ['behavior' => 'void']]
+      );
+      return redirect()->back()->with('success','You have succesfully paused your subscription');
+    }
     
 }

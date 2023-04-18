@@ -21,6 +21,9 @@ class HostDashController extends Controller
             $membership_name = $membership_details['name'];
            
         }
+        // Check whether host account registered or not or if register then active or not ///////////////
+        $this->checkHostStripeAccountRegisterStatus(auth()->user()->id);
+
         if(isset(auth()->user()->subscription_id) && !empty(auth()->user()->subscription_id)){
             $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
             $subscription_details =  $stripe->subscriptions->retrieve(
