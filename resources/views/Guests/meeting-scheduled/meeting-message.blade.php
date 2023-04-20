@@ -16,8 +16,11 @@
                   <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:350px; overflow: auto;">
                 @foreach($messages as $m)
                     <div class="direct-chat-msg" id ="messages">
-                    <b>{{ $m->username }}</b>:
-                    <div class="direct-chat-text">
+                    <div class="direct-chat-infos clearfix">
+                      <span class="direct-chat-name float-left">{{ $m->username }}</span>
+                      <span class="direct-chat-timestamp float-right">{{ $m->created_at }}</span>
+                    </div>
+                    <div class="direct-chat-text ">
                       <?php
                      echo $m->message; ?>
                       </div>
@@ -70,7 +73,8 @@ $(document).ready(function(){
          {
            // console.log(response);
            $('#messageinput').val('');
-           $('#messages').append('<div class="direct-chat-msg ml-0" id ="messages"><b>'+response.username+'</b>:<div class="direct-chat-text">'+response.message+'</div></div>');
+           let timeString_ = moment(response.created_at).format("YYYY-MM-DD HH:mm");
+           $('#messages').append('<div class="direct-chat-msg ml-0" id ="messages"><span class="direct-chat-name float-left">'+response.username+'</span><span class="direct-chat-name float-right">'+timeString_+'</span>:<div class="direct-chat-text">'+response.message+'</div></div>');
            // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
          }
         });

@@ -9,6 +9,6 @@ class QuestionarieAnswer extends Model
     use HasFactory;
     protected $table = 'questionarie_answers';
     protected $fillable = [
-        'questions','answers','user_id','host_id'
+        'questions','answers','appointment_id',
     ];
 }

@@ -133,7 +133,7 @@ class HostController extends Controller
         $reciever_id = $req->reciever_id;
         // $username = $req->username;
         $messages = $req->message;
-        event(new Message($username, $messages,$sender_id,$reciever_id));
+        
         $message = new Messages();
         $message->reciever_id = $req->reciever_id;
         $message->sender_id = $req->sender_id;
@@ -141,6 +141,7 @@ class HostController extends Controller
         $message->message = $req->message;
         $message->status = 1;
         $message->save();
+        event(new Message($username, $messages,$sender_id,$reciever_id,$message->created_at));
         return response()->json($message);
     }
     public function seenmessage(Request $req){

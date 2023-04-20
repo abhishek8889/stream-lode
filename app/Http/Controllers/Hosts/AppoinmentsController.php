@@ -13,8 +13,8 @@ class AppoinmentsController extends Controller
 {
     public function index(){   
         
-        $host_schedule = HostAppointments::where([['host_id','=',Auth::user()->_id]])->with('usermessages',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); } )->with('answers',function($response){ $response->where('host_id',Auth()->user()->_id); })->orderBy('created_at','desc')->with('payments')->get();
-        // print_r($host_schedule);
+        $host_schedule = HostAppointments::where([['host_id','=',Auth::user()->_id],['questionrie_status',1]])->with('usermessages',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); } )->with('answers')->orderBy('created_at','desc')->with('payments')->get();
+        // dd($host_schedule);
         return view('Host.Appoinments.index',compact('host_schedule'));
     }
     public function deleteAppointment(Request $req){

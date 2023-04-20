@@ -39,7 +39,7 @@ class SearchHostController extends Controller
     // Host details
 
     public function hostDetail(Request $req , $unique_id){
-        
+
         $host_data = User::where('unique_id',$unique_id)->first();
         $HostQuestionnaire = HostQuestionnaire::where('host_id',$host_data->_id)->get();
         $host_details = DB::table('users')->where('unique_id',$unique_id)->first();
@@ -96,7 +96,7 @@ class SearchHostController extends Controller
      
 
         //  Host Meetings 
-        $host_appointments = HostAppointments::where([['host_id','=',$host_data['_id']],['end','>=',$today_date]])->get(['start','end','status']);
+        $host_appointments = HostAppointments::where([['host_id','=',$host_data['_id']],['end','>=',$today_date],['questionrie_status',1]])->get(['start','end','status']);
             // dd($host_appointments);
         if(isset($host_appointments) || !empty($host_appointments)){
             foreach($host_appointments as $meetings){
@@ -113,14 +113,20 @@ class SearchHostController extends Controller
                 } 
             }
         }
-        
+        if(Auth::check()){
+           $questionrie_status = HostAppointments::where([['user_id',Auth::user()->id],['host_id',$host_data->_id],['questionrie_status',0]])->first();
+        }else{
+            $questionrie_status = null;
+        }
+       
+      
         // if($req->ajax()) {
          
           
         // }
        
         // dd($available_host);
-        return view('Guests.search-host.host-detail',compact('host_details','available_host','host_meeting_charges','HostQuestionnaire'));
+        return view('Guests.search-host.host-detail',compact('host_details','available_host','host_meeting_charges','HostQuestionnaire','questionrie_status'));
         // return view('Guests.search-host.host-detail',compact('host_details','available_host'));
   
     }
@@ -192,6 +198,7 @@ class SearchHostController extends Controller
             $newAppointment->payment_status = 0;
             $newAppointment->status = $appointment_status;
             $newAppointment->seen_status = 0;
+            $newAppointment->questionrie_status = 0;
             $newAppointment->save();
             return array('status'=> true , 'message' => 'You have succesfully scheduled your apoointment with host');
         }else{
@@ -219,26 +226,13 @@ class SearchHostController extends Controller
             $newAppointment->payment_status = 0;
             $newAppointment->status = $appointment_status;
             $newAppointment->seen_status = 0;
+            $newAppointment->questionrie_status = 0;
             $newAppointment->save();
         }
 
         // Send notification to host and guest for there meetings 
 
-         $host = User::find($host_id);
-            $uemail = $guest->email;
-            $hostmail = $host->email;
-            
-                
-            $mailData = [
-                'hostname' => $host->first_name.' '.$host->last_name,
-                'username' => $guest->first_name.' '.$guest->last_name,
-                'start' => $meeting_start,
-                'end' => $meeting_end,
-            ];
-            
-            $mail = Mail::to($uemail)->send(new AppoinmentsConfirmation($mailData));
-            $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
-            event(new NotificationsSend($host_id,$newAppointment));
+        
             return array('status'=> true , 'message' => 'You have succesfully scheduled your apoointment with host');
 
     }
@@ -293,39 +287,48 @@ class SearchHostController extends Controller
     }
   
 public function questionnaire(Request $request){
+    // return $request->all();
     $questions = HostQuestionnaire::where('host_id',$request->host_id)->get();
-    $answers = QuestionarieAnswer::where([['user_id',Auth()->user()->id],['host_id',$request->host_id]])->first();
-    
-                foreach($questions as $q){
+    $questionrie_status = HostAppointments::where([['user_id',Auth::user()->id],['host_id',$request->host_id],['questionrie_status',0]])->first();
+    // return $questionrie_status->_id;            
+    foreach($questions as $q){
                     $data[] = $q->question;
                 }
                 $reqdata = array_filter($request->answer);
-                
+         
             if(count($data) !== count($reqdata)){
                 // echo 'error';
                 $response = array('error'=>'Please answer all the below questions.');
                 return response()->json($response);
                 
             }
-        if($answers){
-            $questionary = QuestionarieAnswer::find($answers->_id);
-            $questionary->questions = $data;
-            $questionary->answers = $request->answer;
-            $questionary->user_id = Auth()->user()->id;
-            $questionary->host_id = $request->host_id;
-            $questionary->update();
-            $response = array('success'=>'You have successfully updaes answere the all question');
-            return response()->json($response);
-        }else{
             $questionary = new QuestionarieAnswer();
             $questionary->questions = $data;
             $questionary->answers = $request->answer;
-            $questionary->user_id = Auth()->user()->id;
-            $questionary->host_id = $request->host_id;
+            $questionary->appointment_id = $questionrie_status->_id;
             $questionary->save();
-            $response = array('success'=>'You have successfully answered the all questions.');
-            return response()->json($response);      
-        }
+
+            $appoinment = HostAppointments::find($questionrie_status->_id);
+            $appoinment->questionrie_status = 1;
+            $appoinment->update();
+            $host = User::find($questionrie_status->host_id);
+            $uemail = $questionrie_status->guest_email;
+            $hostmail = $host->email;
+            
+            $mailData = [
+                'hostname' => $host->first_name.' '.$host->last_name,
+                'username' => $questionrie_status->guest_name,
+                'start' => $questionrie_status->start,
+                'end' => $questionrie_status->end,
+            ];
+            
+            $mail = Mail::to($uemail)->send(new AppoinmentsConfirmation($mailData));
+            $hostmail = Mail::to($hostmail)->send(new HostAppoinmentsMail($mailData));
+            event(new NotificationsSend($host->_id,$questionrie_status));
+            
+            $response = array('success'=>$questionrie_status);
+            return response()->json($response);
+        
             
     }
 
