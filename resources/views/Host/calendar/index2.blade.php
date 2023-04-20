@@ -52,7 +52,7 @@
                 @endif
                 <div class="form-group">
                   <label for="time">Title</label>
-                  <input type="text" class="form-control" id="title" placeholder="Enter your Title" />
+                  <input type="text" class="form-control" id="title" placeholder="Enter your Title" required/>
                 </div>
                 <?php 
                     $today_date = date("Y-m-d H:i");

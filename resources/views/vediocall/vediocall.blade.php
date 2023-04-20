@@ -339,6 +339,7 @@ margin-right: auto;
           }
         });
       }else if(user_type == "notlogin"){
+      var  roomname = $('#room-name').val();
                   Swal.fire({
             title: 'Warning ?',
             text: "Sorry we did not find you in our system. Please login first",
@@ -349,7 +350,7 @@ margin-right: auto;
             confirmButtonText: 'OK'
           }).then((result) => {
             if (result.isConfirmed) {
-              window.location.replace("/login");
+              window.location.replace("/login?roomid=" + roomname);
             }
           })
       }else{

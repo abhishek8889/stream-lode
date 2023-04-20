@@ -216,6 +216,22 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 <script src="https://js.stripe.com/v3/"></script>
+<!-- New script add for change unique Id  -->
+<script>
+    const inputBox = document.getElementById("stram-lode-page-name");
+    inputBox.addEventListener("keyup", function() {
+    let inputValue = this.value.toLowerCase().replace(/\s+/g, "-").replace(/-+/g, "-");
+    this.value = inputValue;
+  });
+    $("#stram-lode-page-name").change(function () {
+    let inputValue = $(this).val();
+    if (inputValue.endsWith("-")) {
+        inputValue = inputValue.slice(0, -1);
+      }
+    $('#stram-lode-page-name').val(inputValue);
+  });
+</script>
+<!--  Unique Id Script end -->
 <script>
 
     const stripe = Stripe('{{ env('STRIPE_PUB_KEY') }}');

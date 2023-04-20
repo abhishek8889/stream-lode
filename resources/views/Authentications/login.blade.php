@@ -16,6 +16,7 @@
     <input type="password" id="form2Example2" class="form-control" name="password"/>
     <label class="form-label" for="form2Example2"  >Password</label>
   </div>
+  <input type="hidden" name="roomid" id="roomIdInput">
   <!-- Submit button -->
   <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
 
@@ -29,7 +30,13 @@
 </div>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert"></script>
-
+<script>
+  $(document).ready(function(){
+    const roomId = new URLSearchParams(window.location.search).get('roomid');
+    console.log(roomId);
+    document.getElementById('roomIdInput').value = roomId;
+  });
+</script>
 @if(Session::get('error'))
 <script>
   swal({

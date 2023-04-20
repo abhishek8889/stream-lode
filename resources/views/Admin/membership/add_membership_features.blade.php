@@ -33,11 +33,17 @@
                                     @csrf
                                     <input type="hidden" id ="id" name="id" value="">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="feature_name" name="feature_name" placeholder="Feature name">   
+                                        <input type="text" class="form-control" id="feature_name" name="feature_name" placeholder="Feature name"> 
+                                        @error('feature_name')
+                                            <div class="text text-danger">{{ $message }}</div>
+                                        @enderror  
                                     </div>
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="description" name="description" placeholder="Description">   
-                                    </div> 
+                                        @error('description')
+                                            <div class="text text-danger">{{ $message }}</div>
+                                        @enderror
+                                     </div> 
                                     <div class="form-group">
                                         <button class="btn btn-success" id="submit">Submit</button>
                                         <button type="button" class="btn btn-danger" id ="addnew" style="display:none;" >Add New</button>
