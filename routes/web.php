@@ -43,6 +43,7 @@ use App\Http\Controllers\Hosts\MeetingCharges;
 use App\Http\Controllers\Hosts\HostPaymentMethodsController;
 use App\Http\Controllers\Hosts\HostStripeAccountRegisteration;
 use App\Http\Controllers\Hosts\NotificationController;
+use App\Http\Controllers\Hosts\QuestionaryController;
 use Google\Service\ServiceConsumerManagement\Authentication;
 
 use App\Http\Controllers\LiveStream\VedioCallController;
@@ -114,7 +115,8 @@ Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
 
-Route::get('/trycode',[SearchHostController::class,'trycode']);
+//questionnaire
+Route::post('/questionnaire',[SearchHostController::class,'questionnaire']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
@@ -324,7 +326,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::post('/{id}/seen-status',[HostCalendar::class,'seenstatus']);
 
     //hostMessage
-    Route::get('/{id}/message/{uid?}',[HostMessageController::class,'index']);
+    Route::get('/{id}/message/{uid?}',[HostMessageController::class,'index'])->name('host-messages');
     // Route::get('/{id}/hostmessage/{uid}',[HostMessageController::class,'hostmessage']);
     Route::post('send-message',[HostMessageController::class,'message']);
 
@@ -355,6 +357,13 @@ Route::group(['middleware'=>['auth','Host']],function(){
 
     //upgrade membership
     Route::get('{id}/upgrademembership',[HostMembershipController::class,'upgrade']);
+
+    //Questionary
+
+    Route::get('{id}/questionnaire',[QuestionaryController::class,'index'])->name('questionary');
+    Route::get('{id}/addquestionnaire/{idd?}',[QuestionaryController::class,'AddQuestion'])->name('add-questionary');
+    Route::post('{id}/questionnaire/add',[QuestionaryController::class,'AddQuestionary']);
+    Route::post('{id}/questionnaire/delete',[QuestionaryController::class,'delete']);
 
     //Notifications
 

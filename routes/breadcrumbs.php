@@ -137,10 +137,22 @@ Breadcrumbs::for('payment-methods', function (BreadcrumbTrail $trail): void {
     $trail->parent('host-dashboard');
     $trail->push('payment-methods', route('payment-methods',['id'=> Auth::user()->unique_id]));
 });
-Breadcrumbs::for('host-stream-payment', function (BreadcrumbTrail $trail): void {
+Breadcrumbs::for('questionnaire', function (BreadcrumbTrail $trail): void {
     $trail->parent('host-dashboard');
-    $trail->push('stream-payments', route('host-stream-payments',['id'=> Auth::user()->unique_id]));
+    $trail->push('Questionnaire', route('questionary',['id'=> Auth::user()->unique_id]));
 });
+Breadcrumbs::for('questionnaire-add',function(BreadcrumbTrail $trail): void{
+   $trail->parent('questionnaire');
+   $trail->push('Add', route('add-questionary',['id'=> Auth::user()->unique_id,'idd' => 1]));
+});
+Breadcrumbs::for('host-stream-payment',function(BreadcrumbTrail $trail): void{
+    $trail->parent('host-dashboard');
+   $trail->push('Stream-payments', route('host-stream-payments',['id'=> Auth::user()->unique_id,'idd' => 1]));
+ });
+ Breadcrumbs::for('host-message',function(BreadcrumbTrail $trail): void{
+    $trail->parent('host-dashboard');
+   $trail->push('Message', route('host-messages',['id'=> Auth::user()->unique_id,'idd' => 1]));
+ });
 // endhostbreadcrumbs
 ?>
 

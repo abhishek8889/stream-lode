@@ -9,6 +9,7 @@ use App\Models\HostAppointments;
 use DB;
 use App\Models\MeetingCharge;
 use App\Models\HostStripeAccount;
+use App\Models\HostQuestionnaire;
 
 class HostCalendar extends Controller
 {
@@ -18,6 +19,8 @@ class HostCalendar extends Controller
         $meeting_charges = MeetingCharge::where('host_id',Auth()->user()->id)->get();
         $host_stripe_account_details = HostStripeAccount::where('host_id',auth()->user()->id)->first();
         // dd($host_stripe_account_details);
+        $host_question = HostQuestionnaire::where('host_id',Auth()->user()->id)->get();
+       
         // dd($available_host);
         if($request->ajax()) {
           $host_appoinments = HostAppointments::where('host_id',Auth()->user()->id)->get(['id','start','end','status']);
@@ -31,7 +34,7 @@ class HostCalendar extends Controller
                     'color'    =>  '#dd8585',
                     'allDay'   =>  false,
                 );
-        }
+          }
         $host_schedule = HostAvailablity::where('host_id',auth()->user()->id)->get(['id', 'title', 'start','end','status']);
         foreach($host_schedule as $schedule){
           $data[] =  array(
@@ -51,7 +54,8 @@ class HostCalendar extends Controller
              return response()->json($data);
         }
        
-        return view('Host.calendar.index2',compact('meeting_charges','host_stripe_account_details'));
+        return view('Host.calendar.index2',compact('meeting_charges','host_stripe_account_details','host_question'));
+
     }
     
     public function ajax(Request $request)
