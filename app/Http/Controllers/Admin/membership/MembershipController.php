@@ -51,7 +51,10 @@ class MembershipController extends Controller
                 'product' => $product->id,
                 'unit_amount' => $req->price * 100,
                 'currency' => 'usd',
-                    'recurring' => ['interval' => $req->interval_time],
+                    'recurring' => [
+                        'interval' => $req->interval_time, // product price charge interval 
+                        'interval_count' => 1,  // 
+                    ],
                 ]
             );
         }else{
@@ -74,6 +77,7 @@ class MembershipController extends Controller
         $membership->type = $req->membership_type;
         if($req->membership_type == 'recurring'){
             $membership->interval =  $req->interval_time;
+            $membership->interval_count = 1 ;
         }
         $membership->amount = $req->price;
         $membership->membership_features = $req->membership_fetaures;

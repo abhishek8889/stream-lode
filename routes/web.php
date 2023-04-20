@@ -83,7 +83,7 @@ Route::get('host-register-email',function(){
     return view('Emails.host_registration');
 });
 
-Route::get('learn-area',[TestController::class,'index'])->name('learn-area');
+Route::get('learn-area',[TestController::class,'test'])->name('learn-area');
 Route::get('return-from-listener',[TestController::class,'returnFromListener']);
 Route::get('send-test-email-with-job',[TestController::class,'sendTestEmail']);
 

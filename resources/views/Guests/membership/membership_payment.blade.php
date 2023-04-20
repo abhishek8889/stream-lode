@@ -235,7 +235,7 @@
     const cardHolderName = first_name + ' ' + last_name; 
         e.preventDefault()
 		
-        cardBtn.disabled = true
+        // cardBtn.disabled = true
         const { setupIntent, error } = await stripe.confirmCardSetup(
             cardBtn.dataset.secret, {
                 payment_method: {

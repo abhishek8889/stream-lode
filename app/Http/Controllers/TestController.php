@@ -27,4 +27,8 @@ class TestController extends Controller
         dispatch( new SendEmail($data,$name));
         return "email sent succesfully";
     }
+    public function test(){
+      echo 'statrt' . date('Y-M-d H:i:s','1681898320');
+      echo "end " . date('Y-M-d H:i:s','1684490320');
+    }
 }

@@ -17,6 +17,7 @@ use Auth;
 use DB;
 use Session;
 use Illuminate\Support\Str;
+use App\Models\HostSubscriptions;
 
 
 class AuthenticationController extends Controller
@@ -109,20 +110,20 @@ class AuthenticationController extends Controller
   
           #################### Create customer ##########################
   
-          $customer =  $stripe->customers->create([
-             'name' => $name,
-             'email' => $email,
-             'payment_method' => $token,
-             'invoice_settings' => [
-              'default_payment_method' => $token,
-             ],
-             'address' => [
-               'line1' => '510 Townsend St',
-               'postal_code' => '98140',
-               'city' => 'San Francisco',
-               'state' => 'CA',
-               'country' => 'US',
-             ],
+            $customer =  $stripe->customers->create([
+                'name' => $name,
+                'email' => $email,
+                'payment_method' => $token,
+                'invoice_settings' => [
+                'default_payment_method' => $token,
+                ],
+                'address' => [
+                'line1' => '510 Townsend St',
+                'postal_code' => '98140',
+                'city' => 'San Francisco',
+                'state' => 'CA',
+                'country' => 'US',
+                ],
             ]);
             
           //   #################### Attach payments method with customer ##########################
@@ -134,33 +135,34 @@ class AuthenticationController extends Controller
   
           //  #################### Create subscription ##########################
   
-        //   $createMembership =  $stripe->subscriptions->create([
-        //       'customer' => $customer->id,
-        //       'items' => [
-        //         ['price' => $membership['price_id']],
-        //       ],
-        //       'coupon' => $stripe_coupon_id,
-        //     //   'collection_method' => 'charge_automatically',
-        //     ]);
         $createMembership = '';
             if($coupon_code != null){
                 $createMembership =  $stripe->subscriptions->create([
                     'customer' => $customer->id,
+                    'collection_method'=>'charge_automatically',
                     'items' => [
-                      ['price' => $membership['price_id']],
+                        [
+                            'price' => $membership['price_id'],
+                            'recurring' => [
+                                'interval' => 'month', // Frequency at which bills are counted ||## day, week, month or year. ##||
+                                'interval_count' => 1, // Number of intervals between subscription billings.
+                            ]
+                        ],
                     ],
                     'coupon' => $stripe_coupon_id,
                 ]);
             }else{
                 $createMembership =  $stripe->subscriptions->create([
                     'customer' => $customer->id,
+                    'collection_method'=>'charge_automatically',
                     'items' => [
                       ['price' => $membership['price_id']],
                     ]
                 ]);
             }
-  
+
             // dd($createMembership);
+
             $invoice = $createMembership->latest_invoice;
             $payment_intent = '';
             $host_inovice_url = '';
@@ -216,28 +218,51 @@ class AuthenticationController extends Controller
             $membership_payment->total = $total_excluding_discount ;// while we use discount then we fix this and diff beteween unused time charge and new charge from invoice 
             // prices end
             $membership_payment->payment_type = 'create_membership';
-            $membership_payment->payment_status = $createMembership->status;
+            $membership_payment->payment_status = $createMembership->status; // subscription status
             $membership_payment->save();
   
-          // ###################### Send Invoice ##################################
+            //#################  Host Subscription Data Save  ############################
 
-          $user = User::find($user_id);
-          $user->stripe_customer_id = $customer->id;
-          $user->subscription_id = $createMembership->id;
-       
-      
+            $host_subscription = new HostSubscriptions;
+            $host_subscription->stripe_subscription_id = $createMembership->id;
+            $host_subscription->subscription_name = $membership['name'];
+            $host_subscription->membership_id = $membership_id;
+            $host_subscription->host_id = $user_id;
+            $host_subscription->interval = 'month'; // subscription interval is different 
+            $host_subscription->interval_count = 1; // 
+            $host_subscription->subscription_status = $createMembership->status;
+            $host_subscription->membership_payment_id = $membership_payment->id;
+            if($createMembership->status == 'active'){
+                $host_subscription->start_on = date('Y-M-d H:i' ,$createMembership->current_period_start ); // on condition 
+                $host_subscription->next_invoice_generate_on = date('Y-M-d H:i' ,$createMembership->current_period_end ); // on condition 
+            }else{
+                $host_subscription->start_on = '00-00-00'; // on condition 
+                $host_subscription->next_invoice_generate_on = '00-00-00'; // on condition 
+            }
+            $host_subscription->save();
+
+            //######################## USER UPDATE ########################################
+
+            $user = User::find($user_id);
+            $user->stripe_customer_id = $customer->id;
+            $user->subscription_id = $createMembership->id; // Subscription id got from stripe
+            $user->host_subscription_id = $host_subscription->id;  // Subscription id got from host_subscription table 
+        
             // dd($createMembership);
             
             if($createMembership->status != 'incomplete'){
                 $user->membership_id = $membership_id;
-                $user->active_status = 1;
+                $user->active_status = 1;   // membership active // depend on subscription status 
+                // $user->subscription_status = $createMembership->status; // subscription status
                 $user->save();
                 return array(['paymentStatus'=>TRUE,'response'=>'Congratulations you got ' . $membership['name'] . ' for a ' . $membership['interval'],'membership_id'=> $membership_id]);
             }else{
-                $user->active_status = 0;
+                $user->active_status = 0;   // membership inactive // depend on subscription status 
+                // $user->subscription_status = $createMembership->status; // subscription status
                 $user->membership_id = null;
             }
           $user->save();
+        
           return array(['paymentStatus'=> FALSE, 'response'=>'You are registered but for payment you will get invoice in your registered email ('.$email.') please pay from there and activate your subscription.','membership_id'=> $membership_id]);
         }catch(\Exception $e){
             return $e->getMessage();

@@ -10,6 +10,7 @@ use App\Models\{HostAppointments,MeetingCharge,StreamPayment};
 use App\Models\User;
 use App\Models\HostStripeAccount;
 use Carbon\Carbon;
+use App\Models\HostSubscriptions;
 class HostDashController extends Controller
 {
     public function index(){
@@ -31,12 +32,24 @@ class HostDashController extends Controller
                 []
               );
             //  dd($subscription_details);
+            // #####################  Host Subscription table update  ###################
+            // $host_subscription = HostSubscriptions::where('host_id',auth()->user()->id)->first();
+            // if($host_subscription['subscription_status'] != 'paused'){
+            //     $host_subscription['subscription_status'] = 'active';
+            // }
+            // ############################   End   ############################
             if(!empty($subscription_details)){
                 $product_id = $subscription_details->plan->product;
                 if($subscription_details->status == 'active' && !empty($product_id)){
                     $membership_details = MembershipTier::where('membership_tier_id',$product_id)->first();
                     $host_user = User::where('_id',auth()->user()->id)->update(['membership_id'=>$membership_details['id'],'active_status' => 1]);
                     $user_membership_payment_data = MembershipPaymentsData::where([['user_id','=',auth()->user()->id],['membership_id','=',auth()->user()->membership_id]])->latest()->update(['payment_status'=>'succesfull']);
+                    // #####################  Host Subscription table update  ###################
+                    $host_subscription = HostSubscriptions::where('host_id',auth()->user()->id)->first();
+                    if($host_subscription['subscription_status'] != 'paused'){
+                        $host_subscription['subscription_status'] = 'active';
+                    }
+                    // ############################   End   ############################
                 }
             }
         }

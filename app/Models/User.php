@@ -35,6 +35,7 @@ class User extends Authenticatable
         'twilio_access_token',
         'password',
         'status',
+        'host_subscription_id',
         'active_status'
     ];
 

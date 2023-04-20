@@ -17,6 +17,7 @@ class MembershipTier extends Model
         'currency',
         'type',
         'interval',
+        'interval_count',
         'amount',
         'status',
         'create_at',

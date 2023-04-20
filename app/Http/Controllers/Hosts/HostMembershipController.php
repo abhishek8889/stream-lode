@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use DB;
 use Mail;
 use App\Mail\HostMembershipUpdateMail;
+use App\Models\HostSubscriptions;
 
 class HostMembershipController extends Controller
 {
@@ -182,6 +183,7 @@ class HostMembershipController extends Controller
 
     public function upgradeSubscriptionProcess(Request $req){
       // dd($req);
+      // HostSubscriptions
       try{
         $user = User::where('_id',auth()->user()->id)->first();
         $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
@@ -200,36 +202,36 @@ class HostMembershipController extends Controller
         
           if(isset(auth()->user()->subscription_id) && !empty(auth()->user()->subscription_id)){
 
-          //update customer and make this payment method as default payment method.
-          
-          $customer = $stripe->customers->update(
-            auth()->user()->stripe_customer_id,
-            [
-              'invoice_settings' => [
-              'default_payment_method' => $payment_method,
-              ],
-            ]
-          );
-          // ################### update subscription  ##############################
-
-          $subscription = $stripe->subscriptions->retrieve(auth()->user()->subscription_id);
-          
-          $subscription_update_response = $stripe->subscriptions->update(
-            $subscription->id,
-            [
-              'cancel_at_period_end' => false,
-              'proration_behavior' => 'always_invoice',
-              'items' => [
-                [
-                  'id' => $subscription->items->data[0]->id,
-                  'price' => $membership_details->price_id,
+            //update customer and make this payment method as default payment method.
+            
+            $customer = $stripe->customers->update(
+              auth()->user()->stripe_customer_id,
+              [
+                'invoice_settings' => [
+                'default_payment_method' => $payment_method,
                 ],
-                
-              ],
-            ]
-          );
-          // dd($subscription_update_response);
-          $invoice = $subscription_update_response->latest_invoice;
+              ]
+            );
+            // ################### update subscription  ##############################
+
+            $subscription = $stripe->subscriptions->retrieve(auth()->user()->subscription_id);
+            
+            $subscription_update_response = $stripe->subscriptions->update(
+              $subscription->id,
+              [
+                'cancel_at_period_end' => false, 
+                'proration_behavior' => 'always_invoice',
+                'items' => [
+                  [
+                    'id' => $subscription->items->data[0]->id,
+                    'price' => $membership_details->price_id,
+                  ],
+                  
+                ],
+              ]
+            );
+            // dd($subscription_update_response);
+            $invoice = $subscription_update_response->latest_invoice;
             $payment_intent = '';
             $host_inovice_url = '';
             $host_invoice_pdf = '';
@@ -246,7 +248,7 @@ class HostMembershipController extends Controller
                 $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf));
                 // dd($mail);
             }
-          // ################# membership Payment data save ##########################
+            // ################# membership Payment data save ##########################
             $membership_payment->user_id =  auth()->user()->id;
             $membership_payment->inovice_id = $subscription_update_response->latest_invoice;
             $membership_payment->stripe_payment_intent = $payment_intent; 
@@ -266,8 +268,22 @@ class HostMembershipController extends Controller
             $membership_payment->save();
           }
           // dd($subscription_update_response);
-        
+
+          // #####################  Host Subscription table update  ###################
+         
+            $host_subscription = HostSubscriptions::where('host_id',auth()->user()->id)->first();
+            $host_subscription->stripe_subscription_id = $subscription_update_response->id;
+            $host_subscription->subscription_name = $membership_details['name'];
+            $host_subscription->membership_id = $req->upgraded_membership_id;
+            $host_subscription->host_id = auth()->user()->id;
+            $host_subscription->subscription_status = $subscription_update_response->status;
+            $host_subscription->membership_payment_id = $membership_payment->id;
+            $host_subscription->update();
+          
+          // ############################   End   ############################
+
           if($subscription_update_response->status == 'active'){
+            
             $user->membership_id = $req->upgraded_membership_id;
             $user->subscription_id = $subscription_update_response->id;
             $user->update();
@@ -275,6 +291,8 @@ class HostMembershipController extends Controller
           }else{
             return redirect(url('/'.auth()->user()->unique_id))->with('success','We got your request for membership upgradation please check your registered email for confirmation of payment.');
           }
+
+
         }else{
           // ###############  While we got new payment method  #####################
           // attach new card to customer
@@ -363,6 +381,20 @@ class HostMembershipController extends Controller
             $membership_payment->payment_status = $subscription_update_response->status;
             $membership_payment->save();
           }
+
+          // #####################  Host Subscription table update  ###################
+          
+            $host_subscription = HostSubscriptions::where('host_id',auth()->user()->id)->first();
+            $host_subscription->stripe_subscription_id = $subscription_update_response->id;
+            $host_subscription->subscription_name = $membership_details['name'];
+            $host_subscription->membership_id = $req->upgraded_membership_id;
+            $host_subscription->host_id = auth()->user()->id;
+            $host_subscription->subscription_status = $subscription_update_response->status;
+            $host_subscription->membership_payment_id = $membership_payment->id;
+            $host_subscription->update();
+          
+          // ############################   End   ############################
+
           if($subscription_update_response->status == 'active'){
             $user->membership_id = $req->upgraded_membership_id;
             $user->subscription_id = $subscription_update_response->id;
@@ -395,19 +427,23 @@ class HostMembershipController extends Controller
     public function cancelSubscription(Request $req){
       $subscription_id = auth()->user()->subscription_id;
       $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
-      $stripe->subscriptions->cancel(
+      $stripe_cancelation = $stripe->subscriptions->cancel(
         $subscription_id,
         []
       );
+      if($stripe_cancelation->status == 'canceled' ){
+        HostSubscriptions::where('host_id' , auth()->user()->id)->update(['subscription_status'=>$stripe_cancelation->status]);
+      }
       return redirect()->back()->with('success','You have succesfully canceled your subscription');
     }
     public function pauseSubscription(Request $req){
       $subscription_id = auth()->user()->subscription_id;
       $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
-      $stripe->subscriptions->update(
+      $pause_status = $stripe->subscriptions->update(
         $subscription_id,
         ['pause_collection' => ['behavior' => 'void']]
       );
+      HostSubscriptions::where('host_id' , auth()->user()->id)->update(['subscription_status'=>'paused']);
       return redirect()->back()->with('success','You have succesfully paused your subscription');
     }
     
