@@ -31,18 +31,27 @@
                     <label for="name" class="col-sm-3 col-form-label">Name</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+                        @error('name')
+                            <div class="text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="slug" class="col-sm-3 col-form-label">Slug</label>
                     <div class="col-sm-9">
                         <input type="text" class="form-control" id="slug" placeholder="Slug" name="slug">
+                        @error('slug')
+                            <div class="text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Price</label>
                     <div class="col-sm-9">
                         <input type="number" step="0.01" class="form-control" id="inputEmail3" placeholder="USD($)" name="price">
+                        @error('price')
+                            <div class="text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <!-- currency code -->
@@ -83,6 +92,9 @@
                  
                         @foreach($features as $f)
                     <div>
+                        @error('membership_fetaures')
+                            <div class="text text-danger">{{ $message }}</div>
+                        @enderror
                         <input type="checkbox" name="membership_fetaures[]" id="feature{{ $f['id'] }}" value="{{ $f['id'] }}" multiple>
                         <label for="feature{{ $f['id'] }}">{{ $f['feature_name'] }} </label>
                         <button type="button" class="btn" data-toggle="popover" title="{{ $f['description'] }}" data-content="done" ><i class="fas fa-info-circle"></i></button>
@@ -95,6 +107,9 @@
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Description</label>
                     <div class="col-sm-9">
                         <textarea name="description" class="form-control" id="inputEmail3" id="" cols="10" rows="3"></textarea>
+                        @error('description')
+                            <div class="text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </div>

@@ -33,6 +33,10 @@ class AuthenticationController extends Controller
         $password = $req->password;
         $credentials = array('email'=>$email, 'password' => $password);
         if (Auth::attempt($credentials)) {
+            if($req->roomid){
+                return redirect("/live-stream/".$req->roomid);
+            }else{
+                
             if(auth()->user()->status == 0){
                 return redirect('/');
             }
@@ -44,6 +48,7 @@ class AuthenticationController extends Controller
             }else{
                 return false;
             }
+        }
         }else{
             return redirect('login')->with('error','Your email or password is wrong');
         }

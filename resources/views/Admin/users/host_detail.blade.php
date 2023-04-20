@@ -83,14 +83,14 @@
             <!-- /.card -->
 
             <!-- About Me Box -->
-            <div class="card card-primary">
+            <!-- <div class="card card-primary">
               <div class="card-header">
                 @if(!empty($host_detail['first_name']))
                 <h3 class="card-title">About <b> {{  $host_detail['first_name']  }}</b></h3>
                 @endif
-              </div>
+              </div> -->
               <!-- /.card-header -->
-              <div class="card-body">
+              <!-- <div class="card-body">
                 <strong><i class="fas fa-book mr-1"></i> Education</strong>
 
                 <p class="text-muted">
@@ -120,9 +120,9 @@
                 <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
 
                 <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
-              </div>
+              </div> -->
               <!-- /.card-body -->
-            </div>
+            <!-- </div> -->
             <!-- /.card -->
           </div>
           <!-- /.col -->

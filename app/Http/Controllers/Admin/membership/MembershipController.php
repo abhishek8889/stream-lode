@@ -26,7 +26,14 @@ class MembershipController extends Controller
         return view('Admin.membership.add_membership_tier',compact('features'));
     }
     public function addMembershipTierProc(Request $req){
-        // dd($req->all());
+        // dd($req->all());        
+        $validate = $req->validate([
+            'name' => 'required',
+            'slug' => 'required',
+            'price'=> 'required',
+            'description' => 'required',
+            'membership_fetaures' => 'required',
+        ]);
         $membership = new MembershipTier;
         // $membership_logo_name = '';
         // $membership_logo_url = '';

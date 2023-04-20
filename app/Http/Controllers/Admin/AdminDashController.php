@@ -14,6 +14,7 @@ class AdminDashController extends Controller
         /// Membership total payment //
         $membership_payments = MembershipPaymentsData::where('payment_status','succesfull')->get();
         $total_membership_amount = 0;
+        $payments = array();
         if(count($membership_payments) != 0){
             foreach($membership_payments as $mp){
             $payments[] = $mp->total;
