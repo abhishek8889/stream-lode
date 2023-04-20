@@ -23,6 +23,8 @@ use App\Events\NotificationsSend;
 use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\VideoGrant;
 use App\Models\MeetingCharge;
+use App\Models\HostQuestionnaire;
+use App\Models\QuestionarieAnswer;
 use App\Events\AppoinmentNotification;
 class SearchHostController extends Controller
 {
@@ -39,6 +41,7 @@ class SearchHostController extends Controller
     public function hostDetail(Request $req , $unique_id){
         
         $host_data = User::where('unique_id',$unique_id)->first();
+        $HostQuestionnaire = HostQuestionnaire::where('host_id',$host_data->_id)->get();
         $host_details = DB::table('users')->where('unique_id',$unique_id)->first();
         foreach($host_details['_id'] as $h){
            $host_id = $h;
@@ -117,7 +120,7 @@ class SearchHostController extends Controller
         // }
        
         // dd($available_host);
-        return view('Guests.search-host.host-detail',compact('host_details','available_host','host_meeting_charges'));
+        return view('Guests.search-host.host-detail',compact('host_details','available_host','host_meeting_charges','HostQuestionnaire'));
         // return view('Guests.search-host.host-detail',compact('host_details','available_host'));
   
     }
@@ -289,8 +292,41 @@ class SearchHostController extends Controller
         return response()->json($hosts);
     }
   
-public function trycode(){
-   
-}
+public function questionnaire(Request $request){
+    $questions = HostQuestionnaire::where('host_id',$request->host_id)->get();
+    $answers = QuestionarieAnswer::where([['user_id',Auth()->user()->id],['host_id',$request->host_id]])->first();
+    
+                foreach($questions as $q){
+                    $data[] = $q->question;
+                }
+                $reqdata = array_filter($request->answer);
+                
+            if(count($data) !== count($reqdata)){
+                // echo 'error';
+                $response = array('error'=>'Please answer all the below questions.');
+                return response()->json($response);
+                
+            }
+        if($answers){
+            $questionary = QuestionarieAnswer::find($answers->_id);
+            $questionary->questions = $data;
+            $questionary->answers = $request->answer;
+            $questionary->user_id = Auth()->user()->id;
+            $questionary->host_id = $request->host_id;
+            $questionary->update();
+            $response = array('success'=>'You have successfully updaes answere the all question');
+            return response()->json($response);
+        }else{
+            $questionary = new QuestionarieAnswer();
+            $questionary->questions = $data;
+            $questionary->answers = $request->answer;
+            $questionary->user_id = Auth()->user()->id;
+            $questionary->host_id = $request->host_id;
+            $questionary->save();
+            $response = array('success'=>'You have successfully answered the all questions.');
+            return response()->json($response);      
+        }
+            
+    }
 
 }

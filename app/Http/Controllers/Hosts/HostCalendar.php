@@ -8,6 +8,7 @@ use App\Models\HostAvailablity;
 use App\Models\HostAppointments;
 use DB;
 use App\Models\MeetingCharge;
+use App\Models\HostQuestionnaire;
 
 class HostCalendar extends Controller
 {
@@ -15,6 +16,7 @@ class HostCalendar extends Controller
     public function index(Request $request)
     {
         $meeting_charges = MeetingCharge::where('host_id',Auth()->user()->id)->get();
+        $host_question = HostQuestionnaire::where('host_id',Auth()->user()->id)->get();
        
         // dd($available_host);
         if($request->ajax()) {
@@ -49,7 +51,7 @@ class HostCalendar extends Controller
              return response()->json($data);
         }
        
-        return view('Host.calendar.index2',compact('meeting_charges'));
+        return view('Host.calendar.index2',compact('meeting_charges','host_question'));
     }
     
     public function ajax(Request $request)

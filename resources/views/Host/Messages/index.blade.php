@@ -1,6 +1,19 @@
 @extends('host_layout.master')
 @section('content')
-
+<div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          <h3  >Messages</h3>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+            {{ Breadcrumbs::render('host-message') }}
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
  <div class="container-fluid">
     <div class="row">
       <div class="col-lg-3">
@@ -10,7 +23,7 @@
 
 
                <!-- Conversations are loaded here -->
-               <div class="direct-chat-messages" style="height:547px;">
+               <div class="direct-chat-messages" style="height:505px;">
                <button class="btn btn-dark addnew" data-toggle="modal" data-target="#exampleModal" style="width:100%;" >Add New</button>
                     <div class="direct-chat-msg px-3">
                          <hr>
@@ -71,7 +84,7 @@
             </div>
             <div class="card-body" >
                <!-- Conversations are loaded here -->
-               <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:420px;">
+               <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:380px;">
                     <div class="direct-chat-msg messagesappend" id="messages">
                         @foreach($messages as $m)
                     <div class="direct-chat-msg <?php if($m['sender_id'] == Auth()->user()->id){ }?>">

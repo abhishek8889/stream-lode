@@ -138,7 +138,7 @@
           }
        ?>
       <li class="nav-item ">
-        <a class="nav-link"  href="{{ url('/'.Auth()->user()->id.'/notifications') }}">
+        <a class="nav-link"  href="{{ url('/'.Auth()->user()->unique_id.'/notifications') }}">
           <i class="far fa-bell"></i>
           
           <span class="badge badge-warning navbar-badge" id="notificationcount" >{{ count($appoinments)+count($data) }}</span>
@@ -300,6 +300,33 @@
               
             </ul>
           </li>
+          <!-- Questionary -->
+          <li class="nav-item ">
+          <a href="" class="nav-link active">
+              <!-- <i class="nav-icon fas fa-calendar"></i> -->
+              <i class="nav-icon fas fa-question-circle"></i>
+              <p>
+              Questionnaire
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ url( '/'.auth()->user()->unique_id.'/questionnaire') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>List</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ url( '/'.auth()->user()->unique_id.'/addquestionnaire') }}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add-Question</p>
+                </a>
+              </li>
+              
+            </ul>
+          </li>
+
           <!-- calendar -->
           <li class="nav-item ">
             <a href="{{ url('/'.auth()->user()->unique_id.'/calendar') }}" class="nav-link active">

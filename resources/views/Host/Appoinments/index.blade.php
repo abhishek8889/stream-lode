@@ -184,8 +184,8 @@ display: none;
                       <th>Start Time</th>
                       <th>End Time</th>
                       <th>Duration</th>
-                      <th>Payment Status</th>
-                      <th class="text-center">Action</th>
+                      <th>Action</th>
+                      <th class="text-center">View</th>
                     </tr>
                   </thead>
                   <?php $count = 0; ?>
@@ -206,8 +206,7 @@ display: none;
                         ?>
                         <td>{{$startdate}}</td>
                         <td>{{$enddate}}</td>
-                        <td>{{ $hs->duration_in_minutes ?? 0 }}</td>
-                        <td class="text-center">@if($hs->payment_status == 1) <span class="badge badge-pill badge-success" >Success</span> @else <span class="badge badge-pill badge-danger" > pending</span> @endif</td>
+                        <td>{{ $hs->duration_in_minutes ?? 0 }} minutes</td>
                         <td class="text-center">
                         @if($current_date < $hs->end)
                           @if($hs->video_link_name)
@@ -229,6 +228,8 @@ display: none;
                          @endif
                           @endif
                         </td>
+
+                        <td class="text-center"><a class="btn btn-info" data-toggle="modal" data-target="#exampleModalCenter{{ $hs->_id }}"> <i class="fa fa-eye"></i></a>   </td>
                        
                       </tr>
                     @empty
@@ -245,6 +246,7 @@ display: none;
             <!-- /.card -->
           </div>
 </div>
+            <!-- meeting link modal -->
           <div class="modal fade " id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
@@ -269,6 +271,108 @@ display: none;
               </div>
             </div>
           </div>
+          
+          @foreach($host_schedule as $hs)
+          <div class="modal fade bd-example-modal-lg" id="exampleModalCenter{{ $hs->_id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Appoinment_Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                    <div class="modal-body" style="max-height: 500px; overflow: auto;">
+                    <div class="container-fluid">
+                          <div class="invoice p-3 mb-3">
+                                  <div class="row">
+                                          <div class="col-12">
+                                          <h4>    
+                                            <small>
+                                              Payment: @if($hs->payment_status == 1) <span class="badge badge-pill badge-success" >Success</span> @else <span class="badge badge-pill badge-danger" > pending</span> @endif
+                                             </small>     
+                                              <small class="float-right">Date: {{ $hs->created_at ?? '' }}</small>
+                                          </h4>
+                                          </div>
+                                  </div>
+                                  <div class="row invoice-info mt-3">
+                                          <!-- /.col -->
+                                          <div class="col-sm-6 invoice-col">
+                                          <h5><b>Meeting Detail</b></h5>
+                                                      <b>Meeting started time: </b>{{ $hs->start ?? '' }}<br>
+                                                      <b>Meeting end time : </b>{{ $hs->end ?? '' }} <br>
+                                                      <b>Duration: </b>{{ $hs->duration_in_minutes ?? '' }} minutes  <br>
+                                                      <b>Total Video Duration: </b>{{ $hs->total_duration ?? '00:00' }} minutes   
+                                          </div>
+                                          <!-- /.col -->
+                                          <div class="col-sm-6 invoice-col">
+                                              <h5><b>Guest Detail</b></h5>
+                                                  <div>
+                                                          Guest name :{{ $hs->guest_name ?? '' }}<br>
+                                                          Guest email : {{ $hs->guest_email ?? '' }} <br>
+                                                  </div>
+                                          </div>
+                                  </div>
+                                  @if($hs->payment_status == 1)
+                                  <div class="row">
+                                    <div class="col-6">
+
+                                    </div>
+                                   <div class="col-6">
+                                          <div class="table-responsive">
+                                              <table class="table">
+                                              <tbody>
+                                              <tr>
+                                                  <th style="width:50%">Subtotal:</th>
+                                                  <td class="text-right">${{ $hs->payments['subtotal'] ?? '' }}</td>
+                                              </tr>
+                                              <tr>
+                                                  <th>Discount:</th>
+                                                  <td class="text-right">${{ $hs->payments['discount_amount'] ?? 0 }}</td>
+                                              </tr> 
+                                              <tr>
+                                                  <th>Total:</th>
+                                                  <td class="text-right">${{ $hs->payments['total'] ?? '' }}</td>
+                                              </tr>
+                                              </tbody></table>
+                                          </div>
+                                    </div>
+                                          @endif
+                                  </div>
+                              </div>
+                              <?php 
+                            $questions = $hs['answers']['questions'];
+                            $answers = $hs['answers']['answers'];
+                            $data = array($questions,$answers);
+                            
+                            ?>
+                              <div id="accordion{{ $hs->_id }}">
+                                <h3>Questions</h3>
+                                <!-- for question answer -->
+                              <?php 
+                            for($i=0; $i<count($data[0]); $i++){ ?>
+                                    <div class="card">
+                                      <div class="card-header" id="headingOne">
+                                          <button class="btn"  data-toggle="collapse" data-target="#collapseOne{{ $hs->_id }}{{ $i }}" aria-expanded="true" aria-controls="collapseOne">
+                                          Q.{{ $i+1 }}. <?php print_r($data[0][$i]); ?> 
+                                          </button>
+                                      </div>
+
+                                      <div id="collapseOne{{ $hs->_id }}{{ $i }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion{{ $hs->_id }}">
+                                        <div class="card-body" style="margin-left: 16px;">
+                                        Ans. <?php print_r($data[1][$i]); ?>
+                                        </div>
+                                      </div>
+                                    </div>
+                                <?php } ?>
+                              </div>
+                      </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        @endforeach
+
   <script>
     $(document).ready(function(){
      
@@ -357,6 +461,7 @@ copyText.querySelector("button").addEventListener("click", function () {
 	}, 2500);
 });
 $(document).ready(function(){
+   
       $.ajax({
         method:'post',
         url: '{{ url('/'.auth()->user()->unique_id.'/seen-status') }}',
@@ -365,9 +470,11 @@ $(document).ready(function(){
         success: function(response) {
           // console.log(response);
           if(response[0]){
-            location.reload();
+            
+            // location.reload();
           }
-          $('#notificationscount').html('0');
+          console.log(response.length);
+          $('#notificationcount').html(parseInt($('#notificationcount').html())-parseInt(response.length));
         }
       })
     })

@@ -57,7 +57,7 @@ $(document).ready(function(){
         }
         e.preventDefault();
         formdata = new FormData(this);
-        console.log(formdata);
+        // console.log(formdata);
       //   console.log(formdata);
         $.ajax({
          method: 'post',
@@ -101,7 +101,7 @@ $(document).ready(function(){
 <script type="text/javascript">
   $(document).ready(function(){
     var APP_URL = {!! json_encode(url('/')) !!}
-    console.log(APP_URL);
+    // console.log(APP_URL);
   });
 </script>
 

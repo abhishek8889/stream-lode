@@ -11,8 +11,9 @@ use App\Mail\SendGuestMeetinglink;
 
 class AppoinmentsController extends Controller
 {
-    public function index(){     
-        $host_schedule = HostAppointments::where([['host_id','=',Auth::user()->_id]])->with('usermessages',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); } )->orderBy('created_at','desc')->get();
+    public function index(){   
+        
+        $host_schedule = HostAppointments::where([['host_id','=',Auth::user()->_id]])->with('usermessages',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); } )->with('answers',function($response){ $response->where('host_id',Auth()->user()->_id); })->orderBy('created_at','desc')->with('payments')->get();
         // print_r($host_schedule);
         return view('Host.Appoinments.index',compact('host_schedule'));
     }

@@ -386,9 +386,48 @@ $date = date('Y-m-d h:i');
     </div>
   </div>
 </section>
-
+ <!-- Questionarie modal -->
+ <div class="modal fade" id="exampleModalCenterqueston" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog mx-0 mx-sm-auto">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h5 class="modal-title text-white" id="exampleModalLabel">Host Questionarie</h5>
+      </div>
+      <div class="modal-body">
+        <span class="text-danger" id="errorspan"> </span>
+        <?php $count = 0; ?>
+        <form class="px-4" id="questionform" action="{{ url('questionnaire') }}" method="post">
+          @csrf
+        <input type="hidden" name="host_id" value="{{ $host_details['_id'] }}">
+          @foreach($HostQuestionnaire as $hq)
+        <?php $count = $count+1; ?>
+          <p class=""><strong>{{ $count }}.{{ $hq->question }}</strong></p>
+           <input type="hidden" name="question[]" value="{{$hq->_id}}">
+              @if($hq->answer_type == 'checkbox')
+              @foreach($hq->checkboxname as $checkbox)
+                <div class="form-check mb-2">
+                 
+                  <input class="form-check-input" type="radio" name="answer[]" id="radio4Example1" value="{{ $checkbox }}" />
+                  <label class="form-check-label" for="radio4Example1">
+                    {{ $checkbox }}
+                  </label>
+                </div>
+                @endforeach
+                @else
+                <textarea class="form-control" id="form4Example4" rows="4" name="answer[]"></textarea>
+              @endif
+              <hr />
+         @endforeach
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
         $(document).ready(function () {
+        
           let data = @json($available_host);
           $.ajaxSetup({
               headers: {
@@ -600,7 +639,8 @@ $date = date('Y-m-d h:i');
                                                  });
                                                 }else{
                                                 setTimeout(function(){
-                                                    location.reload();
+                                                  //  location.reload();
+                                                  $('#exampleModalCenterqueston').modal({backdrop: 'static'});
                                                     $(".loader-wrapper").fadeOut('3000');
                                                     $("#overlayer").fadeOut('3000');
                                                   }
@@ -667,7 +707,32 @@ $date = date('Y-m-d h:i');
         time = moment(dt).format("YYYY-MM-DD HH:mm");
         console.log(time);
         });
+
+        $('#questionform').on('submit',function(e){
+          e.preventDefault();
+          formdata = new FormData(this);
+          console.log(formdata);
+          $.ajax({
+            method: 'post',
+            url: '{{url('questionnaire')}}',
+            data: formdata,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function(response)
+            {
+              if(response.error){
+                  $('#errorspan').html(response.error);
+              }else{
+                // console.log(response);
+                location.reload();
+              }
+            }
+          })
+        });
         
       </script>
+
+      
 
 @endsection

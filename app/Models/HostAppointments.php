@@ -27,5 +27,7 @@ class HostAppointments extends Model
     public function guest(){
         return $this->hasOne(User::class,'_id','user_id');
     }
-   
+   public function answers(){
+    return $this->hasOne(QuestionarieAnswer::class,'user_id','user_id');
+   }
 }
