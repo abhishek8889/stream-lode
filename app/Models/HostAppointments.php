@@ -10,7 +10,7 @@ class HostAppointments extends Model
     use HasFactory;
     protected $table = 'appointments';
     protected $fillable = [
-        'host_available_id','user_id','host_id', 'guest_name','guest_email','start','end','duration_in_minutes','meeting_charges','currency','stripe_payment_intent','payment_status','status','total_duration','video_call_status',
+        'host_available_id','user_id','host_id', 'guest_name','guest_email','start','end','duration_in_minutes','meeting_charges','currency','stripe_payment_intent','payment_status','status','total_duration','video_call_status','questionrie_status',
     ];
     public function user(){
         return $this->belongsTo(User::class,'host_id');
@@ -28,6 +28,6 @@ class HostAppointments extends Model
         return $this->hasOne(User::class,'_id','user_id');
     }
    public function answers(){
-    return $this->hasOne(QuestionarieAnswer::class,'user_id','user_id');
+        return $this->hasOne(QuestionarieAnswer::class,'appointment_id','_id');
    }
 }

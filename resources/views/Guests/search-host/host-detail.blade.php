@@ -394,11 +394,15 @@ $date = date('Y-m-d h:i');
         <h5 class="modal-title text-white" id="exampleModalLabel">Host Questionarie</h5>
       </div>
       <div class="modal-body">
+        <p class="text-center text-primary">These questions are mandatory to fill for fix appoinments.</p>
         <span class="text-danger" id="errorspan"> </span>
-        <?php $count = 0; ?>
+        <?php $count = 0;
+        ?>
+
         <form class="px-4" id="questionform" action="{{ url('questionnaire') }}" method="post">
           @csrf
-        <input type="hidden" name="host_id" value="{{ $host_details['_id'] }}">
+         
+        <input type="hidden" name="host_id" value="{{ $host_details['_id'] ?? ''}}">   <!--appoinment_id -->
           @foreach($HostQuestionnaire as $hq)
         <?php $count = $count+1; ?>
           <p class=""><strong>{{ $count }}.{{ $hq->question }}</strong></p>
@@ -623,7 +627,7 @@ $date = date('Y-m-d h:i');
                                                       type : 'add',
                                               },
                                               success: function (data) {
-                                                console.log(data);
+                                                // console.log(data);
                                                 isLoading = false;
                                                 if(data.status == false){
                                                   setTimeout(function(){
@@ -697,21 +701,23 @@ $date = date('Y-m-d h:i');
                           $("#calendarCloseBtn").on('click',function(){
                             calendar.unselect()
                           });
-          
         });
+
+
         function displayMessage(message) {
             toastr.success(message, 'Event');
         } 
         $(document).ready(function(){
         var dt = new Date();
         time = moment(dt).format("YYYY-MM-DD HH:mm");
-        console.log(time);
+        // console.log(time);
         });
 
         $('#questionform').on('submit',function(e){
           e.preventDefault();
+          $("#overlayer").fadeIn();
           formdata = new FormData(this);
-          console.log(formdata);
+          // console.log(formdata);
           $.ajax({
             method: 'post',
             url: '{{url('questionnaire')}}',
@@ -721,7 +727,9 @@ $date = date('Y-m-d h:i');
             processData: false,
             success: function(response)
             {
+              // console.log(response);
               if(response.error){
+                $("#overlayer").fadeOut();
                   $('#errorspan').html(response.error);
               }else{
                 // console.log(response);
@@ -732,6 +740,15 @@ $date = date('Y-m-d h:i');
         });
         
       </script>
+@if($questionrie_status)
+    @if($questionrie_status['questionrie_status'] == 0)
+    <script>
+      $(document).ready(function(){
+    $('#exampleModalCenterqueston').modal({backdrop: 'static'});
+      });
+    </script>
+    @endif
+@endif
 
       
 

@@ -128,7 +128,7 @@
         @endforeach
         </div>
       </li>
-       <?php  $appoinments = App\Models\HostAppointments::where([['host_id',Auth()->user()->id],['seen_status',0]])->get();
+       <?php  $appoinments = App\Models\HostAppointments::where([['host_id',Auth()->user()->id],['seen_status',0],['questionrie_status',1]])->get();
         $notification = App\Models\PostNotification::get()->toArray();
         $data = array();
           foreach($notification as $d){
@@ -136,7 +136,7 @@
                   }else{
                     array_push($data,$d);
                   }
-          }
+            }
        ?>
       <li class="nav-item ">
         <a class="nav-link"  href="{{ url('/'.Auth()->user()->unique_id.'/notifications') }}">

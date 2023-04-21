@@ -197,7 +197,8 @@ class VedioCallController extends Controller
         }catch(\Exception $e){
             $error = $e->getMessage();
         }
-        return redirect()->back()->with('error',$error);
+       print_r($error);
+        // return redirect()->back()->with('error',$error);
         // print_r($stripe_payment_intent['id']);
     }
     public function CouponCheck(Request $req){

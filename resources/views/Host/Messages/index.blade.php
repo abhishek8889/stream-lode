@@ -89,9 +89,10 @@
                         @foreach($messages as $m)
                     <div class="direct-chat-msg <?php if($m['sender_id'] == Auth()->user()->id){ }?>">
                     <div class="direct-chat-infos clearfix">
-                      <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }?>">{{$m['username']}}</span>
+                      <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }else{ echo 'float-left'; }?>">{{$m['username']}}</span>
+                      <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-left'; }else{ echo 'float-right'; }?>">{{$m['created_at']}}</span>
                     </div>
-                    <div class="direct-chat-text"<?php if($m['sender_id'] == Auth()->user()->id){ echo 'style="margin-right:0px; margin-left:40%;"'; }else{ echo 'style="margin-left:0px; margin-right:40%;"'; }?> >
+                    <div class="direct-chat-text m-0" >
                       <?php echo $m['message']; ?>
                     </div>
                     <!-- /.direct-chat-text -->
@@ -172,7 +173,8 @@ $(document).ready(function(){
          {
            console.log(response);
            $('#messageinput').val('');
-           $('#messages').append('<div class="direct-chat-msg" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+response.username+'</span></div><div class="direct-chat-text" style="margin-right:0px; margin-left:40%;">'+response.message+'</div></div>');
+           let timeString_ = moment(response.created_at).format("YYYY-MM-DD HH:mm");
+           $('#messages').append('<div class="direct-chat-msg" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+response.username+'</span><span class="direct-chat-name float-left">'+timeString_+'</span></div><div class="direct-chat-text m-0">'+response.message+'</div></div>');
            // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
          }
         });

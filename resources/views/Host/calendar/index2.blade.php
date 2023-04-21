@@ -25,6 +25,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
+        
             <form id="availableHostForm" action="" >
               <div class="modal-body">
                 @if(count($meeting_charges) == 0 || empty($host_stripe_account_details))
@@ -46,10 +47,16 @@
                          or accept terms of service got in your registered email so you can get video stream payments from guests. </p>
                     </div>
                     @else
+                    
                     <div class="alert alert-info" role="alert">
                         <p style="font-size: large;">Your meeting charges for @foreach($meeting_charges as $mc) {{ $mc->duration_in_minutes ?? ''}} minutes is ${{ $mc->amount ?? '' }},  @endforeach if you want to add more charges than <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to create meeting charges"> click here </a></p>
                     </div>  
                     @endif 
+                @endif
+                @if(count($host_question) == 0)
+                    <div class="alert alert-danger" role="alert">
+                        <p style="font-size:large;"> You have to add Question for Guest <a href="">Click here</a> to add these questions</p>
+                    </div>
                 @endif
                 <div class="form-group">
                   <label for="time">Title</label>
@@ -71,7 +78,8 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" @if( count($meeting_charges) == 0 || empty($host_stripe_account_details)) disabled @else @if($host_stripe_account_details['active_status'] == 'false') disabled @endif @endif>Schedule meeting</button>
+                <button type="submit" class="btn btn-primary" @if( count($meeting_charges) == 0|| count($host_question) == 0
+                 || empty($host_stripe_account_details)) disabled @else @if($host_stripe_account_details['active_status'] == 'false') disabled @endif @endif>Schedule meeting</button>
               </div>
             </form>
           </div>
