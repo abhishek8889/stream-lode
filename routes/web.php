@@ -294,6 +294,8 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/upgrade-membership',[HostMembershipController::class,'membershipDetail'])->name('upgrade-membership');
     Route::get('/{id}/get-invoice',[HostMembershipController::class,'getInvoice'])->name('get-invoice');
     Route::get('/{id}/subscribe/{slug}',[HostMembershipController::class,'subscribe'])->name('subscribe');
+    Route::get('/{id}/subscribe-response',[HostMembershipController::class,'subscribeResponse'])->name('subscribe-response');
+
     // Route::post('/{id}/create-subscription',[HostMembershipController::class,'createSubscription'])->name('create-subscription');
     Route::post('create-subscription',[HostMembershipController::class,'createSubscription'])->name('create-subscription');
     Route::get('/{id}/upgrade-subscription',[HostMembershipController::class,'upgradeSubscription'])->name('upgrade-subscription');
@@ -301,6 +303,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::post('/{id}/upgrade-to-new-subscription',[HostMembershipController::class,'upgradeSubscriptionProcess'])->name('upgrade-to-new-subscription');
    
     Route::get('/{id}/pause-subscription/',[HostMembershipController::class,'pauseSubscription'])->name('pause-subscription');
+    Route::get('/{id}/resume-subscription/',[HostMembershipController::class,'resumeSubscription'])->name('resume-subscription');
     Route::get('/{id}/cancel-subscription/',[HostMembershipController::class,'cancelSubscription'])->name('cancel-subscription');
     
 

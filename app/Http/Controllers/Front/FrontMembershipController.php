@@ -21,9 +21,10 @@ class FrontMembershipController extends Controller
 
           #################### Create setupintent ##########################
 
-          $intent =  $stripe->setupIntents->create([
-              'payment_method_types' => ['card'],
-            ]);
+        $intent =  $stripe->setupIntents->create([
+        'payment_method_types' => ['card'],
+        ]);
+        
         return view('Guests.membership.membership_payment',compact('subscription_details','intent'));
     }
     public function registrationResponse(){

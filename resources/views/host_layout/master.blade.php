@@ -63,16 +63,17 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Navbar Search -->
-      @if(!isset(auth()->user()->membership_id) || empty(auth()->user()->membership_id))
+      @if(!isset(auth()->user()->membership_id) || empty(auth()->user()->membership_id) || auth()->user()->active_status == 0)
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{ url('/'.auth()->user()->unique_id.'/membership') }}"  class="btn btn-warning text-white " data-toggle="tooltip" data-placement="bottom" title="Click this button and enjoy the hosting feature.">Get Membership <i class="fa fa-star-o" style="font-size:16px"></i></a>
       </li>
       @else
       <?php  
         $membership_details = App\Models\MembershipTier::Where('_id',auth()->user()->membership_id)->first();
+        $membership_status = App\Models\HostSubscriptions::Where('host_id',auth()->user()->id)->first();
       ?>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="{{ url('/'.auth()->user()->unique_id.'/membership-details') }}" class="btn btn-warning text-white " data-toggle="tooltip" data-placement="bottom" title="Want more features ?">{{ $membership_details['name'] }} <img src="{{ $membership_details['logo_url'] }}" alt="{{ $membership_details['logo_name'] }}" width="20px;"> </a>
+        <a href="{{ url('/'.auth()->user()->unique_id.'/membership-details') }}" class="btn btn-warning text-white " data-toggle="tooltip" data-placement="bottom" title="@if($membership_status['subscription_status'] == 'paused')Your subscription billing is paused you cannot enjoy the feature of video streaming after the duration of your subscription. @endif">{{ $membership_details['name'] }}@if($membership_status['subscription_status'] == 'paused')(Paused) @endif </a>
       </li>
       @endif
       <li class="nav-item">

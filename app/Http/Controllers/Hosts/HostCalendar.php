@@ -10,6 +10,7 @@ use DB;
 use App\Models\MeetingCharge;
 use App\Models\HostStripeAccount;
 use App\Models\HostQuestionnaire;
+use App\Models\HostSubscriptions;
 
 class HostCalendar extends Controller
 {
@@ -124,7 +125,13 @@ class HostCalendar extends Controller
               break;
         }
       }else{
-        $message = array('error' => "Sorry but for schedule meeting you have to activate your account by paying invoice got in registered email.");
+        $host_subscription = HostSubscriptions::where('host_id',auth()->user()->id)->first();
+        $message ='';
+        if($host_subscription['subscription_status'] == 'canceled'){
+          $message = array('error' => "Sorry you don't have any memberhsip please purchase it if you want to enjoy video streaming features.");
+        }else{
+          $message = array('error' => "Sorry but for schedule meeting you have to activate your account by paying invoice got in registered email.");
+        }
         return response()->json($message);
       }
     }

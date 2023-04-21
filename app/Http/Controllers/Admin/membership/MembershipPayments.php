@@ -52,35 +52,43 @@ class MembershipPayments extends Controller
     }
     public function refund(Request $req){
         // return $req->id;
-        $membership_payment_data = MembershipPaymentsData::where('_id',$req->id)->with([
-            'user' => function($response){
-                $response->select('first_name','last_name','email');
-            },'membership_details' => function($response){
-                $response->select('name');
-            }
-        ])->first();
-        // dd($membership_payment_data);
-        $host_email = $membership_payment_data->user['email'];
-        $host_name = $membership_payment_data->user['first_name'] . ' ' .$membership_payment_data->user['last_name']; 
-        $host_membership_tier = $membership_payment_data->membership_details['name'];
-        $order_id = $membership_payment_data['order_id'];
-        $amount = $membership_payment_data['payment_amount'];
+        try{
+            $membership_payment_data = MembershipPaymentsData::where('_id',$req->id)->with([
+                'user' => function($response){
+                    $response->select('first_name','last_name','email');
+                },'membership_details' => function($response){
+                    $response->select('name');
+                }
+            ])->first();
+            // dd($membership_payment_data);
+            $host_email = $membership_payment_data->user['email'];
+            $host_name = $membership_payment_data->user['first_name'] . ' ' .$membership_payment_data->user['last_name']; 
+            $host_membership_tier = $membership_payment_data->membership_details['name'];
+            $order_id = $membership_payment_data['order_id'];
+            $amount = $membership_payment_data['payment_amount'];
 
-        
-        $payment_intent = $membership_payment_data->stripe_payment_intent;
-        $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
-        $refund_response = $stripe->refunds->create([
-            'payment_intent' => $payment_intent,
-        ]);
-        // dd($refund_response);
-        if($refund_response->status == 'succeeded'){
-            $membership_payment_data->refund_status = 1;
-            $membership_payment_data->stripe_refund_id = $refund_response->id;
-            $membership_payment_data->update();
-            $refund_email_status = Mail::to($host_email)->send(new HostRefundMail($host_name,$host_membership_tier,$order_id,$amount));           
-            return redirect()->back()->with('success','You refund the host amount succesfully.');
-        }else{
-            return redirect()->back()->with('error','Sorry there is some error in system.');
+            
+            $payment_intent = $membership_payment_data->stripe_payment_intent;
+            $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
+            $refund_response = $stripe->refunds->create([
+                'payment_intent' => $payment_intent,
+            ]);
+            // dd($refund_response);
+            if($refund_response->status == 'succeeded'){
+                $membership_payment_data->refund_status = 1;
+                $membership_payment_data->stripe_refund_id = $refund_response->id;
+                $membership_payment_data->update();
+                $refund_email_status = Mail::to($host_email)->send(new HostRefundMail($host_name,$host_membership_tier,$order_id,$amount));           
+                return redirect()->back()->with('success','You refund the host amount succesfully.');
+            }else{
+                return redirect()->back()->with('error','Sorry there is some error in system.');
+            }
+        }catch(\Exception $e){
+            $stripe_error_code = $e->getStripeCode();
+            if($stripe_error_code == 'charge_already_refunded'){
+                return redirect()->back()->with('error','This charge is already refunded');  
+            }
+            return redirect()->back()->with('error',$e->getMessage());  
         }
     }
     public function search(Request $req){

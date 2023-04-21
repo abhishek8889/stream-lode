@@ -15,8 +15,7 @@
           </div>
         </div>
       </div>
-    </div>
-            <div class="card-body table-responsive p-0">
+        <div class="card-body table-responsive p-0">
             @foreach($membership_payments_details as $membership_payments_details)
                 <div class="invoice p-3 mb-3">
                 <!-- title row -->
@@ -29,7 +28,9 @@
                             @if($membership_payments_details['refund_status'] == 1)
                                 <a class="btn btn-primary ml-2 disabled" href="#">Refunded</a>            
                             @else
-                                <a class="Refund btn btn-danger ml-2" href="#" url="{{ url('/admin/membership-payment-refund/'.$membership_payments_details['_id']) }}">Refund</a>            
+                                @if($membership_payments_details['total'] > 0)
+                                    <a class="Refund btn btn-danger ml-2" href="#" url="{{ url('/admin/membership-payment-refund/'.$membership_payments_details['_id']) }}">Refund</a>            
+                                @endif
                             @endif
                         @else
                         <div class="btn btn-danger ml-2">{{ $membership_payments_details['payment_status'] }}</div>

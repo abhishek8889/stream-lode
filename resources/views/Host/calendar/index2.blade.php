@@ -29,6 +29,7 @@
               <div class="modal-body">
                 @if(count($meeting_charges) == 0 || empty($host_stripe_account_details))
                     @if(count($meeting_charges) == 0 )
+                    
                     <div class="alert alert-danger" role="alert">
                         <p style="font-size:large;"> You have to <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}" data-toggle="tooltip" data-placement="bottom" title="Click here to create meeting charges"> create meeting charge </a> before set your availability. </p>
                     </div>
@@ -52,7 +53,7 @@
                 @endif
                 <div class="form-group">
                   <label for="time">Title</label>
-                  <input type="text" class="form-control" id="title" placeholder="Enter your Title" required/>
+                  <input type="text" class="form-control" id="title" placeholder="Enter your Title" />
                 </div>
                 <?php 
                     $today_date = date("Y-m-d H:i");

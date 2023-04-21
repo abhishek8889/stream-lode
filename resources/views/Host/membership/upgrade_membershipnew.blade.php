@@ -21,11 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
     <link rel="stylesheet" href="{{  asset('streamlode-front-assets/css/stylesheet.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-
-
-
-
-    <title>Streamlode</title>
+    <title>Streamlode|Upgrade membership</title>
   </head>
 <body>
 <section class="choose-plan-section">
@@ -182,54 +178,50 @@
               </div>
             </div>
           </div> -->
-
-          
           @foreach($subscription_list as $subscription)
-            <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item {{ $subscription['name'] ?? '' }}">
-              <div class="pricing-box-wrapper">
-                <div class="pricing-box">
-                  <div class="pricing-top">
-                    <div class="pricing-header">
-                      <h4>{{ $subscription['name'] }}</h4>
-                      <h3 class="price">
-                        ${{ $subscription['amount'] }} <span class="period">/ {{ $subscription['interval'] }}</span>
-                      </h3>
+            @if((int)$subscription['amount'] > 0)
+              <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item {{ $subscription['name'] ?? '' }}">
+                <div class="pricing-box-wrapper">
+                  <div class="pricing-box">
+                    <div class="pricing-top">
+                      <div class="pricing-header">
+                        <h4>{{ $subscription['name'] }}</h4>
+                        <h3 class="price">
+                          ${{ $subscription['amount'] }} <span class="period">/ {{ $subscription['interval'] }}</span>
+                        </h3>
+                      </div>
+                      <div class="pricing-body">
+                        <ul class="access-list">
+                          <?php 
+                            // $features_list = json_decode($subscription['membership_features']); 
+                          ?>
+                        @if($subscription['membership_features']) 
+                        @foreach($subscription['membership_features'] as $feature)
+                        
+                          @php
+                          $data = App\Models\MembershipFeature::find($feature);
+                          @endphp
+                        
+                          <?php 
+                          if($data){ ?>
+                          <li>
+                            {{ $data['description'] ?? '' }}
+                          </li>
+                        <?php }
+                          ?>
+                        
+                          @endforeach
+                          @endif
+                        </ul>
+                      </div>
                     </div>
-                    <div class="pricing-body">
-                      <ul class="access-list">
-                        <?php 
-                          // $features_list = json_decode($subscription['membership_features']); 
-                        ?>
-                      @if($subscription['membership_features']) 
-                       @foreach($subscription['membership_features'] as $feature)
-                      
-                        @php
-                        $data = App\Models\MembershipFeature::find($feature);
-                        @endphp
-                       
-                        <?php 
-                        if($data){ ?>
-                        <li>
-                          {{ $data['description'] ?? '' }}
-                        </li>
-                       <?php }
-                        ?>
-                       
-                        @endforeach
-                        @endif
-                      </ul>
+                    <div class="pricing-footer">
+                      <a href="{{ url(auth()->user()->unique_id.'/upgrade-subscription/'.$subscription['slug']) }}" class="cta cta-yellow">Upgrade Membership</a>
                     </div>
-                  </div>
-                  <div class="pricing-footer">
-                    @if((int)$subscription['amount'] < 1)
-                    <p><b>For a Sponsorship Tier, email <a href="mailto:Sales@StreamLode.com">Sales@StreamLode.com</a> about being a StreamLode Sponsor.</b></p>
-                    @else
-                    <a href="{{ url(auth()->user()->unique_id.'/upgrade-subscription/'.$subscription['slug']) }}" class="cta cta-yellow">Upgrade Membership</a>
-                    @endif
                   </div>
                 </div>
               </div>
-            </div>
+            @endif
           @endforeach
         
         </div>
@@ -237,14 +229,12 @@
     </div>
   </div>
 </section>
-
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
 <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script> -->
 <script src="{{ asset('streamlode-front-assets/js/custom.js') }}"></script>
