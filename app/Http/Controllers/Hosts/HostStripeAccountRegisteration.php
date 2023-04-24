@@ -193,7 +193,7 @@ class HostStripeAccountRegisteration extends Controller
             $account_num = HostStripeAccount::where('_id',$req->id)->first();
             // $customer = \Stripe\Customer::retrieve($account_num->stripe_account_num);
             // $customer->delete();
-            return response()->json('Account Has Been Deleted');
+            return response()->json('Your Account Has Been Deleted');
         }else{
             return redirect()->json(false);
         }

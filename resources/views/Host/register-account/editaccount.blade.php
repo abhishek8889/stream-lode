@@ -391,15 +391,25 @@ display: none;
                 success: function(response) {
                     $('#overlayer').fadeOut();
                         console.log(response);
-                        swal({
-                          title: "success !",
-                          text: response,
-                          icon: "success",
-                          button: "Done",
-                      });
+                        // alert(response);
+                        Swal.fire({
+                            title: 'Success',
+                            text: response,
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                           window.location.reload();
+                          }
+                        })
+                     
                      },
                 error: function(jqXHR, textStatus, errorThrown) {
                         $('#overlayer').fadeOut();
+                        // alert(textStatus, errorThrown);
                         // console.log(textStatus, errorThrown);
                         swal({
                           title: "error !",
@@ -412,4 +422,5 @@ display: none;
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

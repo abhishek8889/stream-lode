@@ -103,6 +103,7 @@ Route::post('forgottenProc',[AuthenticationController::class,'ForgottenProcess']
 Route::get('reset-password/{email}/{token}',[AuthenticationController::class,'newpassword']);
 
 // Front Routes 
+//  Add middelware for authentication admin and host for home 
 Route::group(['middleware'=>['User','User']],function(){
 Route::get('/',[HomeController::class,'index'])->name('/');
 Route::get('/membership',[FrontMembershipController::class,'index'])->name('membership');
@@ -115,7 +116,7 @@ Route::get('/search-host',[SearchHostController::class,'index'])->name('search-h
 Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
-});
+
 //questionnaire
 Route::post('/questionnaire',[SearchHostController::class,'questionnaire']);
 
@@ -126,6 +127,8 @@ Route::post('send-messages',[MeetingController::class,'send']);
 Route::post('messageseen',[MeetingController::class,'messageseen']);
 
 
+});
+// User Middelware end here !!!
 
 Route::get('/coupon-for-host',[ApplyDiscountController::class,'couponForHost'])->name('coupon-for-host');
 
