@@ -103,6 +103,7 @@ Route::post('forgottenProc',[AuthenticationController::class,'ForgottenProcess']
 Route::get('reset-password/{email}/{token}',[AuthenticationController::class,'newpassword']);
 
 // Front Routes 
+Route::group(['middleware'=>['User','User']],function(){
 Route::get('/',[HomeController::class,'index'])->name('/');
 Route::get('/membership',[FrontMembershipController::class,'index'])->name('membership');
 Route::get('/membership-payment/{slug}',[FrontMembershipController::class,'membershipPayment']);
@@ -114,7 +115,7 @@ Route::get('/search-host',[SearchHostController::class,'index'])->name('search-h
 Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
 Route::post('/searchhost',[SearchHostController::class,'searchhost']);
-
+});
 //questionnaire
 Route::post('/questionnaire',[SearchHostController::class,'questionnaire']);
 
@@ -308,6 +309,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/register-account',[HostStripeAccountRegisteration::class,'index'])->name('register-account');
     Route::get('/{id}/edit-account',[HostStripeAccountRegisteration::class,'editAccount'])->name('edit-account');
     Route::post('/register-host-stripe-account',[HostStripeAccountRegisteration::class,'registerAccount']);
+    Route::post('/update-host-stripe-account', [HostStripeAccountRegisteration::class,'updateAccount']);
     Route::post('/delete-host-stripe-account', [HostStripeAccountRegisteration::class,'deleteAccount']);
     
 

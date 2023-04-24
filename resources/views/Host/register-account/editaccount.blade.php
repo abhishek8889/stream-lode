@@ -171,7 +171,7 @@ display: none;
     <section class="content">
       <div class="container-fluid">
             <div class="card card-info">
-                <form action="{{ url('register-host-stripe-account') }}" method="POST">
+                <form action="{{ url('update-host-stripe-account') }}" method="POST">
                     <div class="card-body">
                         <div class="col-md-10" >
                             <div class="userform">
