@@ -137,6 +137,14 @@ Breadcrumbs::for('payment-methods', function (BreadcrumbTrail $trail): void {
     $trail->parent('host-dashboard');
     $trail->push('payment-methods', route('payment-methods',['id'=> Auth::user()->unique_id]));
 });
+Breadcrumbs::for('register-account', function (BreadcrumbTrail $trail): void {
+    $trail->parent('host-dashboard');
+    $trail->push('Register-account', route('register-account',['id'=> Auth::user()->unique_id]));
+});
+Breadcrumbs::for('edit-account',function(BreadcrumbTrail $trail): void{
+   $trail->parent('register-account');
+   $trail->push('Edit', route('edit-account',['id'=> Auth::user()->unique_id,'idd' => 1]));
+});
 Breadcrumbs::for('questionnaire', function (BreadcrumbTrail $trail): void {
     $trail->parent('host-dashboard');
     $trail->push('Questionnaire', route('questionary',['id'=> Auth::user()->unique_id]));

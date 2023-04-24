@@ -178,7 +178,11 @@ class HostStripeAccountRegisteration extends Controller
     public function editAccount(){
        $AccountDetails =  HostStripeAccount::where('host_id',auth()->user()->id)->first();
     //    dd($AccountDetails);
-        return view('Host.register-account.editaccount',compact('AccountDetails'));
+    if($AccountDetails){
+         return view('Host.register-account.editaccount',compact('AccountDetails'));
+    }else{
+        return redirect(url('/'.auth()->user()->unique_id.'/register-account'))->with('error','Need to register your account');
+    }
     }
     public function deleteAccount(Request $req){
         if($req->id){
