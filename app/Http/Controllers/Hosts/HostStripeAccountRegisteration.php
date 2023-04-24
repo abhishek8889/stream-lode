@@ -176,6 +176,18 @@ class HostStripeAccountRegisteration extends Controller
         return $ipaddress;
     }
     public function editAccount(){
-        return "here we edit the host stripe account ";
+       $AccountDetails =  HostStripeAccount::where('host_id',auth()->user()->id)->first();
+    //    dd($AccountDetails);
+        return view('Host.register-account.editaccount',compact('AccountDetails'));
+    }
+    public function deleteAccount(Request $req){
+        if($req->id){
+            $account_num = HostStripeAccount::where('_id',$req->id)->first();
+            // $customer = \Stripe\Customer::retrieve($account_num->stripe_account_num);
+            // $customer->delete();
+            return response()->json('Account Has Been Deleted');
+        }else{
+            return redirect()->json(false);
+        }
     }
 }

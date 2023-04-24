@@ -69,8 +69,15 @@
                            @else
                            <td><span class="badge badge-danger"> {{ $data[0]['payments'][0]['payment_status'] }}</span></td>  
                            @endif
-
-                           <td><b>${{ $data[0]['payments'][0]['total'] ?? $data[0]['payments'][0]['membership_total_amount'] }}</b></td>
+                           <!-- New code for count total ammount of membership -->
+                            @php  $datanew = array(); @endphp
+                            @for ($i=0; $i< count($data[0]['payments']); $i++)
+                                @php 
+                                    $datanew[] = $data[0]['payments'][$i]['total'];
+                                @endphp
+                            @endfor
+                            <td><b> ${{array_sum($datanew) ?? ''}} </b></td>
+                           <!-- <td><b>${{ $data[0]['payments'][0]['total'] ?? $data[0]['payments'][0]['membership_total_amount'] }}</b></td> -->
                           <td>{{ $data[0]['payments'][0]['created_at'] }}</td>
                            <td>
                                 <a href="{{ url('/admin/membership-payment-details/'.$data[0]->unique_id) }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
