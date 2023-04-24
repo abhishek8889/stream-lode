@@ -308,6 +308,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/register-account',[HostStripeAccountRegisteration::class,'index'])->name('register-account');
     Route::get('/{id}/edit-account',[HostStripeAccountRegisteration::class,'editAccount'])->name('edit-account');
     Route::post('/register-host-stripe-account',[HostStripeAccountRegisteration::class,'registerAccount']);
+    Route::post('/delete-host-stripe-account', [HostStripeAccountRegisteration::class,'deleteAccount']);
     
 
     //Discount
