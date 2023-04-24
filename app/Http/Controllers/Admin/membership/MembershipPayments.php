@@ -33,6 +33,7 @@ class MembershipPayments extends Controller
         }else{
         $membership_payments_list = array();
         }
+      
         return view('Admin.payment-collection.membership_payment',compact('membership_payments_list'));
     }
     public function membershipPaymentDetails(Request $req , $unique_id){

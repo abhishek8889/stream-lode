@@ -60,7 +60,7 @@
                                     <div class="form-group row">
                                         <label for="personal_contact" class="col-sm-3 col-form-label">Personal contact</label>
                                         <div class="col-sm-9">
-                                            <input type="number" class="form-control" id="personal_contact" name="personal_contact" placeholder="Enter your personal number" value="">
+                                            <input type="number" min="0" class="form-control" id="personal_contact" name="personal_contact" placeholder="Enter your personal number" value="">
                                             @error('personal_contact')
                                                 <div class="text text-danger">{{ $message }}</div>
                                             @enderror
@@ -108,7 +108,7 @@
                                     <div class="form-group row">
                                         <label for="ssn" class="col-sm-3 col-form-label">Social Security number (SSN)</label>
                                         <div class="col-sm-9">
-                                            <input type="number" class="form-control" id="ssn" name="ssn" placeholder="Enter your SSN Number" value="">
+                                            <input type="number"  min="0"  class="form-control" id="ssn" name="ssn" placeholder="Enter your SSN Number" value="">
                                             @error('ssn')
                                                 <div class="text text-danger">{{ $message }}</div>
                                             @enderror
@@ -130,7 +130,7 @@
                                     <div class="form-group row">
                                         <label for="business_phone" class="col-sm-3 col-form-label">Business phone number</label>
                                         <div class="col-sm-9">
-                                            <input type="number" class="form-control" id="business_phone" name="business_phone" placeholder="Enter Your Business Contact Number" value="">
+                                            <input type="number" min="0"  class="form-control" id="business_phone" name="business_phone" placeholder="Enter Your Business Contact Number" value="">
                                             @error('business_phone')
                                                 <div class="text text-danger">{{ $message }}</div>
                                             @enderror
