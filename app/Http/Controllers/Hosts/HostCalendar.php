@@ -24,7 +24,7 @@ class HostCalendar extends Controller
        
         // dd($available_host);
         if($request->ajax()) {
-          $host_appoinments = HostAppointments::where('host_id',Auth()->user()->id)->get(['id','start','end','status']);
+          $host_appoinments = HostAppointments::where('host_id',Auth()->user()->id)->where('questionrie_status',1)->get(['id','start','end','status']);
           foreach($host_appoinments as $meetings){
                 $data[] =  array(
                     'id'       =>  $meetings['id'],

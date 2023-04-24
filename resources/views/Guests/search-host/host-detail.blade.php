@@ -411,14 +411,14 @@ $date = date('Y-m-d h:i');
               @foreach($hq->checkboxname as $checkbox)
                 <div class="form-check mb-2">
                  
-                  <input class="form-check-input" type="radio" name="answer[]" id="radio4Example1" value="{{ $checkbox }}" />
+                  <input class="form-check-input" type="radio" name="answer{{ $count-1 }}" id="radio4Example1" value="{{ $checkbox }}" />
                   <label class="form-check-label" for="radio4Example1">
                     {{ $checkbox }}
                   </label>
                 </div>
                 @endforeach
                 @else
-                <textarea class="form-control" id="form4Example4" rows="4" name="answer[]"></textarea>
+                <textarea class="form-control" id="form4Example4" rows="4" name="answer{{ $count-1 }}"></textarea>
               @endif
               <hr />
          @endforeach
@@ -717,7 +717,18 @@ $date = date('Y-m-d h:i');
           e.preventDefault();
           $("#overlayer").fadeIn();
           formdata = new FormData(this);
-          // console.log(formdata);
+          var questions = '{{ count($HostQuestionnaire) }}';
+          data = $(this).serialize();
+          for (let i = 0; i < questions; i++) {
+            const answer1 = new URLSearchParams(data).get('answer'+i);
+            if(answer1 == null || answer1 == ""){
+            $('#errorspan').html('Please answer all the below questions');
+          $("#overlayer").fadeOut();
+            return false;
+            }else{
+            $('#errorspan').html('');
+            }
+          }
           $.ajax({
             method: 'post',
             url: '{{url('questionnaire')}}',
@@ -735,7 +746,7 @@ $date = date('Y-m-d h:i');
                 // console.log(response);
                 location.reload();
               }
-            }
+            },
           })
         });
         
@@ -749,7 +760,5 @@ $date = date('Y-m-d h:i');
     </script>
     @endif
 @endif
-
-      
 
 @endsection

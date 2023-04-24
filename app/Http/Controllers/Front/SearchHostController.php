@@ -287,15 +287,20 @@ class SearchHostController extends Controller
     }
   
 public function questionnaire(Request $request){
-    // return $request->all();
+
+    // return $_POST['answer'.$count];
+   
     $questions = HostQuestionnaire::where('host_id',$request->host_id)->get();
     $questionrie_status = HostAppointments::where([['user_id',Auth::user()->id],['host_id',$request->host_id],['questionrie_status',0]])->first();
     // return $questionrie_status->_id;            
-    foreach($questions as $q){
+                foreach($questions as $q){
                     $data[] = $q->question;
                 }
-                $reqdata = array_filter($request->answer);
-         
+                for ($i=0; $i < count($data); $i++) { 
+                    $answer[] = $_POST['answer'.$i];
+                }
+                $reqdata = array_filter($answer);
+   
             if(count($data) !== count($reqdata)){
                 // echo 'error';
                 $response = array('error'=>'Please answer all the below questions.');
@@ -304,7 +309,7 @@ public function questionnaire(Request $request){
             }
             $questionary = new QuestionarieAnswer();
             $questionary->questions = $data;
-            $questionary->answers = $request->answer;
+            $questionary->answers = $reqdata;
             $questionary->appointment_id = $questionrie_status->_id;
             $questionary->save();
 
@@ -327,9 +332,7 @@ public function questionnaire(Request $request){
             event(new NotificationsSend($host->_id,$questionrie_status));
             
             $response = array('success'=>$questionrie_status);
-            return response()->json($response);
-        
-            
+            return response()->json($response);   
     }
 
 }

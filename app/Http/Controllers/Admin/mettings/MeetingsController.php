@@ -18,7 +18,7 @@ class MeetingsController extends Controller
       }
       $data = array_unique($userdata,SORT_REGULAR);
       foreach($data as $d){
-        $user[] = User::where('_id',$d['_id'])->with('appoinments',function($response){ $response->orderBy('created_at','desc'); } )->get();
+        $user[] = User::where('_id',$d['_id'])->with('appoinments',function($response){ $response->where('questionrie_status',1)->orderBy('created_at','desc'); } )->get();
       }
     }else{
       $user = array();
@@ -28,7 +28,7 @@ class MeetingsController extends Controller
   public function detail($id){
      
       $host = User::where('unique_id',$id)->first();
-      $data = HostAppointments::where('host_id',$host->_id)->orderBy('created_at','DSC')->with('user')->get();
+      $data = HostAppointments::where('questionrie_status',1)->where('host_id',$host->_id)->orderBy('created_at','DSC')->with('user')->get();
       // dd($data);
    return view('Admin.mettings.appoinments_detail',compact('data'));
     }

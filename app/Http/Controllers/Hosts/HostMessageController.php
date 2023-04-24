@@ -34,7 +34,7 @@ class HostMessageController extends Controller
           $users = array();
         }
          
-     $host_schedule = HostAppointments::where('host_id',Auth::user()->_id)->groupBy('user_id')->select('guest_email','guest_name','host_id')->get();
+     $host_schedule = HostAppointments::where([['host_id',Auth::user()->_id],['questionrie_status',1]])->groupBy('user_id')->select('guest_email','guest_name','host_id')->get();
       $admin = User::where('status',2)->first();
      // echo $idd;
       if($idd != null){

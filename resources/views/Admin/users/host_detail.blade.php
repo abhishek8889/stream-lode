@@ -243,7 +243,10 @@
                       <div class="direct-chat-msg">
                         <div class="direct-chat-infos clearfix">
                           <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }else{ echo 'float-left'; }?>">{{$m['username']}}</span>
-                          <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-left'; }else{ echo 'float-right'; }?>">{{$m['created_at']}}</span>
+                          <?php
+                       $time = Date("Y-m-d H:i", strtotime("0 minutes", strtotime($m['created_at']))); 
+                       ?>
+                          <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-left'; }else{ echo 'float-right'; }?>">{{$time}}</span>
                         </div>
                         <div class="direct-chat-text m-0" >
                         {{$m['message']}}
