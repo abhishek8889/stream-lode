@@ -125,9 +125,9 @@ $(document).ready(function () {
                         // var title = prompt('Event Title:');
                         $("#calendarModal").modal('show');
                         // let startdateString = moment(start._d).format("YYYY-MM-DD HH:mm");
-                        // let enddateString = moment(start._d, "YYYY-MM-DD HH:mm").add(60, 'minutes').format('YYYY-MM-DD HH:mm');
-                        let startdateString = moment().format("YYYY-MM-DD hh:mm");
-                        let enddateString = moment().add(60, 'minutes').format('YYYY-MM-DD hh:mm');
+                        // let enddateString = moment(start._d, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
+                        let startdateString = moment().format("YYYY-MM-DD HH:mm");
+                        let enddateString = moment().add(30, 'minutes').format('YYYY-MM-DD HH:mm');
                         $('#start_time').val(startdateString);
                         $('#end_time').val(enddateString);
                         $('#end_time').change(function(){
