@@ -657,7 +657,10 @@ class HostMembershipController extends Controller
       $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
       $pause_status = $stripe->subscriptions->update(
         $subscription_id,
-        ['pause_collection' => ['behavior' => 'void']]
+        [
+          'pause_collection' => ['behavior' => 'void'],
+          'cancel_at_period_end' => true,
+        ]
       );
       HostSubscriptions::where('host_id' , auth()->user()->id)->update(['subscription_status'=>'paused']);
       return redirect()->back()->with('success','You have succesfully paused your subscription');
@@ -667,7 +670,10 @@ class HostMembershipController extends Controller
       $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
       $resume_status = $stripe->subscriptions->update(
         $subscription_id,
-        ['pause_collection' => '']
+        [
+          'pause_collection' => '',
+          'cancel_at_period_end' => false,
+        ]
       );
       HostSubscriptions::where('host_id' , auth()->user()->id)->update(['subscription_status'=>'active']);
       return redirect()->back()->with('success','You have succesfully resumed your subscription');

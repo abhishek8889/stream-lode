@@ -25,8 +25,9 @@
                         <i class="fas fa-edit"></i> Membership Payment Detail Page 
                         @if($membership_payments_details['payment_status'] == 'succesfull' )
                         <div class="btn btn-success ml-2">{{ $membership_payments_details['payment_status'] }}</div>
+                       
                             @if($membership_payments_details['refund_status'] == 1)
-                                <a class="btn btn-primary ml-2 disabled" href="#">Refunded</a>            
+                                <a class="btn btn-primary ml-2 disabled" href="#">Refunded</a>     
                             @else
                                 @if($membership_payments_details['total'] > 0)
                                     <a class="Refund btn btn-danger ml-2" href="#" url="{{ url('/admin/membership-payment-refund/'.$membership_payments_details['_id']) }}">Refund</a>            
@@ -100,12 +101,17 @@
                         </tr>
                         <tr>
                             <th>Discount:</th>
-                            <td>${{ $membership_payments_details['discount_amount'] ?? 0 }}</td>
+                            @if($membership_payments_details['discount_amount'] == null)
+                            <td>$0</td>
+                            @else
+                            <td>${{ $membership_payments_details['discount_amount'] ?? '0' }}</td>
+                            @endif
+                            
                         </tr> 
                         
                         <tr>
                             <th>Total:</th>
-                            <td>${{ $membership_payments_details['total'] ?? $membership_payments_details['membership_total_amount'] }}</td>
+                            <td class="totalpayment">${{ $membership_payments_details['total'] ?? $membership_payments_details['membership_total_amount'] }}</td>
                         </tr>
                         </tbody></table>
                     </div>
@@ -116,6 +122,12 @@
             </div>
 </div>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    $(document).ready(function (){
+       var data = $('.totalpayment').attr('data-id');
+       console.log(data);
+    });
+  </script>
     <script>
         $(document).ready(function(){
             $('.Refund').click(function(){
