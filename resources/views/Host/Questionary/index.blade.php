@@ -62,7 +62,8 @@
                             <?php $data = implode(",",$qd->checkboxname);
                              ?>
                              @endif
-                            <td> {{ $data ?? '' }}</td>
+                             
+                            <td>@if($qd->answer_type == 'input') - @else  {{ $data ?? '' }}@endif</td>
                             
                             <td><a href="{{ url('/'.Auth()->user()->unique_id.'/addquestionnaire/'.$qd->id) }}" class="edit" data-id="{{ $qd->id }}"><i class="far fa-edit"></i></a>
                             <a class="delete ml-2" data-id = "{{ $qd->id }}" id ="delete{{$qd->id}}"><i class="fas fa-trash-alt"></i> </a><button type="submit" class="btn btn-dark edit{{ $qd->_id }}" style="display:none;" >Update</button></td>

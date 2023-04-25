@@ -30,7 +30,7 @@
                       <th>Host Name</th>
                       <th>Email</th>
                       <th>Unique id</th>
-                      <th style="width: 40px">Appoinments</th>
+                      <th style="width: 40px">Appointments</th>
                     </tr>
                   </thead>
                   <?php $count = 0; ?>

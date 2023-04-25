@@ -336,7 +336,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::post('host/updatemessage',[HostMessageController::class,'update']);
    
     //Appoinments
-    Route::get('{id}/Appoinments',[AppoinmentsController::class,'index'])->name('appoinments');
+    Route::get('{id}/appointments',[AppoinmentsController::class,'index'])->name('appoinments');
     Route::get('delete-appointment/{id}',[AppoinmentsController::class,'deleteAppointment']);
 
     //meeting charges

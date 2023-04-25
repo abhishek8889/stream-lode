@@ -150,7 +150,7 @@
           <div class="dropdown-divider"></div>
         
           @foreach($appoinments as $ap)
-          <a href="{{ url(Auth()->user()->unique_id.'/Appoinments') }}" class="dropdown-item">
+          <a href="{{ url(Auth()->user()->unique_id.'/appointments') }}" class="dropdown-item">
           <i class="nav-icon fas fa-calendar mr-2"></i>
           new appointment scheduled with {{$ap->guest_name}}
             <!-- <span class="float-right text-muted text-sm">12 hours</span> -->
@@ -366,7 +366,7 @@
           </li>
           
           <li class="nav-item ">
-            <a href="{{ url('/'.auth()->user()->unique_id.'/Appoinments') }}" class="nav-link active">
+            <a href="{{ url('/'.auth()->user()->unique_id.'/appointments') }}" class="nav-link active">
             <i class="far fa-calendar-check nav-icon"></i>
               <p>
                 Appointments

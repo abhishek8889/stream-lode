@@ -286,10 +286,14 @@ class SearchHostController extends Controller
         return response()->json($hosts);
     }
   
-public function questionnaire(Request $request){
-
+public function questionnaire(Request $request ){
+    
     // return $_POST['answer'.$count];
-   
+    if($request->task == 'delete'){
+        $questionrie_status = HostAppointments::where([['user_id',Auth::user()->id],['host_id',$request->host_id],['questionrie_status',0]])->first();
+        $questionrie_status->delete();
+        return response()->json('successfully cancel appoinments');
+    }
     $questions = HostQuestionnaire::where('host_id',$request->host_id)->get();
     $questionrie_status = HostAppointments::where([['user_id',Auth::user()->id],['host_id',$request->host_id],['questionrie_status',0]])->first();
     // return $questionrie_status->_id;            

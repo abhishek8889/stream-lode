@@ -423,6 +423,7 @@ $date = date('Y-m-d h:i');
               <hr />
          @endforeach
           <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-success" host-id = "{{ $host_details['_id'] ?? ''}}" id="deleteappoinment">Cancel Appoinment</button>
         </form>
         </div>
       </div>
@@ -748,6 +749,24 @@ $date = date('Y-m-d h:i');
               }
             },
           })
+        });
+
+        $(document).ready(function(){
+          $('#deleteappoinment').click(function(e){
+            // e.preventDefault();
+          host_id = $(this).attr('host-id');
+            console.log(host_id);
+            $.ajax({
+            method: 'post',
+            url: '{{url('questionnaire')}}',
+            data: { host_id:host_id, task:'delete',_token:'{{ csrf_token() }}' },
+            dataType: 'json',
+            success: function(response)
+            {
+            location.reload();
+            }
+          });
+          });
         });
         
       </script>

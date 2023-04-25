@@ -3,7 +3,7 @@ import './bootstrap';
 let authidd = $('#hostauthid').val();
     window.Echo.channel('chat'+authidd)
     .listen('.message',(e)=>{
-       console.log(e);
+    //    console.log(e);
         let base_url = $('#base_url').val();
         let count = parseInt($('#messagecount').html());
         
@@ -23,8 +23,6 @@ let authidd = $('#hostauthid').val();
             $('#messages').append('<div class="direct-chat-msg"><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-left">'+e.username.first_name+'</span><span class="direct-chat-name float-right">'+timeString_+'</span> </div> <div class="direct-chat-text" style="margin-left:0px;">'+e.message+'</div></div>');
            
             }
-       
-       
     });
     window.Echo.channel('adminnotification')
     .listen('.adminnotification',(e)=>{
@@ -40,7 +38,7 @@ let authidd = $('#hostauthid').val();
    
     window.Echo.channel('notifications'+authidd)
     .listen('.notification',(e)=>{
-        console.log(e);
+        // console.log(e);
         let authid = $('#hostauthid').val();
            let base_url = $('#base_url').val();
            let count1 = parseInt($('#notificationcount').html());
@@ -48,7 +46,9 @@ let authidd = $('#hostauthid').val();
             if(authid == e.host_id){
                 $('#notificationcount').html(count1 + 1);
                 // console.log(e.appoinments);
-                $('#appointmentnotification').append('<tr><td><a href="'+base_url+'/Appoinments">You got a new appointment from '+e.appoinments.guest_name+' for '+e.appoinments.duration_in_minutes+' minutes </a><br><span>'+e.appoinments.created_at+'</span></td><tr>');
+            let timecreatedat = moment(e.appoinments.created_at).format("MM/DD/YYYY HH:mm");
+            
+                $('#appointmentnotification').append('<tr><td><a href="'+base_url+'/appointments">You got a new appointment from '+e.appoinments.guest_name+' for '+e.appoinments.duration_in_minutes+' minutes </a><br><span>'+timecreatedat+'</span></td><tr>');
             } 
     });
     

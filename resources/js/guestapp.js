@@ -3,7 +3,7 @@ import './bootstrap';
 let authidd = $('#authid').val();
     window.Echo.channel('chat'+authidd)
     .listen('.message',(e)=>{
-        console.log(e);
+        // console.log(e);
        let count = parseInt($('.messagecount').html());
        let authid = $('#authid').val();
        let base_url = $('#base-url').val();

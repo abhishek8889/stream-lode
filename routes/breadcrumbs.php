@@ -64,7 +64,7 @@ Breadcrumbs::for('payment-details', function (BreadcrumbTrail $trail): void {
 });
 Breadcrumbs::for('meetings', function (BreadcrumbTrail $trail): void {
     $trail->parent('admin-dashboard');
-    $trail->push('Appoinments', route('meetings'));
+    $trail->push('Appointments', route('meetings'));
 });
 Breadcrumbs::for('meetings-detail', function (BreadcrumbTrail $trail): void {
     $trail->parent('meetings');
@@ -115,7 +115,7 @@ Breadcrumbs::for('calender', function (BreadcrumbTrail $trail): void {
 });
 Breadcrumbs::for('appoinments', function (BreadcrumbTrail $trail): void {
     $trail->parent('host-dashboard');
-    $trail->push('Appoinments', route('appoinments',['id'=> Auth::user()->unique_id]));
+    $trail->push('Appointments', route('appoinments',['id'=> Auth::user()->unique_id]));
 });
 Breadcrumbs::for('Coupons', function (BreadcrumbTrail $trail): void {
     $trail->parent('host-dashboard');

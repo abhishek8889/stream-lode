@@ -155,7 +155,7 @@ display: none;
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-          <h3>Appoinments</h3>
+          <h3>Appointments</h3>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -277,7 +277,7 @@ display: none;
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Appoinment_Details</h5>
+                        <h5 class="modal-title" id="exampleModalLongTitle">Appointment_Details</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
@@ -347,7 +347,7 @@ display: none;
                             
                             ?>
                               <div id="accordion{{ $hs->_id }}">
-                                <h3>Questions</h3>
+                                <h3>Questions&Answers</h3>
                                 <!-- for question answer -->
                               <?php 
                             for($i=0; $i<count($data[0]); $i++){ ?>
