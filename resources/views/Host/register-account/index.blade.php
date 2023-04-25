@@ -9,7 +9,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-            {{ Breadcrumbs::render('host-general-settings') }}
+            {{ Breadcrumbs::render('register-account') }}
             </ol>
           </div>
         </div>

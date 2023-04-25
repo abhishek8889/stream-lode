@@ -103,6 +103,8 @@ Route::post('forgottenProc',[AuthenticationController::class,'ForgottenProcess']
 Route::get('reset-password/{email}/{token}',[AuthenticationController::class,'newpassword']);
 
 // Front Routes 
+//  Add middelware for authentication admin and host for home 
+Route::group(['middleware'=>['User','User']],function(){
 Route::get('/',[HomeController::class,'index'])->name('/');
 Route::get('/membership',[FrontMembershipController::class,'index'])->name('membership');
 Route::get('/membership-payment/{slug}',[FrontMembershipController::class,'membershipPayment']);
@@ -125,6 +127,8 @@ Route::post('send-messages',[MeetingController::class,'send']);
 Route::post('messageseen',[MeetingController::class,'messageseen']);
 
 
+});
+// User Middelware end here !!!
 
 Route::get('/coupon-for-host',[ApplyDiscountController::class,'couponForHost'])->name('coupon-for-host');
 
@@ -311,6 +315,7 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/register-account',[HostStripeAccountRegisteration::class,'index'])->name('register-account');
     Route::get('/{id}/edit-account',[HostStripeAccountRegisteration::class,'editAccount'])->name('edit-account');
     Route::post('/register-host-stripe-account',[HostStripeAccountRegisteration::class,'registerAccount']);
+    Route::post('/update-host-stripe-account', [HostStripeAccountRegisteration::class,'updateAccount']);
     Route::post('/delete-host-stripe-account', [HostStripeAccountRegisteration::class,'deleteAccount']);
     
 

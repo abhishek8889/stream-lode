@@ -1,15 +1,166 @@
 @extends('host_layout.master')
 @section('content')
+<style>
+  .copy-text {
+    width:85%;
+    margin-inline:40px;
+	position: relative;
+	/* padding: 10px; */
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	display: flex;
+}
+.copy-text input.text {
+	padding: 10px;
+	font-size: 18px;
+  width:100%;
+	color: #555;
+	border: none;
+	outline: none;
+}
+.copy-text button {
+	padding: 10px;
+	background: #5784f5;
+	color: #fff;
+	font-size: 18px;
+	border: none;
+	outline: none;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+.copy-text button:active {
+	background: #809ce2;
+}
+.copy-text button:before {
+	content: "Copied";
+	position: absolute;
+	top: -45px;
+	right: 0px;
+	background: #5c81dc;
+	padding: 8px 10px;
+	border-radius: 20px;
+	font-size: 15px;
+	display: none;
+}
+.copy-text button:after {
+	content: "";
+	position: absolute;
+	top: -20px;
+	right: 25px;
+	width: 10px;
+	height: 10px;
+	background: #5c81dc;
+	transform: rotate(45deg);
+	display: none;
+}
+.copy-text.active button:before,
+.copy-text.active button:after {
+	display: block;
+}
+.link-text{
+  text-align: center;
+  padding: 16px;
+  font-size: 20px;
+  font-weight: 10px;
+  font-style: initial;
+}
+#send-link{
+  cursor:move;
+}
+
+/* loader */
+#overlayer{
+display: none;
+  width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 99;
+    background: #e9edf3e0;
+    top: 0px;
+    height: 100vh;
+}
+.loader{
+  width: 60px;
+    height: 60px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    transform: rotate(45deg) translate3d(0,0,0);
+    animation: loader 1.2s infinite ease-in-out;
+    top: 50%;
+    left: calc(50% - 160px);
+    transform: translate(-50%, -50%);
+}
+.loader span{
+    background: #EE4040;
+    width: 30px;
+    height: 30px;
+    display: block;
+    position: absolute;
+    animation: loaderBlock 1.2s infinite ease-in-out both;
+}
+.loader span:nth-child(1){
+    top: 0;
+    left: 0;
+}
+.loader span:nth-child(2){
+    top: 0;
+    right: 0;
+    animation: loaderBlockInverse 1.2s infinite ease-in-out both;
+}
+.loader span:nth-child(3){
+    bottom: 0;
+    left: 0;
+    animation: loaderBlockInverse 1.2s infinite ease-in-out both;
+}
+.loader span:nth-child(4){
+    bottom: 0;
+    right: 0;
+}
+@keyframes loader{
+    0%, 10%, 100% {
+        width: 60px;
+        height: 60px;
+    }
+    65% {
+        width: 120px;
+        height: 120px;
+    }
+}
+@keyframes loaderBlock{
+    0%, 30% { transform: rotate(0); }
+        55% { background: #F37272; }
+    100% { transform: rotate(90deg); }
+}
+@keyframes loaderBlockInverse {
+    0%, 20% { transform: rotate(0); }
+        55% { background: #F37272; }
+    100% { transform: rotate(-90deg); }
+}
+
+</style>
+<div id="overlayer">
+<div class="loader">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+</div>
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Register Your account</h1>
+            <h1 class="m-0">Edit Your Register Account</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-            {{ Breadcrumbs::render('host-general-settings') }}
+            {{ Breadcrumbs::render('edit-account') }}
             </ol>
           </div>
         </div>
@@ -20,7 +171,7 @@
     <section class="content">
       <div class="container-fluid">
             <div class="card card-info">
-                <form action="{{ url('register-host-stripe-account') }}" method="POST">
+                <form action="{{ url('update-host-stripe-account') }}" method="POST">
                     <div class="card-body">
                         <div class="col-md-10" >
                             <div class="userform">
@@ -218,7 +369,7 @@
                     </div>
                     <div class="card-footer">
                         <button type="submit" class="btn btn-info">Update</button>
-                        <button type="button" class="btn btn-danger delete_account" data-id="{{ $AccountDetails->_id ?? '' }}"> Delete You Account</button>
+                        <button type="button" class="btn btn-danger delete_account" data-id="{{ $AccountDetails->_id ?? '' }}"> Delete Your Account</button>
                     </div>
                 </form>
             </div>
@@ -226,8 +377,10 @@
     </section>
     <script>
         $(document).ready(function (){
+            
             $('.delete_account').click( function (){
                 var id = $(this).attr('data-id');
+                $('#overlayer').fadeIn();
                 $.ajax({
                     url: '/delete-host-stripe-account',
                     type: 'POST',
@@ -235,14 +388,39 @@
                     id: id,
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function(data) {
-                        console.log(data);
+                success: function(response) {
+                    $('#overlayer').fadeOut();
+                        console.log(response);
+                        // alert(response);
+                        Swal.fire({
+                            title: 'Success',
+                            text: response,
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                           window.location.reload();
+                          }
+                        })
+                     
                      },
                 error: function(jqXHR, textStatus, errorThrown) {
-                        console.log(textStatus, errorThrown);
+                        $('#overlayer').fadeOut();
+                        // alert(textStatus, errorThrown);
+                        // console.log(textStatus, errorThrown);
+                        swal({
+                          title: "error !",
+                          text: textStatus, errorThrown,
+                          icon: "error",
+                          button: "Failed",
+                      });
                     }
                 });
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
