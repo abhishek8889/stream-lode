@@ -51,4 +51,4 @@ let authidd = $('#hostauthid').val();
                 $('#appointmentnotification').append('<tr><td><a href="'+base_url+'/Appoinments">You got a new appointment from '+e.appoinments.guest_name+' for '+e.appoinments.duration_in_minutes+' minutes </a><br><span>'+e.appoinments.created_at+'</span></td><tr>');
             } 
     });
-    
+  
