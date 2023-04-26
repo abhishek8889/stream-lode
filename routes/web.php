@@ -122,6 +122,7 @@ Route::post('/questionnaire',[SearchHostController::class,'questionnaire']);
 
 //Meetings
 Route::get('/scheduledmeeting',[MeetingController::class,'index']);
+Route::get('/scheduledmeeting/cancel/{id}',[MeetingController::class,'cancelappointment']);
 Route::get('/message/{id}',[MeetingController::class,'message']);
 Route::post('send-messages',[MeetingController::class,'send']);
 Route::post('messageseen',[MeetingController::class,'messageseen']);
@@ -338,8 +339,9 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/message/{uid?}',[HostMessageController::class,'index'])->name('host-messages');
     // Route::get('/{id}/hostmessage/{uid}',[HostMessageController::class,'hostmessage']);
     Route::post('send-message',[HostMessageController::class,'message']);
-
     Route::post('host/updatemessage',[HostMessageController::class,'update']);
+
+
    
     //Appoinments
     Route::get('{id}/appointments',[AppoinmentsController::class,'index'])->name('appoinments');
@@ -378,7 +380,8 @@ Route::group(['middleware'=>['auth','Host']],function(){
 
     Route::get('{id}/notifications',[NotificationController::class,'index']);
     Route::post('{id}/seenupdate',[NotificationController::class,'seenupdate']);
-
+    Route::get('{id}/adminnotification',[NotificationController::class,'adminnotification']);
+    
     //Host payment methods
     Route::get('/{id}/payment-methods',[HostPaymentMethodsController::class,'index'])->name('payment-methods');
     Route::get('delete-payment-methods/{id}',[HostPaymentMethodsController::class,'deletePaymentMethod']);

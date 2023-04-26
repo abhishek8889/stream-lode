@@ -69,12 +69,12 @@
                           <a href="{{ url('/'.auth()->user()->unique_id.'/cancel-subscription') }}" class="btn btn-danger">Cancel Subscription</a>
                           <a href="{{ url('/'.auth()->user()->unique_id.'/upgrademembership') }}" class="btn btn-info float-right">Upgrade Plan</a>
                         @else
-                        <a href="{{ url('/'.auth()->user()->unique_id.'/pause-subscription') }}" class="btn btn-danger">Pause Subscription</a>
-                        <a href="{{ url('/'.auth()->user()->unique_id.'/cancel-subscription') }}" class="btn btn-danger">Cancel Subscription</a>
-                        <a href="{{ url('/'.auth()->user()->unique_id.'/upgrademembership') }}" class="btn btn-info float-right">Upgrade Plan</a>
+                        <button href="{{ url('/'.auth()->user()->unique_id.'/pause-subscription') }}" class="btn btn-danger" id="pause-membership">Pause Subscription</button>
+                        <button href="{{ url('/'.auth()->user()->unique_id.'/cancel-subscription') }}" class="btn btn-danger" id="cancel-membership" >Cancel Subscription</button>   <!-- jquery below for sweetalert -->
+                        <button href="{{ url('/'.auth()->user()->unique_id.'/upgrademembership') }}" class="btn btn-info float-right" id="upgrade-plan">Upgrade Plan</button>
                         @endif
                       @else
-                        <a href="{{ url('/'.auth()->user()->unique_id.'/purchase-subscription') }}" class="btn btn-success">Purchase new subscription</a>
+                        <a href="{{ url('/'.auth()->user()->unique_id.'/membership') }}" class="btn btn-success">Purchase new subscription</a>
                       @endif
                     
                     
@@ -83,4 +83,58 @@
             </div>
         </div>
     </section>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function(){
+      $('#pause-membership').click(function(){
+       link = $(this).attr('href');
+       Swal.fire({
+                      title: 'Are you sure to pause membership!',
+                      showCancelButton: true,
+                      confirmButtonText: 'yes',
+                      confirmButtonColor: '#008000',
+                      cancelButtonText: 'no',
+                      cancelButtonColor: '#d33',
+
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        window.location.href = link;
+                      } 
+                    });
+      });
+      $('#cancel-membership').click(function(){
+       link = $(this).attr('href');
+       Swal.fire({
+                      title: 'Are you sure to cancel membership!',
+                      showCancelButton: true,
+                      confirmButtonText: 'yes',
+                      confirmButtonColor: '#008000',
+                      cancelButtonText: 'no',
+                      cancelButtonColor: '#d33',
+
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        window.location.href = link;
+                      } 
+                    });  
+      });
+      $('#upgrade-plan').click(function(){
+       link = $(this).attr('href');
+       Swal.fire({
+                      title: 'Do you want to Upgrade Plan!',
+                      showCancelButton: true,
+                      confirmButtonText: 'yes',
+                      confirmButtonColor: '#008000',
+                      cancelButtonText: 'no',
+                      cancelButtonColor: '#d33',
+
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        window.location.href = link;
+                      } 
+                    });  
+      });
+    });
+
+</script>
 @endsection

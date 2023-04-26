@@ -423,7 +423,7 @@ $date = date('Y-m-d h:i');
               <hr />
          @endforeach
           <button type="submit" class="btn btn-primary">Submit</button>
-        <button type="button" class="btn btn-success" host-id = "{{ $host_details['_id'] ?? ''}}" id="deleteappoinment">Cancel Appoinment</button>
+          <button type="button" class="btn btn-success" host-id = "{{ $host_details['_id'] ?? ''}}" id="deleteappoinment">Cancel Appoinment</button>
         </form>
         </div>
       </div>

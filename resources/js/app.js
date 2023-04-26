@@ -29,8 +29,10 @@ let authidd = $('#hostauthid').val();
         // console.log(e);
         let base_url = $('#base_url').val();
         let count1 = parseInt($('#notificationcount').html());
-        if(e.reciever_id == "public"){
-            $('#admin_notification').append('<tr><td><a href="'+base_url+'/Appoinments">You got a new message from '+e.username+'</a><br></td><tr>');
+        if(e.reciever_id == "public"){ 
+            let timestring = moment(e.time).format("YYYY-MM-DD HH:mm");
+            $('#admin_notification').append('<tr><td><a href="'+base_url+'/adminnotification">You got a new message from '+e.username+'</a><br><span>'+timestring+'</span></td><tr>');
+            $('#adminnotificationbox').append('<div class="direct-chat-msg" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-left">'+e.username+'</span><span class="direct-chat-name float-right">'+timestring+'</span></div><div class="direct-chat-text" style="margin-left:0px;">'+e.message+'</div></div>');
             $('#notificationcount').html(count1 + 1);
             // console.log(count1);
         }

@@ -16,21 +16,28 @@ class NotificationController extends Controller
   $data = array();
     foreach($notification as $d){
           if (in_array(Auth()->user()->id, $d['seen_users'])){
-            }else{
-              array_push($data,$d);
+            array_push($data,$d);
             }
     }
     return view('Host.Notifications.index',compact('hostappoinments','data'));
   }
   public function seenupdate(Request $request){
-    $postnotification = PostNotification::where('_id',$request->id)->get();
+    $postnotification = PostNotification::get();
+    $count = 0;
     foreach($postnotification as $pn){
       $notification = PostNotification::find($pn->_id);
       $ids = $notification->seen_users;
-      array_push($ids,Auth()->user()->id);
+      if (($key = array_search(Auth()->user()->id, $ids)) !== false) {
+        $count = $count +1;
+        unset($ids[$key]);
+      }
       $notification->seen_users = $ids;
       $notification->update();
     }
-    return response()->json('done');
+    return response()->json($count);
+  }
+  public function adminnotification(){
+    $notification = PostNotification::where([['created_at','>',Auth()->user()->created_at]])->get()->toArray();
+    return view('Host.Notifications.adminnotification',compact('notification'));
   }
 }

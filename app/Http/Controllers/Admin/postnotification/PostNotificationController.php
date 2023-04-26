@@ -19,7 +19,11 @@ class PostNotificationController extends Controller
     }
     public function sendmessage(Request $request){
         // print_r($request->all());
-        event(new AdminNotification($request->username, $request->message,$request->sender_id,'public'));
+        $hosts = User::where('status',1)->get();
+        foreach($hosts as $h){
+            $hosts_ids[] = $h->_id;
+        }
+        
         $request->validate([
             'message' => 'required'
         ]);
@@ -28,8 +32,9 @@ class PostNotificationController extends Controller
             $message->message = $request->message;
             $message->reciever_id = 'hosts';
             $message->username = $request->username;
-            $message->seen_users = array();
+            $message->seen_users = $hosts_ids;
             $message->save();
+            event(new AdminNotification($request->username, $request->message,$request->sender_id,'public',$message->created_at));
         return response()->json($message);
     }
 }

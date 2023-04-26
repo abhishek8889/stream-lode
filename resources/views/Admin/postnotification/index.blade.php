@@ -25,8 +25,12 @@
                               <div class="direct-chat-msg right">
                                   <div class="direct-chat-infos clearfix">
                                     <span class="direct-chat-name float-right">{{$m['username']}}</span>
+                                    <?php
+                                    $time = Date("Y-m-d H:i", strtotime("0 minutes", strtotime($m['created_at']))); 
+                                    ?>
+                                    <span class="direct-chat-name float-left">{{$time}}</span>
                                   </div>
-                                  <div class="direct-chat-text" style="margin-right:0px; margin-left:40%;">
+                                  <div class="direct-chat-text" style="margin-right:0px; ">
                                     {{$m['message']}}
                                   </div>
                               <!-- /.direct-chat-text -->
@@ -68,9 +72,10 @@
                 processData: false,
                 success: function(response)
                 {
-                  // console.log(response);
+                  console.log(response);
                     $('#messageinput').val('');
-                    $('#notificationbox').append('<div class="direct-chat-msg right" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+response.username+'</span></div><div class="direct-chat-text" style="margin-right:0px; margin-left:40%;">'+response.message+'</div></div>'); 
+                  let timeString_ = moment(response.created_at).format("YYYY-MM-DD HH:mm");
+                    $('#notificationbox').append('<div class="direct-chat-msg right" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+response.username+'</span><span class="direct-chat-name float-left">'+timeString_+'</span></div><div class="direct-chat-text" style="margin-right:0px;">'+response.message+'</div></div>'); 
                     toastr.options =
 
                   {

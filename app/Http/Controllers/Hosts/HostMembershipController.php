@@ -15,9 +15,9 @@ use Carbon\Carbon;
 use DB;
 use Mail;
 use App\Mail\HostMembershipUpdateMail;
+use App\Mail\Host_new_subscription;
 use App\Models\HostSubscriptions;
 use App\Models\Discounts\AdminDiscount;
-use App\Mail\HostRegisterMail;
 
 class HostMembershipController extends Controller
 {
@@ -246,7 +246,7 @@ class HostMembershipController extends Controller
               }
               // send mail for user's email to get activation and payment done
 
-              $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf));
+              $mail = Mail::to($email)->send(new Host_new_subscription($name, $host_inovice_url , $host_invoice_pdf));
               // dd($mail);
           }
           

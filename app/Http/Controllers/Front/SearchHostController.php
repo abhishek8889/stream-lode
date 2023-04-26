@@ -30,7 +30,7 @@ class SearchHostController extends Controller
 {
     //
     public function index(){
-        $hosts = DB::table('users')->where([['status','=',1],['active_status','=',1]])->where('public_visibility',1)->get();
+        $hosts = DB::table('users')->where('status',1)->where('public_visibility',1)->get();
         // $tags = Tags::where('user_id','63c942d6aa1425079f0bae4c')->get();
         // dd($tags); 
         return view('Guests.search-host.index',compact('hosts'));

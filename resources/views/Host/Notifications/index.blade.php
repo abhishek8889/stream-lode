@@ -11,7 +11,7 @@
                 @foreach($data as $d)
                 <tr>
                      <td>
-                         <a href="{{url('/'.Auth()->user()->unique_id.'/Appoinments') }}" notification-id="{{ $d['_id'] }}" message="{{ $d['message'] }}" class="admin_notification">
+                         <a href="{{ url('/'.Auth::user()->unique_id.'/adminnotification') }}" notification-id="{{ $d['_id'] }}" message="{{ $d['message'] }}" class="admin_notification">
                             You got a new message from {{ $d['username'] }}  
                           </a>
                           <br>
@@ -32,7 +32,7 @@
                 @forelse($hostappoinments as $hostappoinments)
                  <tr>
                      <td>
-                         <a href="{{url('/'.Auth()->user()->unique_id.'/Appoinments') }}">
+                         <a href="{{url('/'.Auth()->user()->unique_id.'/appointments') }}">
                             You got a new appointment from {{ $hostappoinments['guest_name'] }} for {{ $hostappoinments['duration_in_minutes']}} minutes 
                           </a>
                           <br>
@@ -69,24 +69,5 @@
     </div>
   </div>
 </div> 
-<script>
-    $(document).ready(function(){
-        $('.admin_notification').click(function(e){
-            e.preventDefault();
-           id = $(this).attr('notification-id');
-           msg = $(this).attr('message');
-            $.ajax({
-                method: 'post',
-                url: '{{ url('/'.Auth()->user()->unique_id.'/seenupdate') }}',
-                data: { id:id , _token:'{{ csrf_token() }}'},
-                dataType: 'json',
-                success:function(response){
-                    // alert(response);
-                    $('#modal-body').html(msg);
-                    $('#exampleModalCenter123').modal("show");
-                }
-            })
-        });
-    });
-</script>
+
 @endsection

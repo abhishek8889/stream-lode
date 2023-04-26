@@ -130,8 +130,9 @@
         $data = array();
           foreach($notification as $d){
                 if (in_array(Auth()->user()->id, $d['seen_users'])){
+                 array_push($data,$d);                                   // check user is in seen hosts list or not
                   }else{
-                    array_push($data,$d);
+                   
                   }
             }
        ?>

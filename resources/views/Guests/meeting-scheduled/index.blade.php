@@ -18,7 +18,7 @@ $time = date('Y-m-d H:i');
                                     <th>Host Email</th>
                                     <th>Meeting Starting Time</th>
                                     <th>Meeting End Time</th>
-                                    <th>Status</th>
+                                    <th>Action</th>
                                     <th>Message</th>
                                    
                                 </tr>
@@ -37,7 +37,8 @@ $time = date('Y-m-d H:i');
                                     ?>
                                     <td>{{ $sartdate }}</td>
                                     <td>{{ $enddate }}</td>
-                                    <td>@if($time > $ap->end)<span class="badge badge-success"> done </span>@else <span class="badge badge-danger"> pending</span> @endif </td>
+                                    <!-- <td>@if($time > $ap->end)<span class="badge badge-success"> done </span>@else <span class="badge badge-danger"> pending</span> @endif </td> -->
+                                    <td><button href="{{ url('scheduledmeeting/cancel') }}/{{ $ap->_id }}" class="btn btn-danger btn-sm" id="cancel-appointment">Cancel</button></td>
                                     <td><a href="{{ url('message') }}/{{ $ap->user['unique_id'] }}" class="btn btn-scucess"> Message <span class="badge badge-warning navbar-badge    ">{{ count($ap->messages) ?? 0 }}</span> </a></td>
                                 </tr>
                                @endforeach
@@ -51,5 +52,26 @@ $time = date('Y-m-d H:i');
             </div>
         </div>
     </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function(){
+            $('#cancel-appointment').click(function(){
+                href = $(this).attr('href');
+                Swal.fire({
+                      title: 'Do you want to cancel this appointment!',
+                      showCancelButton: true,
+                      confirmButtonText: 'yes',
+                      confirmButtonColor: '#008000',
+                      cancelButtonText: 'no',
+                      cancelButtonColor: '#d33',
 
+                    }).then((result) => {
+                      /* Read more about isConfirmed, isDenied below */
+                      if (result.isConfirmed) {
+                        window.location.href = href;
+                      } 
+                    })
+            });
+        });
+    </script>
 @endsection

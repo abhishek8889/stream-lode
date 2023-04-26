@@ -74,5 +74,9 @@ class HostMessageController extends Controller
       $messages = Messages::where([['reciever_id',Auth::user()->id],['sender_id',$uid]])->orWhere([['reciever_id',$uid],['sender_id',Auth::user()->id]])->get();
       return view('Host.Messages.guestmessage',compact('uid','messages'));
     }
+    public function adminnotification(){
+      
+      return view('Host.Notifications.adminnotification');
+    }
     
 }

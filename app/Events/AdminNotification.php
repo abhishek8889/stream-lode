@@ -18,13 +18,15 @@ class AdminNotification implements ShouldBroadcast
     public $message;
     public $sender_id;
     public $reciever_id;
+    public $time;
 
-    public function __construct($username,$message,$sender_id,$reciever_id)
+    public function __construct($username,$message,$sender_id,$reciever_id,$time)
     {  
         $this->username = $username;
         $this->message = $message;
         $this->sender_id = $sender_id;
         $this->reciever_id = $reciever_id;
+        $this->time = $time;
     }
     public function broadcastOn()
     {

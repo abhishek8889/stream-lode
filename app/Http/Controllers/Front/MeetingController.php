@@ -13,10 +13,17 @@ use App\Events\Message;
 class MeetingController extends Controller
 {
     public function index(){
-       $appoinments = HostAppointments::where('user_id',Auth::user()->id)->where('questionrie_status',1)->with('user')->with('messages',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); })->orderBy('created_at','desc')->get();
-        // dd($appoinments);
+        $current_time = date("Y-m-d H:i");
+       $appoinments = HostAppointments::where([['user_id','=',Auth::user()->id],['questionrie_status','=',1],['end','>=',$current_time]])->with('user')->with('messages',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); })->orderBy('created_at','desc')->get();
+        
+       // dd($appoinments);
         // echo Auth::user()->id;
         return view('Guests.meeting-scheduled.index',compact('appoinments'));
+    }
+    public function cancelappointment($id){
+        // echo $id;
+        $cancel_appointment = HostAppointments::find($id)->delete();
+        return redirect()->back()->with('successs','successfully canceled meeting');
     }
     public function message($id){
         $host_detail = User::where('unique_id',$id)->first();
