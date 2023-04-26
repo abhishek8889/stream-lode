@@ -58,7 +58,7 @@ $time = date('Y-m-d H:i');
             $('#cancel-appointment').click(function(){
                 href = $(this).attr('href');
                 Swal.fire({
-                      title: 'Do you want to cancel this appointment!',
+                      title: 'Are you sure to cancel this appointment!',
                       showCancelButton: true,
                       confirmButtonText: 'yes',
                       confirmButtonColor: '#008000',

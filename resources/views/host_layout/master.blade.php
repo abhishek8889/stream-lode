@@ -52,9 +52,9 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
+      <!-- <li class="nav-item d-none d-sm-inline-block">
         <a href="{{ url(auth()->user()->unique_id.'/') }}" class="nav-link">Home</a>
-      </li>
+      </li> -->
     </ul>
 <input type="hidden" id="base_url" value="{{ url(Auth()->user()->unique_id) }}">
     <!-- Right navbar links -->

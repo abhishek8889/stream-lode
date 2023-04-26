@@ -119,8 +119,8 @@ $date = date('Y-m-d h:i');
       <h1><span class="yellow">Host</span> <span class="blue">Introduction</span></h1>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>        
-          <li class="breadcrumb-item"><a href="#">Search Host</a></li>
+          <li class="breadcrumb-item"><a href="{{ url('') }}">Home</a></li>        
+          <li class="breadcrumb-item"><a href="{{ url('search-host') }}">Search Host</a></li>
 
           <li class="breadcrumb-item active" aria-current="page">{{ isset($host_details['first_name'])?'I am ' .$host_details['first_name']:'' }}</li>
         </ol>
@@ -745,7 +745,15 @@ $date = date('Y-m-d h:i');
                   $('#errorspan').html(response.error);
               }else{
                 // console.log(response);
-                location.reload();
+                // location.reload();
+                swal({
+                        title: "Success!",
+                        text: "Successfully fix appoinment",
+                        icon: "success",
+                        button: "done",
+                    }).then((result) => {
+                      location.reload();
+                    });
               }
             },
           })
@@ -769,7 +777,9 @@ $date = date('Y-m-d h:i');
           });
         });
         
+    // for without question submit users
       </script>
+    
 @if($questionrie_status)
     @if($questionrie_status['questionrie_status'] == 0)
     <script>

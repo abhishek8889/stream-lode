@@ -474,7 +474,7 @@ $(document).ready(function(){
             // location.reload();
           }
           console.log(response.length);
-          $('#notificationcount').html(parseInt($('#notificationcount').html())-1);
+          $('#notificationcount').html(parseInt($('#notificationcount').html())-parseInt(response.length));
         }
       })
     })

@@ -186,7 +186,15 @@ $(document).ready(function () {
                                             },true);
                                             
                                         calendar.fullCalendar('unselect');
-                                        location.reload();
+                                        // location.reload();
+                                        swal({
+                                                title: "Success!",
+                                                text: "Successfully added availability",
+                                                icon: "success",
+                                                button: "done",
+                                            }).then((result) => {
+                                                location.reload();
+                                            });
                                         }
                                     }
                                 });

@@ -52,7 +52,7 @@
                     @enderror
                   </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-info">Save</button>
+                  <button type="submit" class="btn btn-info"> @if($meetingcharges) Update @else Save   @endif</button>
                   @if($meetingcharges)
                   <a class="btn btn-success" href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add') }}">Add New</a>
                   @endif

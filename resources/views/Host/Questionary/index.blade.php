@@ -66,7 +66,7 @@
                             <td>@if($qd->answer_type == 'input') - @else  {{ $data ?? '' }}@endif</td>
                             
                             <td><a href="{{ url('/'.Auth()->user()->unique_id.'/addquestionnaire/'.$qd->id) }}" class="edit" data-id="{{ $qd->id }}"><i class="far fa-edit"></i></a>
-                            <a class="delete ml-2" data-id = "{{ $qd->id }}" id ="delete{{$qd->id}}"><i class="fas fa-trash-alt"></i> </a><button type="submit" class="btn btn-dark edit{{ $qd->_id }}" style="display:none;" >Update</button></td>
+                            <a class="delete ml-2" data-id = "{{ $qd->id }}" id ="delete{{$qd->id}}" style="cursor: pointer;"><i class="fas fa-trash-alt"></i> </a></td>
                     
                         </tr>
                         @endforeach
@@ -89,9 +89,18 @@
              data: { id:id ,_token:'{{ csrf_token() }}'},
              dataType: 'json',
              success: function(response){ 
-                 location.reload();
+              swal({
+                      title: "Success!",
+                      text: "Successfully deleted question",
+                      icon: "success",
+                      button: "done",
+                  }).then((result) => {
+                      location.reload();
+                  });
              }
             });
         });
     </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert"></script>
+
 @endsection
