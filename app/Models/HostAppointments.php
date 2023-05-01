@@ -30,4 +30,8 @@ class HostAppointments extends Model
    public function answers(){
         return $this->hasOne(QuestionarieAnswer::class,'appointment_id','_id');
    }
+//    New code for  get host information by host id
+   public function hostDetails(){
+    return $this->hasOne(User::class, '_id','host_id');
+   }
 }

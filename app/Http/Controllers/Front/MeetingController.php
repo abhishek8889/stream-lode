@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Front;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AppoinmentCancel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\HostAppointments;
@@ -22,6 +23,35 @@ class MeetingController extends Controller
     }
     public function cancelappointment($id){
         // echo $id;
+       $data = HostAppointments::With('hostDetails')->where('_id',$id)->first()->toArray();
+    //    echo'<pre>'; print_r($data);echo '</pre>';
+    //    die();
+    
+       if($data){
+        $mailData = [
+            'mailto'    =>'GUEST',
+            'guestname' =>$data['guest_name'],
+            'hostname'  =>$data['host_details']['first_name'],
+            'start'     =>$data['start'],
+            'end'       =>$data['end'],
+            ];
+        $mail = Mail::to($data['guest_email'])->send(new AppoinmentCancel($mailData));
+            if($data['host_details'] != null){
+                $mailData = [
+                    'mailto'    =>'HOST',
+                    'guestname' =>$data['guest_name'],
+                    'hostname'  =>$data['host_details']['first_name'],
+                    'start'     =>$data['start'],
+                    'end'       =>$data['end'],
+                    ];
+                $mail = Mail::to($data['host_details']['email'])->send(new AppoinmentCancel($mailData));
+            }else{
+                return redirect()->back()->with('error','Failed to canceled meeting');
+            }
+       }else{
+        return redirect()->back()->with('error','Failed to canceled meeting');
+       }
+      
         $cancel_appointment = HostAppointments::find($id)->delete();
         return redirect()->back()->with('successs','successfully canceled meeting');
     }

@@ -130,7 +130,7 @@
       <div class="footer-inner-wrapper">
         <div class="row menu-row">
           <div class="col-md-5 brand-col">
-            <a class="navbar-brand" href="index.html"><img src="{{ asset('streamlode-front-assets/images/logo.png') }}" alt="logo"></a>
+            <a class="navbar-brand" href="/"><img src="{{ asset('streamlode-front-assets/images/logo.png') }}" alt="logo"></a>
           </div>
           <div class="col-md-7 menu-col">
             <ul>
