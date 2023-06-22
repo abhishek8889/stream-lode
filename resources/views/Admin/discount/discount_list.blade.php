@@ -20,7 +20,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <div class="card-tools">
+                <!-- <div class="card-tools">
                     <div class="input-group input-group-sm" style="width: 150px;">
                         <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
                         <div class="input-group-append">
@@ -29,7 +29,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
@@ -68,8 +68,8 @@
                             <td><span  class="badge badge-danger">inactive</span></td>
                             @endif
                             <td>
-                                <a href="{{ url('/admin/update-discount') }}/{{ $discount->_id }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
-                                <a href="{{ url('/admin/delete-discount') }}/{{ $discount->_id }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a>
+                                <!-- <a href="{{ url('/admin/update-discount') }}/{{ $discount->_id }}" class="btn btn-info"><i class="fa fa-edit "></i></a> -->
+                                <button href="{{ url('/admin/delete-discount') }}/{{ $discount->_id }}" class="delete_discount btn btn-danger"> <i class="fa fa-trash "></i></button>
                            </td>
                         </tr>
                         @endforeach
@@ -83,4 +83,24 @@
         </div>
     </div>
 </div>
+<script>
+    $('.delete_discount').click(function(e){
+        e.preventDefault();
+       link = $(this).attr('href');
+       Swal.fire({
+                      title: 'Are you sure to delete discount!',
+                      showCancelButton: true,
+                      confirmButtonText: 'yes',
+                      confirmButtonColor: '#008000',
+                      cancelButtonText: 'no',
+                      cancelButtonColor: '#d33',
+
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        window.location.href = link;
+                      } 
+                    });  
+      });
+     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

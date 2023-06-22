@@ -1,6 +1,25 @@
 @extends('guest_layout.master')
 @section('content')
+<style>
+  .search-filter {
+    display: flex;
+    align-items: center;
 
+}
+
+.search-filter label {
+    margin: 0px 10px 0px 0px;
+     color: #C2C2C2;
+}
+
+select#searchcat {
+    padding: 16.5px 19px;
+    font-size: 17px;
+    background: #000;
+    color: #C2C2C2;
+    border: 1px solid #313131;
+}
+</style>
 <!-- #################### Search Host ################################# -->
 
 <section class="top_banner inner_banner">
@@ -32,12 +51,20 @@
         <form>
           <div class="input-group">
             <div class="input-group-prepend">
-              <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select Tag</button>
+              <!-- <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select Tag</button>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#">Action</a>
                 <a class="dropdown-item" href="#">Another action</a>
                 <a class="dropdown-item" href="#">Something else here</a>
-              </div>
+              </div> -->
+              <div class="search-filter">
+                <label>Search By: </label>
+              <select name="name1" id="searchcat">
+                  <option value="1">Name</option>
+                  <option value="2">Page Name</option>
+                  <option value="3">Tag</option>
+              </select>
+          </div>
             </div>
             <input type="search" class="form-control" id="searchbox" placeholder="Write Your Keyword..">
             <button type="submit" class="cta cta-yellow" id="searchbtn"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -59,14 +86,14 @@
           @endif
         </div>
         <div class="col-md-6">
-          <div class="search-filter">
+          <!-- <div class="search-filter">
             <label>Search By: </label>
         <select name="name1" id="searchcat">
             <option value="1">Name</option>
             <option value="2">Page Name</option>
             <option value="3">Tag</option>
         </select>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -74,15 +101,14 @@
       <div class="row host-row">
 
       <!-- host box start -->
-     
+    
       @forelse($hosts as $host)
-   
         <div class="col-lg-3 col-md-6 col-sm-6 host-col ">
           <div class="host-box">
             <div class="box-up">
               <div class="image-box hover-zoom" style="max-height:293px;">
                 @if(isset($host['profile_image_url']) || !empty($host['profile_image_url'])) 
-                <img src="{{ $host['profile_image_url'] }}">
+                <img src="{{ asset('Assets/images/user-profile-images/') }}/{{ $host['profile_image_name'] }}">
                 @else
                 <img src="{{ asset('Assets/images/default-avatar.jpg') }}">
                 @endif
@@ -99,12 +125,14 @@
                  
                 ?>
                 <h6 class="host_tag">
+                  <?php $x = 0; ?>
                 @forelse($host_tags as $tag)
+                <?php $x = $x+1; ?>
+                <?php if($x != 1){ echo ',';} ?> 
                 <span>
-                  {{ $tag['name']. ',' }}
+                  {{ $tag['name'] }}
                 </span>
                 @empty
-
                 @endforelse
                 </h6>
               </div>
@@ -131,7 +159,7 @@
     <div class="marquee">
       <div class="marquee--inner">
         <span class="marquee-span">
-          <h2>We Have <span class="image"><img src="{{ asset('streamlode-front-assets/images/marque-image.png') }}"></span> <span class="yellow">A</span><span class="blue"> Great</span> Hosts For You!</h2>
+          <h2>We Have <span class="image"><img src="{{ asset('streamlode-front-assets/images/marque-image.png') }}"></span><span class="blue"> Great</span> Hosts For You!</h2>
         </span>
       </div>
     </div>
@@ -178,7 +206,7 @@
         divdata = [];
         $.each(data, function(key,value){
           if(value.profile_image_url){
-            img = value.profile_image_url;
+            img = '{{url('public/Assets/images/user-profile-images')}}/'+value.profile_image_name;
           }else{
             img = '{{ asset('Assets/images/default-avatar.jpg') }}';
           }
@@ -193,5 +221,7 @@
     });
   });
 </script>
+
+
 @endsection
 

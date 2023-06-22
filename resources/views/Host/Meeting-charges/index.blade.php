@@ -22,12 +22,12 @@
                 <div class="card-tools"> 
                     <div class="input-group input-group-sm" style="width: 150px;">
                    
-                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                        <!-- <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
                         <div class="input-group-append">
                             <button type="submit" class="btn btn-default">
                             <i class="fas fa-search"></i>
                             </button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -51,18 +51,19 @@
                             <tr >
                                 <td>{{ $count }}.</td>
                                 <td>{{ $mc->duration_in_minutes }} minutes</td>
-                                <td>${{ $mc->amount }}</td>
+                                <td>${{ number_format($mc->amount,2) }}</td> 
                                 <td>
                                 <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/add/'.$mc->_id) }}" class="btn btn-info"><i class="fa fa-edit "></i></a>
-                                <a href="{{ url(Auth()->user()->unique_id.'/meeting-charges/delete/'.$mc->_id) }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a>
+                                <button href="{{ url(Auth()->user()->unique_id.'/meeting-charges/delete/'.$mc->_id) }}" class="delete_meeting_charges btn btn-danger"> <i class="fa fa-trash "></i></button>
                                 </td>
                             </tr>
                             @empty
-                            <td><p>there is no meeting charges</p></td>
+                            <td><p>You don't have any meeting charges</p></td>
                             @endforelse
                           
                            </tbody>
                 </table>
+                {{ $meetingcharges->links() }}
             </div>
             <div class="d-flex justify-content-end">
                 
@@ -70,5 +71,24 @@
         </div>
     </div>
 </div>
+<script>
+$('.delete_meeting_charges').click(function(e){
+        e.preventDefault();
+       link = $(this).attr('href');
+       Swal.fire({
+                      title: 'Are you sure to delete this?',
+                      showCancelButton: true,
+                      confirmButtonText: 'yes',
+                      confirmButtonColor: '#008000',
+                      cancelButtonText: 'no',
+                      cancelButtonColor: '#d33',
 
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        window.location.href = link;
+                      } 
+                    });  
+      });
+     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

@@ -1,4 +1,4 @@
-@extends('host_layout.master')
+ @extends('host_layout.master')
 @section('content')
 
     <!-- Content Header (Page header) -->
@@ -25,14 +25,14 @@
           <div class="col-lg-3 col-6">
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>{{array_sum($TotalAmount) }} $</h3>
+                <h3>${{number_format(array_sum($TotalAmount),2)  }}</h3>
 
                 <p>Total Payments</p>
               </div>
               <div class="icon">
                 <i class="fa fa-usd"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ url(Auth()->user()->unique_id.'/stream-payments') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <div class="col-lg-3 col-6">
@@ -64,19 +64,19 @@
               <div class="icon">
                 <i class="fa fa-video-camera" aria-hidden="true"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <div class="col-lg-3 col-6">
             <div class="small-box bg-warning">
               <div class="inner">
                 <h3>{{ $TotalAppoitments ?? '0' }}</h3>
-                <p>Total Appoitments</p>
+                <p>Total Appointments</p>
               </div>
               <div class="icon">
                 <i class="fa fa-calendar"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ url(Auth()->user()->unique_id.'/appointments') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <div class="col-lg-3 col-6">
@@ -89,7 +89,7 @@
               <div class="icon">
                 <i class="fa fa-calendar-check-o "></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ url(Auth()->user()->unique_id.'/appointments') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>

@@ -45,13 +45,13 @@ class HostAccountController extends Controller
         $user = User::find($req->id);
         if($req->profile_exist == '1'){
             if($req->hasfile('profile_img')){
-                $destination = public_path().'/Assets/images/user-profile-images/'. auth()->user()->profile_image_name;
+                $destination = asset('Assets/images/user-profile-images/'. auth()->user()->profile_image_name);
                 if(File::exists($destination)){
                     File::delete($destination);
                 }
                 $file = $req->file('profile_img');
                 $name = time().rand(1,100).'.'.$file->extension();
-                $file->move(public_path().'/Assets/images/user-profile-images/', $name);
+                $file->move(base_path('public/Assets/images/user-profile-images'),$name);
                 $user->profile_image_name = $name;
                 $user->profile_image_url = asset('Assets/images/user-profile-images/'.$name);
                 $user->update();
@@ -61,14 +61,13 @@ class HostAccountController extends Controller
             if($req->hasfile('profile_img')){
                 $file = $req->file('profile_img');
                 $name = time().rand(1,100).'.'.$file->extension();
-                $file->move(public_path().'/Assets/images/user-profile-images/', $name);
+                $file->move(base_path('public/Assets/images/user-profile-images'),$name);
                 $user->profile_image_name = $name;
                 $user->profile_image_url = asset('Assets/images/user-profile-images/'.$name);
                 $user->save();
             }
             return back()->with('success','New profile picture added succesfully.');
         }
-       
     }
     public function changePassword(){
         return view('Host.account-details.password_change');

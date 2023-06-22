@@ -16,6 +16,7 @@ use DB;
 use Mail;
 use App\Mail\HostMembershipUpdateMail;
 use App\Mail\Host_new_subscription;
+use App\Mail\Host_cancel_subscription;
 use App\Models\HostSubscriptions;
 use App\Models\Discounts\AdminDiscount;
 
@@ -23,7 +24,7 @@ class HostMembershipController extends Controller
 {
     public function index(){
    
-        $membership_details = MembershipTier::all();
+        $membership_details = MembershipTier::where('status',1)->get();
         return view('Host.membership.index',compact('membership_details'));
     }
 
@@ -75,7 +76,6 @@ class HostMembershipController extends Controller
         }
         $coupon_code = $req->coupon_code;
         
-
         $stripe_coupon_id = '';
         if($coupon_code != null){
             $stripe_coupon_id = AdminDiscount::where('coupon_code',$coupon_code)->get()->value('stripe_coupon_id');
@@ -161,10 +161,10 @@ class HostMembershipController extends Controller
                   'items' => [
                       [
                           'price' => $membership['price_id'],
-                          'recurring' => [
-                              'interval' => 'month', // Frequency at which bills are counted ||## day, week, month or year. ##||
-                              'interval_count' => 1, // Number of intervals between subscription billings.
-                          ]
+                          // 'recurring' => [
+                          //     'interval' => 'month', // Frequency at which bills are counted ||## day, week, month or year. ##||
+                          //     'interval_count' => 1, // Number of intervals between subscription billings.
+                          // ]
                       ],
                   ],
                   'coupon' => $stripe_coupon_id,
@@ -190,6 +190,7 @@ class HostMembershipController extends Controller
             $payementMethods->save();
 
           }else{
+            // return "hello";
             $customer = $stripe->customers->update(
               auth()->user()->stripe_customer_id,
               [
@@ -204,13 +205,7 @@ class HostMembershipController extends Controller
                   'customer' => $customer_id,
                   'collection_method'=>'charge_automatically',
                   'items' => [
-                      [
-                          'price' => $membership['price_id'],
-                          'recurring' => [
-                              'interval' => 'month', // Frequency at which bills are counted ||## day, week, month or year. ##||
-                              'interval_count' => 1, // Number of intervals between subscription billings.
-                          ]
-                      ],
+                    ['price' => $membership['price_id']],
                   ],
                   'coupon' => $stripe_coupon_id,
               ]);
@@ -244,9 +239,7 @@ class HostMembershipController extends Controller
               if($coupon_code != null){
                   $discount = (int)$invoice_details->total_discount_amounts[0]->amount / 100;
               }
-              // send mail for user's email to get activation and payment done
-
-              
+            
               // dd($mail);
           }
           
@@ -279,10 +272,20 @@ class HostMembershipController extends Controller
           $membership_payment->payment_type = 'create_membership'; // payment type in db 
           if($createMembership->status == 'active'){ // succesfull
             $membership_payment->payment_status = 'succesfull'; // subscription status 
-            $mail = Mail::to($email)->send(new Host_new_subscription($name, $host_inovice_url , $host_invoice_pdf,'success'));
+              // send mail for user's email to get activation and payment done
+            try {
+              $mail = Mail::to($email)->send(new Host_new_subscription($name, $host_inovice_url , $host_invoice_pdf,'success'));
+            } catch (\Throwable $th) {
+            }
+             
           }else{
             $membership_payment->payment_status = $createMembership->status; // subscription status
-            $mail = Mail::to($email)->send(new Host_new_subscription($name, $host_inovice_url , $host_invoice_pdf,'pending'));
+              // send mail for user's email to get activation and payment done
+                try {
+                  $mail = Mail::to($email)->send(new Host_new_subscription($name, $host_inovice_url , $host_invoice_pdf,'pending'));
+                } catch (\Throwable $th) {
+                }
+              
           }
           $membership_payment->save();
 
@@ -351,7 +354,8 @@ class HostMembershipController extends Controller
           return redirect(auth()->user()->unique_id.'/subscribe-response')->with(['paymentStatus'=> FALSE, 'response'=>'You are registered but for payment you will get invoice in your registered email ('.$email.') please pay from there and activate your subscription.','membership_id'=> $membership_id]);
 
       }catch(\Exception $e){
-          return $e->getMessage();
+        return $e;
+          // return $e->getMessage();
       }
         
     }
@@ -431,6 +435,9 @@ class HostMembershipController extends Controller
                   ],
                   
                 ],
+                'metadata' => [
+                  'update_type' => 'manual_update',                  
+                ],
               ]
             );
             $invoice = $subscription_update_response->latest_invoice;
@@ -450,7 +457,7 @@ class HostMembershipController extends Controller
                 $host_invoice_pdf = $invoice_details->invoice_pdf;
                 $name = auth()->user()->first_name . ' ' . auth()->user()->last_name;
                 // send mail for user's email to get activation and payment done
-                
+               
                 // dd($mail);
             }
             // ################# membership Payment data save ##########################
@@ -472,10 +479,18 @@ class HostMembershipController extends Controller
             // 
             if($subscription_update_response->status == 'active'){
               $membership_payment->payment_status = 'succesfull';
-              $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'success'));
+              try {
+                $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'success'));
+              } catch (\Throwable $th) {
+              }
+               
             }else{
               $membership_payment->payment_status = $subscription_update_response->status;
-              $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'pending'));
+              try {
+                $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'pending'));
+              } catch (\Throwable $th) {
+              }
+               
             }
             $membership_payment->save();
           }
@@ -523,6 +538,7 @@ class HostMembershipController extends Controller
             ]
           );
     
+
           // Save data as a new payment method for same user
 
           $newPaymentDetail->user_id = auth()->user()->id;
@@ -551,6 +567,9 @@ class HostMembershipController extends Controller
                   ],
                   
                 ],
+                'metadata' => [
+                  'update_type' => 'manual_update',
+                ],
               ]
             );
             // $subscription_update_response
@@ -573,7 +592,7 @@ class HostMembershipController extends Controller
                 $host_invoice_pdf = $invoice_details->invoice_pdf;
                 $name = auth()->user()->first_name . ' ' . auth()->user()->last_name;
                 // send mail for user's email to get activation and payment done
-                
+               
                 // dd($mail);
             }
             $membership_payment->user_id =  auth()->user()->id;
@@ -594,10 +613,10 @@ class HostMembershipController extends Controller
 
             if($subscription_update_response->status == 'active'){ // status is active then payment must be succesfully done .
               $membership_payment->payment_status = 'succesfull';
-              $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'success'));
+               $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'success'));
             }else{
               $membership_payment->payment_status = $subscription_update_response->status;
-              $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'pending'));
+               $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'pending'));
             }
           
             $membership_payment->save();
@@ -626,7 +645,8 @@ class HostMembershipController extends Controller
           }
         }
       }catch(\Exception $e){
-        return $e->getMessage();
+        $error = $e->getMessage();
+        return redirect()->back()->with('error',$error);
       }
     }
     public function getInvoice($invoice_number){
@@ -652,14 +672,25 @@ class HostMembershipController extends Controller
       );
       $user = User::find(auth()->user()->id);
       if($stripe_cancelation->status == 'canceled' ){
-        HostSubscriptions::where('host_id' , auth()->user()->id)->update(['subscription_status'=>$stripe_cancelation->status]);
+       $subscription_update = HostSubscriptions::where('host_id' , auth()->user()->id)->update(['subscription_status'=>$stripe_cancelation->status]);
         $user->active_status = 0;
         $user->update();
       }
+      $mailData = [
+        'user' => $user,
+        'subscription' => $subscription_update
+      ];
+      try {
+        $mail = Mail::to($user->email)->send(new Host_cancel_subscription($mailData));
+      } catch (\Throwable $th) {
+      }
+      
       return redirect()->back()->with('success','You have succesfully canceled your subscription');
     }
     public function pauseSubscription(Request $req){
+      // return $req;
       $subscription_id = auth()->user()->subscription_id;
+
       $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
       $pause_status = $stripe->subscriptions->update(
         $subscription_id,
@@ -668,7 +699,11 @@ class HostMembershipController extends Controller
           'cancel_at_period_end' => true,
         ]
       );
-      HostSubscriptions::where('host_id' , auth()->user()->id)->update(['subscription_status'=>'paused']);
+      
+      $host_update = HostSubscriptions::where('host_id' , auth()->user()->id)->update(['subscription_status' => 'paused']);
+     
+    
+      // dd($host_update);
       return redirect()->back()->with('success','You have succesfully paused your subscription');
     }
     public function resumeSubscription(Request $req){

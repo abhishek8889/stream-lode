@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Messages;
 use App\Events\Message;
+use App\Models\HostAppointments;
+use App\Models\HostQuestionnaire;
+use App\Models\QuestionarieAnswer;
+use App\Models\HostStripeAccount;
 use DB;
 use Hash;
 use Auth;
@@ -14,8 +18,9 @@ use File;
 class HostController extends Controller
 {
     public function hostList(){
-        $hosts = User::where('status', 1)->with(['adminmessage' => function($response){ $response->where('reciever_id',Auth::user()->id); }])->get();
+        $hosts = User::where('status', 1)->with(['adminmessage' => function($response){ $response->where('reciever_id',Auth::user()->id); }])->paginate(10);
         // dd($hosts);
+        // I remove get from here and add pagination(10)
         
         return view('Admin.users.hostlist',compact('hosts'));
     }
@@ -26,9 +31,34 @@ class HostController extends Controller
         return view('Admin.users.host_detail',compact('host_detail','message'));
     }
     public function hostDelete($id){
+        
         $data = User::where('unique_id', $id)->first();
         $id = $data['_id'];     // Get Id from unique_id and delete host records
-        DB::table('users')->where('_id', $id)->delete();
+
+        // DB::table('users')->where('_id', $id)->delete();
+        $appointments = HostAppointments::where('host_id',$id)->get();
+        // foreach($appointments as $ap){
+        //      $answers = QuestionarieAnswer::where('appointment_id',$ap->id)->first();
+        //      $answers->delete();
+        // }
+        $host_stripe_account  = HostStripeAccount::where('host_id',$id)->first();
+        $host_stripe_acc_num = '';
+        if(isset($host_stripe_account->stripe_account_num)){
+            $host_stripe_acc_num = $host_stripe_account->stripe_account_num;
+        }else{
+            $host_stripe_acc_num = null;
+        }
+        if($host_stripe_acc_num != null){
+            $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
+            $stripe->accounts->delete(
+                $host_stripe_acc_num ,
+                []
+            );
+        }
+        DB::table('payment_methods')->where('user_id',$id)->delete();
+        DB::table('host_subscriptions')->where('host_id',$id)->delete();
+        DB::table('host_stripe_accounts')->where('host_id',$id)->delete();
+        DB::table('host_questionnaires')->where('host_id',$id)->delete();
         DB::table('appointments')->where('host_id',$id)->delete();
         DB::table('host_availablity')->where('host_id',$id)->delete();
         DB::table('host_discounts_coupons')->where('host_id',$id)->delete();
@@ -36,6 +66,7 @@ class HostController extends Controller
         DB::table('tags')->where('user_id',$id)->delete();
         DB::table('messages')->where('reciever_id', $id)->delete();
         DB::table('messages')->where('sender_id', $id)->delete();
+       User::find($id)->delete();
         return redirect('/admin/host-list')->with('success','User is deleted succesfully');
     }
     public function hostGeneralsUpdate(Request $req){
@@ -46,13 +77,14 @@ class HostController extends Controller
         if($req->newPassword != null && $req->confirmNewPassword != null){
             // update user with password 
             $req->validate([
-                'newPassword' => 'required',
+                'newPassword' => 'required|min:6|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@!$#%]).*$/',
                 'confirmNewPassword' => 'required|min:6|same:newPassword|'
                 ],[
                     'newPassword.required' => 'This field is required.',
                     'confirmNewPassword.required' => "Password and confirm password both field are required if you want to change host's password. ",
                     'confirmNewPassword.min:6' => "Host's new password must be atleast 6 character",
-                    'confirmNewPassword.same:newPassword' => "Your confirm new password must be same as new password."
+                    'confirmNewPassword.same:newPassword' => "Your confirm new password must be same as new password.",
+                    'newPassword.regex' => 'Your password should have minimum 6 characters which include alphabets, numbers and special characters e.g:Stream@123'
                 ] 
             );
             $password_change_status = User::find($host_id)->update(['password'=> Hash::make($req->confirmNewPassword)]);
@@ -133,8 +165,6 @@ class HostController extends Controller
         $reciever_id = $req->reciever_id;
         // $username = $req->username;
         $messages = $req->message;
-        $current_date = date('d-m-Y H:i:s');
-        event(new Message($username, $messages,$sender_id,$reciever_id,$current_date));
         
         $message = new Messages();
         $message->reciever_id = $req->reciever_id;
@@ -143,7 +173,7 @@ class HostController extends Controller
         $message->message = $req->message;
         $message->status = 1;
         $message->save();
-        
+        event(new Message($username, $messages,$sender_id,$reciever_id,$message->created_at));
         return response()->json($message);
     }
     public function seenmessage(Request $req){
@@ -156,27 +186,16 @@ class HostController extends Controller
         return response()->json($update);
     }
     public function trycode(){
-        // $data = DB::table('streams_payment')->where('total','!=',null)->get(['total']);
-        // $streamayment = array();
-        // for($i = 0; $i < count($data); $i++){
-        //     $streamayment[] = $data[$i]['total'];
-        // }
-        // print_r(array_sum($streamayment));
-        // // // echo ' This try code is available in Host Controller Line number 153.';
-        // // $id = '643e4a8a13a8b7af480d704e';
-        // // // DB::table('users')->where('_id',$id)->delete();
-        // // // DB::table('appointments')->where('host_id',$id)->delete();
-        // // // DB::table('host_availablity')->where('host_id',$id)->delete();
-        // // // DB::table('host_discounts_coupons')->where('host_id',$id)->delete();
-        // // // DB::table('meeting_charges')->where('host_id',$id)->delete();
-        // // // DB::table('tags')->where('user_id',$id)->delete();
-        // // // DB::table('messages')->where('sender_id', $id)->delete();
-        // // $data = DB::table('messages')->where('receiver_id', '643e4a8a13a8b7af480d704e')->get();
+      $search ='d';
+      $appointments = Appointment::whereHas('user', function ($query) use ($searchQuery) {
+        $query->where('unique_id', 'LIKE', '%' . $searchQuery . '%');
+    })
+    ->with('user', 'streampayment')
+    ->orderBy('created_at', 'DESC')
+    ->get();
 
-        // // // echo 'Done to delete';
-        // echo '<pre>';
-        // // print_r($data);
-        // echo '</pre>';
-        echo "hello";
+            echo '<pre>';
+      print_r($data);
+      echo '</pre>';
     }
 }

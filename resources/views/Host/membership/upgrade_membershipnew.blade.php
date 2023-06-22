@@ -1,8 +1,3 @@
-<pre>
-<?php 
-// print_r($subscription_list);
-?>
-</pre>
 <!doctype html>
 <html lang="en">
   <head>
@@ -46,138 +41,7 @@
       </div>
       <div class="plans-wrapper">
         <div class="row plans-row justify-content-center">
-          <!-- <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Sponsorship_tire">
-            <div class="pricing-box-wrapper">
-              <div class="pricing-box">
-                <div class="pricing-top">
-                  <div class="pricing-header">
-                    <h4>Sponsorship Tier</h4>
-                    <h3 class="price">
-                      $0.00 <span class="period">/ Month</span>
-                    </h3>
-                  </div>
-                  <div class="pricing-body">
-                    <ul class="access-list">
-                      <li> 6% commission per stream + stripe fee 2.9%</li>
-                      <li> $10 min charge per guest</li>
-                      <li>  Email notification before meeting</li>
-                      <li> Calender appointments - Outlook, Google maps, etc...</li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="pricing-footer">
-                  <p><b>For a Sponsorship Tier, email <a href="mailto:Sales@StreamLode.com">Sales@StreamLode.com</a> about being a StreamLode Sponsor.</b></p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Standard_tier">
-            <div class="pricing-box-wrapper">
-              <div class="pricing-box">
-                <div class="pricing-top">
-                  <div class="pricing-header">
-                    <h4>Standard Tier</h4>
-                    <h3 class="price">
-                      $9.99 <span class="period">/ Month</span>
-                    </h3>
-                  </div>
-                  <div class="pricing-body">
-                    <ul class="access-list">
-                      <li>10% commission per stream + stripe fee 2.9% </li>
-                      <li>$10 min charge per guest</li>
-                      <li>Chat window</li>
-                      <li>Email notification before meeting</li>
-                      <li>Calender appointments - Outlook, Google maps, etc...</li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="pricing-footer">
-                  <a href="" class="cta cta-yellow">Sign Up</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item Premium_tier">
-            <div class="pricing-box-wrapper">
-              <div class="pricing-box">
-                <div class="pricing-top">
-                  <div class="pricing-header">
-                    <h4>Premium Tier</h4>
-                    <h3 class="price">
-                      $19.99 <span class="period">/ Month</span>
-                    </h3>
-                  </div>
-                  <div class="pricing-body">
-                    <ul class="access-list">
-                      <li> 6% commission per stream + stripe fee 2.9%</li>
-                      <li> $10 min charge per guest</li>
-                      <li>Chat window</li>
-                      <li>Email notification before meeting</li>
-                      <li>Calender appointments - Outlook, Google maps, etc...</li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="pricing-footer">
-                  <a href="" class="cta cta-yellow">Sign Up</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item group_tier">
-            <div class="pricing-box-wrapper">
-              <div class="pricing-box">
-                <div class="pricing-top">
-                  <div class="pricing-header">
-                    <h4>Standard group tier</h4>
-                    <h3 class="price">
-                      $49.99 <span class="period">/ Month</span>
-                    </h3>
-                  </div>
-                  <div class="pricing-body">
-                    <ul class="access-list">
-                      <li>Up to 6 hosts for this group</li>
-                      <li> 10% commission per stream + stripe fee 2.9%</li>
-                      <li>  $10 min charge per guest</li>
-                      <li>Chat window</li>
-                      <li>Email notification before meeting</li>
-                      <li>Calender appointments - Outlook, Google maps, etc...</li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="pricing-footer">
-                  <a href="" class="cta cta-yellow">Sign Up</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item group_tier">
-            <div class="pricing-box-wrapper">
-              <div class="pricing-box">
-                <div class="pricing-top">
-                  <div class="pricing-header">
-                    <h4>Premium Group Tier</h4>
-                    <h3 class="price">
-                      $59.99 <span class="period">/ Month</span>
-                    </h3>
-                  </div>
-                  <div class="pricing-body">
-                    <ul class="access-list">
-                      <li>Up to 6 hosts for this group</li>
-                      <li> 6% commission per stream + stripe fee 2.9%</li>
-                      <li>  $10 min charge per guest</li>
-                      <li>Chat window</li>
-                      <li>Email notification before meeting</li>
-                      <li>Calender appointments - Outlook, Google maps, etc...</li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="pricing-footer">
-                  <a href="" class="cta cta-yellow">Sign Up</a>
-                </div>
-              </div>
-            </div>
-          </div> -->
           @foreach($subscription_list as $subscription)
             @if((int)$subscription['amount'] > 0)
               <div class="col-lg-4 col-md-6 col-sm-6 plans-col filter_item {{ $subscription['name'] ?? '' }}">
@@ -187,7 +51,7 @@
                       <div class="pricing-header">
                         <h4>{{ $subscription['name'] }}</h4>
                         <h3 class="price">
-                          ${{ $subscription['amount'] }} <span class="period">/ {{ $subscription['interval'] }}</span>
+                          ${{ number_format($subscription['amount'],2) }} <span class="period">/ {{ $subscription['interval'] }}</span>
                         </h3>
                       </div>
                       <div class="pricing-body">
@@ -209,21 +73,25 @@
                           </li>
                         <?php }
                           ?>
-                        
                           @endforeach
                           @endif
                         </ul>
                       </div>
                     </div>
+                    @if(auth()->user()->membership_id == $subscription['id'])
+                    <div class="pricing-footer">
+                      <a href="#" class="cta cta-yellow">Purchased Membership</a>
+                    </div>
+                    @else
                     <div class="pricing-footer">
                       <a href="{{ url(auth()->user()->unique_id.'/upgrade-subscription/'.$subscription['slug']) }}" class="cta cta-yellow">Upgrade Membership</a>
                     </div>
+                    @endif
                   </div>
                 </div>
               </div>
             @endif
           @endforeach
-        
         </div>
       </div>
     </div>

@@ -46,7 +46,7 @@
                         <div class="thanku-content">
                         <img src="{{ asset('/streamlode-front-assets/images/tick-icon.svg') }}">
                         @if(!empty(Session::get('paymentStatus'))|| Session::get('paymentStatus') == TRUE)
-                            <h2>We have just received your payment!</h2>
+                            <h2>We have just received your <br>payment!</h2>
                             @if(!empty(Session::get('message')))
                             <p>{{ Session::get('message') }}</p>
                             @endif

@@ -10,7 +10,7 @@ use App\Models\HostQuestionnaire;
 class QuestionaryController extends Controller
 {
     public function index(){
-        $question_data = HostQuestionnaire::where('host_id',Auth()->user()->id)->get();
+        $question_data = HostQuestionnaire::where('host_id',Auth()->user()->id)->paginate(10);
         
         return view('Host.Questionary.index',compact('question_data'));
     }
@@ -20,7 +20,7 @@ class QuestionaryController extends Controller
     }
     public function AddQuestionary(Request $request){
         $request->validate([
-            'question' => 'required',
+            'question' => 'required|max:200',
             'answer_type' => 'required',
         ]);
         if($request->answer_type == 'checkbox'){

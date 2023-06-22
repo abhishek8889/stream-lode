@@ -37,7 +37,7 @@
     </div>
   </div>
   <div class="plans-section">
-    <div class="container-fluid">
+    <div class="container-fluid" id="membership-tiers">
       <div class="section-head text-center">
         <!-- <h2>Choose a plan to start with <span class="yellow">Stream</span><span class="blue">Lode</span></h2> -->
         <h2>Choose a plan to start with <br> <span class="yellow">Stream</span><span class="blue">Lode</span></h2>
@@ -186,7 +186,7 @@
                     <div class="pricing-header">
                       <h4>{{ $subscription['name'] }}</h4>
                       <h3 class="price">
-                        ${{ $subscription['amount'] }} <span class="period">/ {{ $subscription['interval'] }}</span>
+                        ${{ number_format($subscription['amount'],2) }} <span class="period">/ {{ $subscription['interval'] }}</span> 
                       </h3>
                     </div>
                     <div class="pricing-body">
@@ -238,7 +238,7 @@
     <div class="marquee">
       <div class="marquee--inner">
         <span class="marquee-span">
-          <h2>We Have <span class="image"><img src="{{ asset('streamlode-front-assets/images/marque-image.png') }}"></span> <span class="yellow">A</span><span class="blue"> Great</span> Hosts For You!</h2>
+          <h2>We Have <span class="image"><img src="{{ asset('streamlode-front-assets/images/marque-image.png') }}"></span> <span class="blue"> Great</span> Hosts For You!</h2>
         </span>
       </div>
     </div>

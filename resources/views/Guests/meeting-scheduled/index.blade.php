@@ -32,13 +32,13 @@ $time = date('Y-m-d H:i');
                                     <td>{{ $ap->user['first_name'] }} {{ $ap->user['last_name'] }}</td>
                                     <td>{{ $ap->user['email'] }}</td>
                                     <?php 
-                                    $sartdate = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($ap->start)));
-                                    $enddate = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($ap->end)));
+                                    $sartdate = Date("M/d/Y h:i A", strtotime("0 minutes", strtotime($ap->start)));
+                                    $enddate = Date("M/d/Y h:i A", strtotime("0 minutes", strtotime($ap->end)));
                                     ?>
                                     <td>{{ $sartdate }}</td>
                                     <td>{{ $enddate }}</td>
                                     <!-- <td>@if($time > $ap->end)<span class="badge badge-success"> done </span>@else <span class="badge badge-danger"> pending</span> @endif </td> -->
-                                    <td><button href="{{ url('scheduledmeeting/cancel') }}/{{ $ap->_id }}" class="btn btn-danger btn-sm" id="cancel-appointment">Cancel</button></td>
+                                    <td><button href="{{ url('scheduledmeeting/cancel') }}/{{ $ap->_id }}" class="cancel-appointment btn btn-danger btn-sm" id="cancel-appointment">Cancel</button></td>
                                     <td><a href="{{ url('message') }}/{{ $ap->user['unique_id'] }}" class="btn btn-scucess"> Message <span class="badge badge-warning navbar-badge    ">{{ count($ap->messages) ?? 0 }}</span> </a></td>
                                 </tr>
                                @endforeach
@@ -55,8 +55,9 @@ $time = date('Y-m-d H:i');
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function(){
-            $('#cancel-appointment').click(function(){
+            $('.cancel-appointment').click(function(){
                 href = $(this).attr('href');
+               
                 Swal.fire({
                       title: 'Are you sure to cancel this appointment!',
                       showCancelButton: true,

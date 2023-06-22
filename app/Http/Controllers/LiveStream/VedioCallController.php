@@ -14,12 +14,19 @@ use App\Models\User;
 use App\Models\StreamPayment;
 use App\Models\Discounts\HostDiscount;
 use App\Models\HostStripeAccount;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\HostStreamPaymentMail;
+use App\Mail\GuestStreamPaymentMail;
+use App\Models\MembershipTier;
+
 class VedioCallController extends Controller
 {
     //
     public function index(Request $req){
+        
         $roomName = $req->segment(2);
         $appoinment_details = HostAppointments::where('video_link_name',$roomName)->first();
+        
         $stripe = new \Stripe\StripeClient(env('STRIPE_SEC_KEY'));
         $setup_intent = $stripe->setupIntents->create();
         $client_secret = $setup_intent->client_secret;
@@ -106,11 +113,25 @@ class VedioCallController extends Controller
         $test_event = event( new SendStreamPaymentRequest($req->amountForStream,$req->currency,$req->appointment_id,$request_message));
     }
     public function vedioCallPayment(Request $req){
+        // return $req;
         //appointment and discount data
+        
         $appoinment_details = HostAppointments::find($req->appoinment_id);
         if(empty($appoinment_details)){
            return redirect()->back()->with('error','error occured');
         }
+
+        $host_detail = User::find($appoinment_details->host_id);
+        ///////////////////// Getting Service Charge ///////////////
+        $membership_details =  MembershipTier::find($host_detail->membership_id);
+        $stream_service_charge = 0;
+        if(isset($membership_details->host_service_charge)){
+            $stream_service_charge = (float)$membership_details->host_service_charge;
+        };
+        /////////////////////////////////////////////////////////////
+
+        $user = User::find($appoinment_details->user_id); // finding guest
+        
         $discount_details = HostDiscount::where('coupon_code',$req->discount_code)->first();
         if($discount_details){
             $discount_off = $appoinment_details->meeting_charges*$discount_details->percentage_off/100;
@@ -118,6 +139,8 @@ class VedioCallController extends Controller
             $discount_off = 0;
         }
         $payment_amount = $appoinment_details->meeting_charges - $discount_off;
+        $host_recieve_amount = $payment_amount - $stream_service_charge;
+        $host_recieve_amount =  number_format($host_recieve_amount,2);
         //  create payment intent 
     
         try{
@@ -128,8 +151,8 @@ class VedioCallController extends Controller
 
             // Create customer 
             $customer =  $stripe->customers->create([
-                'name' => auth()->user()->first_name,   // req -> name
-                'email' => auth()->user()->email,       // req-> email
+                'name' => $user->first_name,   // req -> name
+                'email' => $user->email,       // req-> email
                 'payment_method' => $req->token,
                 'invoice_settings' => [
                 'default_payment_method' => $req->token,
@@ -155,31 +178,52 @@ class VedioCallController extends Controller
                 'amount' => (int)$payment_amount * 100,
                 'currency' => $req->currency,
                 'payment_method' => $req->token,
-                'on_behalf_of' => $host_stripe_account_id,
+                // 'on_behalf_of' => $host_stripe_account_id,
+                'application_fee_amount' => $stream_service_charge * 100,
+                'transfer_data' =>[
+                    'destination' => $host_stripe_account_id,
+                    // 'amount'      => (int)$payment_amount * 100 ,
+                ],
                 'off_session' => true,
                 'confirm' => true,
                 'description' => 'appointment charges'
             ]);
             // dd($stripe_payment_intent);
             if($stripe_payment_intent->status == 'succeeded'){
-               
+                $random_string = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+                $payment_id = '#'.substr(str_shuffle($random_string),0,8);
                 //appointement id payment status update
                     $streamPayment = new StreamPayment;
                     $streamPayment->host_id = $req->host_id;
-                    $streamPayment->guest_id = auth()->user()->id;
+                    $streamPayment->guest_id = $appoinment_details->user_id;
                     $streamPayment->stripe_payment_intent = $stripe_payment_intent['id'];
                     $streamPayment->host_stripe_account_id = $host_stripe_account_id;
                     $streamPayment->stripe_payment_method = $req->token;
                     $streamPayment->currency = $req->currency;
+                    $streamPayment->payment_id = $payment_id;
                     $streamPayment->subtotal = $appoinment_details->meeting_charges;
                     $streamPayment->coupon_code = $req->discount_code;
                     $streamPayment->discount_amount = $discount_off;
-                    $streamPayment->total = $payment_amount;
+                    $streamPayment->host_stream_service_charge = $stream_service_charge;
+                    $streamPayment->stripe_charges = ((($appoinment_details->meeting_charges-$discount_off)*2.9)/100)+0.30;
+                    $streamPayment->total = $host_recieve_amount;
                     $streamPayment->appoinment_id = $req->appoinment_id;
                     $streamPayment->status = 'successfull';
                     $streamPayment->save();
-        $test_event = event( new SendStreamPaymentRequest($payment_amount,$req->currency,$req->appoinment_id,'start_time'));
-                    
+
+                   $guestMailData = array(
+                    'host_name' => $host_detail->first_name.' '.$host_detail['last_name'],
+                    'guest_name' => $appoinment_details->guest_name,
+                    'payment_amount' => $payment_amount,
+                    'payment_id' => $streamPayment->payment_id
+                   );
+                   $hostMailData = array(
+                    'host_name' => $host_detail->first_name.' '.$host_detail['last_name'],
+                    'guest_name' => $appoinment_details->guest_name,
+                    'payment_amount' => $host_recieve_amount,
+                    'payment_id' => $streamPayment->payment_id
+                   );
+
                     //discount_code 
                     $discount_amount = $discount_off;
                     $coupon_code = $req->discount_code;
@@ -189,6 +233,10 @@ class VedioCallController extends Controller
                     $appoinments = HostAppointments::find($req->appoinment_id);
                     $appoinments->payment_status = 1;
                     $appoinments->update();
+
+
+                    $hostmail = Mail::to($host_detail->email)->send(new HostStreamPaymentMail($hostMailData));
+                    $guest_email =  Mail::to($appoinment_details->guest_email)->send(new GuestStreamPaymentMail($guestMailData));
                     
                     return redirect()->back()->with('success','your payment is successful');
 
@@ -196,12 +244,13 @@ class VedioCallController extends Controller
             // return "outside the condition";
         }catch(\Exception $e){
             $error = $e->getMessage();
+            return redirect()->back()->with('error',$error);
         }
-       print_r($error);
-        // return redirect()->back()->with('error',$error);
+       
         // print_r($stripe_payment_intent['id']);
     }
     public function CouponCheck(Request $req){
+        // return $req;
         $date = date('Y-m-d');
         $discounts = HostDiscount::where([['coupon_code',$req->coupon_code],['host_id',$req->host_id]])->first();
         if(!empty($discounts)){
@@ -325,6 +374,9 @@ class VedioCallController extends Controller
         } else {
             return response()->json('Total duration is empty.');
         }
+    }
+    public function sendmail($maildata){
+
     }
     
 }

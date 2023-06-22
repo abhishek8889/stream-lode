@@ -97,13 +97,13 @@
                         <input type="radio" checked="checked" name="payent_method" class="paywith" paywith="card">
                         <span class="checkmark"></span>
                       </label>
-                      <label class="payemnt-radio">
+                      <!-- <label class="payemnt-radio">
                         <span class="image-text">
                           <img src="{{ asset('/streamlode-front-assets/images/paypal.png') }}" /> PayPal
                         </span>
                         <input type="radio" name="payent_method" class="paywith" paywith="paypal">
                         <span class="checkmark"></span>
-                      </label>
+                      </label> -->
                     </div>
                     <!-- card detail -->
                     <div class="card-detail payment-option" id="card">

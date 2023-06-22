@@ -33,13 +33,15 @@
                                     @csrf
                                     <input type="hidden" id ="id" name="id" value="">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="feature_name" name="feature_name" placeholder="Feature name"> 
+                                        <input type="text" class="form-control" id="feature_name" name="feature_name" placeholder="Feature name" maxlength="100"> 
+                                        <span class="text-danger" id="name_error"></span>
                                         @error('feature_name')
                                             <div class="text text-danger">{{ $message }}</div>
                                         @enderror  
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="description" name="description" placeholder="Description">   
+                                        <input type="text" class="form-control" id="description" name="description" placeholder="Description" maxlength="200">   
+                                        <span class="text-danger" id="description_error"></span>
                                         @error('description')
                                             <div class="text text-danger">{{ $message }}</div>
                                         @enderror
@@ -106,6 +108,7 @@
             dataType: 'json',
             success: function(response){
                 // console.log(response);
+                window.scrollTo(0, 0);
                 $('#feature_name').val(response.feature_name);
                 $('#description').val(response.description);
                 $('#id').val(response._id);
@@ -146,6 +149,23 @@
                 $('#submit').html('Submit');
       });
     });
-    
+    $('#feature_name').on('keyup',function(){
+            val = $(this).val();
+            console.log(val.length);
+            if(val.length >= 200){
+                $('#name_error').html('feature name must be less than 100 words');
+            }else{
+                $('#name_error').html('');
+            }
+        });
+      $('#description').on('keyup',function(){
+            val = $(this).val();
+            // console.log(val.length);
+            if(val.length >= 200){
+                $('#description_error').html('description must be lesser than 200 words');
+            }else{
+                $('#description_error').html('');
+            }
+        });
 </script>
 @endsection

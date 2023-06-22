@@ -21,7 +21,7 @@
         <!-- SELECT2 EXAMPLE -->
         <div class="card card-default">
           <div class="card-header">
-            <h3 class="card-title">Questionary</h3>
+            <h3 class="card-title">Guest Questions</h3>
 
             <div class="card-tools">
               <a href="{{ url('/'.Auth()->user()->unique_id.'/addquestionnaire') }}">
@@ -39,7 +39,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th class="w-50">Question</th>
+                            <th class="w-50">Questions</th>
                             <th>Answer-Type</th>
                             <th>Values</th>
                             <th>Action</th>
@@ -72,6 +72,7 @@
                         @endforeach
                     </tbody>
                  </table>
+                 {{ $question_data->links() }}
                 </div>
               </div>
             </div>
@@ -83,24 +84,38 @@
        
         $('.delete').click(function(){
             id = $(this).attr('data-id');
-            $.ajax({
-             method: 'post',
-             url: '{{ url('/'.Auth()->user()->unique_id.'/questionnaire/delete') }}',
-             data: { id:id ,_token:'{{ csrf_token() }}'},
-             dataType: 'json',
-             success: function(response){ 
-              swal({
-                      title: "Success!",
-                      text: "Successfully deleted question",
-                      icon: "success",
-                      button: "done",
-                  }).then((result) => {
+            Swal.fire({
+                      title: 'Are you sure to delete this question?',
+                      showCancelButton: true,
+                      confirmButtonText: 'yes',
+                      confirmButtonColor: '#008000',
+                      cancelButtonText: 'no',
+                      cancelButtonColor: '#d33',
+
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                          $.ajax({
+                          method: 'post',
+                          url: '{{ url('/'.Auth()->user()->unique_id.'/questionnaire/delete') }}',
+                          data: { id:id ,_token:'{{ csrf_token() }}'},
+                          dataType: 'json',
+                          success: function(response){ 
+                            Swal.fire({
+                                    title: "Success!",
+                                    text: "Successfully deleted question",
+                                    icon: "success",
+                                    button: "done",
+                                }).then((result) => {
                       location.reload();
                   });
+                     
              }
             });
+          }
+            
+          });
         });
     </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @endsection

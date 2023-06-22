@@ -11,7 +11,7 @@ use App\Models\HostAppointments;
 class NotificationController extends Controller
 {
   public function index(){
-    $hostappoinments =  HostAppointments::where([['host_id',Auth()->user()->id],['seen_status',0]])->orderBy('created_at','DSC')->get()->toArray();
+    $hostappoinments =  HostAppointments::where([['host_id',Auth()->user()->id],['questionrie_status',1],['seen_status',0]])->orderBy('created_at','DSC')->get()->toArray();
     $notification = PostNotification::get()->toArray();
   $data = array();
     foreach($notification as $d){

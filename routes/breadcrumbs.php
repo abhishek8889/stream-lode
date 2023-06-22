@@ -147,7 +147,7 @@ Breadcrumbs::for('edit-account',function(BreadcrumbTrail $trail): void{
 });
 Breadcrumbs::for('questionnaire', function (BreadcrumbTrail $trail): void {
     $trail->parent('host-dashboard');
-    $trail->push('Questionnaire', route('questionary',['id'=> Auth::user()->unique_id]));
+    $trail->push('guest-questions', route('questionary',['id'=> Auth::user()->unique_id]));
 });
 Breadcrumbs::for('questionnaire-add',function(BreadcrumbTrail $trail): void{
    $trail->parent('questionnaire');

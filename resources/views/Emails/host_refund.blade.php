@@ -24,12 +24,13 @@
                                     <table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                         <tbody><tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                             <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                                <h4><b>Thanks {{ !empty($host_name)?$host_name:''; }} to be with Streamlode.</b></h4>
+                                               
+                                                <h4>Hello <b>{{ !empty($host_name)?$host_name:''; }} </b> .Welcome to StreamLode.</h4>
                                             </td>
                                         </tr>
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                             <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                               Congratulations ! You are refunded ${{ !empty($amount)?$amount:''; }} by Stream lode for {{ !empty($host_membership_tier)?$host_membership_tier:''; }} of Order Id #{{ !empty($order_id)?$order_id:''; }}
+                                               Congratulations ! You are refunded ${{ !empty($amount)?$amount:''; }} by Stream lode for {{ !empty($host_membership_tier)?$host_membership_tier:''; }} of Order Id #{{ !empty($order_id)?$order_id:''; }}.
                                             </td>
                                         </tr>
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -39,14 +40,17 @@
                                         </tr>
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                             <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                                <b>streamlode@123.com</b>
-                                                <p>Support Team</p>
+                                            <b>Welcome aboard</b> <br><br>
+                                            <b>StreamLode support team</b><br><br>
+                                            <p>Support@streamlode.com</p>
                                             </td>
                                         </tr>
 
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                            <td class="content-block" style="text-align: center;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0;" valign="top">
-                                            &copy; 2023 Streamlode
+                                            <td class="content-block" style="text-align: left;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0;" valign="top">
+                                            <a class="navbar-brand" href="{{ url('') }}">
+                                                <img src="{{ asset('Assets/site-logos/Stresmlode-logo.png') }}" height="34px" alt="logo">
+                                            </a>
                                             </td>
                                         </tr>
                                     </tbody></table>

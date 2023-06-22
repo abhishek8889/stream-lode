@@ -31,7 +31,7 @@ class HostRegisterMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Host Registeration Mail',
+            subject: 'Host Registration Mail',
         );
     }
 
@@ -49,7 +49,7 @@ class HostRegisterMail extends Mailable
                     'host_inovice_url' => $this->host_inovice_url,
                     'host_invoice_pdf' => $this->host_invoice_pdf,
                     'status' => $this->status,
-                    ],
+                ],
         );
     }
 

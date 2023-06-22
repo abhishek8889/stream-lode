@@ -27,7 +27,7 @@
         @csrf
         <input type="hidden" name="id" value="{{ $membership_data['_id'] ?? '' }}">
         <div class="row">
-            <div class="card-body col-md-6">
+            <div class="card-body col-md-9">
                 <div class="form-group row">
                     <label for="name" class="col-sm-3 col-form-label">Name</label>
                     <div class="col-sm-9">
@@ -50,7 +50,7 @@
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Currency code</label>
                     <div class="col-sm-9">
-                        <select id="" class="form-control" id="inputEmail3" name="currency_code" disabled>
+                        <select id="" class="form-control" id="inputEmail3" name="currency_code" >
                             <option value="usd" <?php if($membership_data['type'] == 'usd'){ echo 'slected'; } ?> >USD</option>
                         </select>
                     </div>
@@ -59,7 +59,7 @@
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label" >Membership Type</label>
                     <div class="col-sm-9">
-                        <select id="" class="form-control" id="inputEmail3" name="membership_type" disabled>
+                        <select id="" class="form-control" id="inputEmail3" name="membership_type" >
                             <option value="recurring" <?php if($membership_data['type'] == 'recurring'){ echo 'slected'; } ?> >Recurring</option>
                             <option value="one-time" <?php if($membership_data['type'] == 'one-time'){ echo 'slected'; } ?> >one time</option>
                         </select>
@@ -68,7 +68,7 @@
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label" >Interval</label>
                     <div class="col-sm-9">
-                        <select id="" class="form-control" id="inputEmail3" name="interval_time" disabled>
+                        <select id="" class="form-control" id="inputEmail3" name="interval_time" >
                             <option value="month" <?php if($membership_data['interval'] == 'month'){ echo 'slected'; } ?>>Monthly</option>
                             <!-- <option value="6 months">6 Months</option>
                             <option value="9 months">9 Months</option>
@@ -92,6 +92,18 @@
                    
                     </div>
                 </div>
+              
+                <!-- host service charge  -->
+                <div class="form-group row">
+                    <label for="host_service_charge" class="col-sm-3 col-form-label">Host Stream Service Charge</label>
+                    <div class="col-sm-9">
+                        <input type="number" step="0.01" min="0" class="form-control" id="host_service_charge" placeholder="USD($)" name="host_service_charge" value="{{ $membership_data['host_service_charge'] ?? '' }}">
+                        @error('host_service_charge')
+                            <div class="text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Description</label>
                     <div class="col-sm-9">

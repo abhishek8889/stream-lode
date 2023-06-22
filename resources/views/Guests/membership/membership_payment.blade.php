@@ -107,6 +107,7 @@
                     <div class="form-group">
                       <label for="password">Password</label>
                       <input class="form-control" type="Password" id="password" name="password">
+                      <span class="text-danger" id="password-strength-status"></span>
                       @error('password')
                         <div class="text text-danger">{{ $message }}</div>
                       @enderror
@@ -144,13 +145,13 @@
                         <input type="radio" checked="checked" name="payent_method" class="paywith" paywith="card">
                         <span class="checkmark"></span>
                       </label>
-                      <label class="payemnt-radio">
+                      <!-- <label class="payemnt-radio">
                         <span class="image-text">
                           <img src="{{ asset('/streamlode-front-assets/images/paypal.png') }}" /> PayPal
                         </span>
                         <input type="radio" name="payent_method" class="paywith" paywith="paypal">
                         <span class="checkmark"></span>
-                      </label>
+                      </label> -->
                     </div>
                     <!-- card detail -->
                     <div class="card-detail payment-option" id="card">
@@ -308,4 +309,24 @@
       }
     });
 </script>
+<script>
+      $("#password").on('keyup', function(){
+        var number = /([0-9])/;
+        var alphabets = /([a-zA-Z])/;
+        var special_characters = /([@,!,$,#,%])/;
+        if ($(this).val().length < 6) {
+        $('#password-strength-status').removeClass();
+        // $('#password-strength-status').addClass('weak-password');
+        $('#password-strength-status').html("Weak (should be atleast 6 characters.)");
+    } else {
+        if ($(this).val().match(number) && $(this).val().match(alphabets) && $(this).val().match(special_characters)) {
+          $('#password-strength-status').html("");
+        } else {
+            $('#password-strength-status').html("Medium (should include alphabets, numbers and special characters.e.g:Stream@123)");
+         
+          }
+    
+    }
+      });
+    </script>
 @endsection

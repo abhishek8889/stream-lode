@@ -66,7 +66,7 @@ class MembershipPayments extends Controller
             $host_name = $membership_payment_data->user['first_name'] . ' ' .$membership_payment_data->user['last_name']; 
             $host_membership_tier = $membership_payment_data->membership_details['name'];
             $order_id = $membership_payment_data['order_id'];
-            $amount = $membership_payment_data['payment_amount'];
+            $amount = $membership_payment_data['total'];
 
             
             $payment_intent = $membership_payment_data->stripe_payment_intent;
@@ -74,14 +74,13 @@ class MembershipPayments extends Controller
             $refund_response = $stripe->refunds->create([
                 'payment_intent' => $payment_intent,
             ]);
-            // dd($refund_response);
+            // dd($amount);
             if($refund_response->status == 'succeeded'){
                 $membership_payment_data->refund_status = 1;
                 $membership_payment_data->stripe_refund_id = $refund_response->id;
                 $membership_payment_data->update();
-                
                 $refund_email_status = Mail::to($host_email)->send(new HostRefundMail($host_name,$host_membership_tier,$order_id,$amount));           
-                return redirect()->back()->with('success','You refund the host amount succesfully.');
+                return redirect()->back()->with('success','You have successfully refunded the $'. $amount. ' to '.$host_name );
             }else{
                 return redirect()->back()->with('error','Sorry there is some error in system.');
             }

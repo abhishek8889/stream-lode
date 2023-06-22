@@ -20,7 +20,7 @@ class HomeController extends Controller
                 $Visitor->ip_address = $clientIP;
                 $Visitor->save();
              }
-        }
+        } 
         return view('Guests.home');
     }
 }

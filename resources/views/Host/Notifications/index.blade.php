@@ -16,7 +16,7 @@
                           </a>
                           <br>
                           <?php 
-                        $time = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($d['created_at'])));
+                        $time = Date("M/d/Y h:i A", strtotime("0 minutes", strtotime($d['created_at'])));
                         ?>
                           <span>{{ $time }}</span>
                      </td>
@@ -37,7 +37,7 @@
                           </a>
                           <br>
                           <?php 
-                        $time = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hostappoinments['created_at'])));
+                        $time = Date("M/d/Y h:i A", strtotime("0 minutes", strtotime($hostappoinments['created_at'])));
                         ?>
                           <span>{{ $time }}</span>
                      </td>

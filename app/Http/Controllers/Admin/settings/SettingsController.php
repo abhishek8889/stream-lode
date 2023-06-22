@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin\settings;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Sitemeta;
 use File;
 
 class SettingsController extends Controller
@@ -16,7 +17,11 @@ class SettingsController extends Controller
     }
     public function adminUpdate(Request $req){
         // return $req->all();
-
+        // dd($req->id);
+        $req->validate([
+            'email' => 'required',
+        ]);
+        
         $user = User::find($req->id);
         $user->first_name = $req->first_name;
         $user->last_name = $req->last_name;
@@ -61,6 +66,26 @@ class SettingsController extends Controller
             return redirect('/admin/general-settings')->with('success','New profile picture added succesfully.');
         }
        
+    }
+    public function sitemeta(){
+        $sitemeta = Sitemeta::first();
+       return view('Admin.settings.sitemeta',compact('sitemeta'));
+    }
+    public function sitemetaadd(Request $request){
+        $sitemeta = Sitemeta::first()->_id;
+      $request->validate([
+        'help_email' => 'required'
+      ]);
+        $sitemeta = Sitemeta::find($sitemeta);
+        $sitemeta->help_email = $request->help_email;
+        $sitemeta->facebook_link = $request->facebook;
+        $sitemeta->twitter_link = $request->twitter;
+        $sitemeta->linkedin_link = $request->linkedin;
+        $sitemeta->instagram_link = $request->instagram;
+        $sitemeta->update();
+return redirect()->back()->with('success','successfully update site meta');
+
+        
     }
     public function changepassword(){
         

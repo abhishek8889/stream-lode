@@ -14,7 +14,7 @@
   <!-- Password input -->
   <div class="form-outline mb-4">
     <input type="password" id="form2Example2" class="form-control" name="password"/>
-    <label class="form-label" for="form2Example2"  >Password</label>
+    <label class="form-label" for="form2Example2">Password</label>
   </div>
   <input type="hidden" name="roomid" id="roomIdInput">
   <!-- Submit button -->
@@ -22,7 +22,9 @@
 
   <!-- Register buttons -->
   <div class="text-center">
-    <p>Not a member? <a href="{{ route('register') }}">Register</a></p>
+    <p>Not a member? <a href="{{ url('/membership') }}#all">Register</a></p>
+  </div>
+  <div class="text-center">
     <p><a href="{{ url('forgotten-password') }}">Forgotten Password</a></p>
   </div>
 </form>

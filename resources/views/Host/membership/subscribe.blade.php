@@ -71,7 +71,7 @@
               @if(isset($subscription_details['name']) && !empty($subscription_details['name']))
               <h2>{{ $subscription_details['name'] }}</h2>
               @endif
-              <div class="price">${{ $subscription_details['amount'] }}<span class="period">/ {{ $subscription_details['interval'] }}</span></div>
+              <div class="price">${{ number_format($subscription_details['amount'],2) }}<span class="period">/ {{ $subscription_details['interval'] }}</span></div>
             </div>
           </div>
         </div>
@@ -138,8 +138,8 @@
                                       <div class="sub-text">
                                       <h6>Subtotal</h6>
                                       </div>
-                                      <div class="sub-amt" subtotal="{{ $subscription_details['amount'] }}">
-                                      ${{ $subscription_details['amount'] }}
+                                      <div class="sub-amt" subtotal="{{ number_format($subscription_details['amount'],2) }}">
+                                      ${{ number_format($subscription_details['amount'],2) }}
                                       </div>
                                   </div>
                                   <div class="coupon">
@@ -153,7 +153,7 @@
                                       <h6>Total</h6>
                                       </div>
                                       <div class="sub-amt" id="total-amt">
-                                      ${{ $subscription_details['amount'] }}
+                                      ${{ number_format($subscription_details['amount'],2) }}
                                       </div>
                                   </div>
                                   </div>

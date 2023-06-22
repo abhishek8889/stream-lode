@@ -19,6 +19,7 @@ class MembershipTier extends Model
         'interval',
         'interval_count',
         'amount',
+        'host_service_charge',
         'status',
         'create_at',
         'update_at',

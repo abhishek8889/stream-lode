@@ -38,7 +38,7 @@
                                 <td>{{ $pm['last_4'] }}</td>
                                 <td>{{ $pm['expire_month'] }}/{{ $pm['expire_year'] }}</td>
                                 <td>
-                                    <a href="{{ url('delete-payment-methods/'.$pm['id']) }}" class="btn btn-danger"> <i class="fa fa-trash "></i></a>
+                                    <button href="{{ url('delete-payment-methods/'.$pm['id']) }}" class="delete_payment_method btn btn-danger"> <i class="fa fa-trash "></i></button>
                                 </td>
                             </tr>
                             @endforeach
@@ -51,4 +51,24 @@
             </div>
         </div>
     </div>
+    <script>
+    $('.delete_payment_method').click(function(e){
+        e.preventDefault();
+       link = $(this).attr('href');
+       Swal.fire({
+                      title: 'Are you sure to delete this?',
+                      showCancelButton: true,
+                      confirmButtonText: 'yes',
+                      confirmButtonColor: '#008000',
+                      cancelButtonText: 'no',
+                      cancelButtonColor: '#d33',
+
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        window.location.href = link;
+                      } 
+                    });  
+      });
+     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

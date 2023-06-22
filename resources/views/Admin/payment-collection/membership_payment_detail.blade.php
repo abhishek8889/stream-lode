@@ -21,9 +21,11 @@
                 <!-- title row -->
                 <div class="row">
                     <div class="col-12">
+                        <?php $created_at = date("M/d/Y h:i:s A", strtotime($membership_payments_details['created_at'])); 
+                            ?>
                     <h4>
                         @if($membership_payments_details['payment_status'] == 'succesfull' )
-                        <div class="btn btn-success ml-2">{{ $membership_payments_details['payment_status'] }}</div>
+                        <div class="btn btn-success ml-2">successful</div>
                        
                             @if($membership_payments_details['refund_status'] == 1)
                                 <a class="btn btn-primary ml-2 disabled" href="#">Refunded</a>     
@@ -35,7 +37,7 @@
                         @else
                         <div class="btn btn-danger ml-2">{{ $membership_payments_details['payment_status'] }}</div>
                         @endif
-                        <small class="float-right">Date: {{ !empty($membership_payments_details['created_at'])?$membership_payments_details['created_at']:''; }}</small>
+                        <small class="float-right">Date: {{ !empty($created_at)?$created_at:''; }}</small>
                     </h4>
                     </div>
                     <!-- /.col -->
@@ -71,7 +73,7 @@
                     <b>Order ID : </b> #{{ $membership_payments_details['order_id'] }} <br>
                     @if($membership_payments_details['discount_coupon_name']) 
                     <b>Discount code : </b> {{ $membership_payments_details['discount_coupon_name'] }} <br>  @endif
-                    <b>Payment On : </b> {{ $membership_payments_details['created_at'] }} <br>
+                    <b>Payment On : </b> {{ $created_at }} <br>
 
                     <div class="mt-1">
                     <b>Card : </b> <span class="text text-info font-weight-bold p-1"> {{ !empty($membership_payments_details->payments_method['brand'])?$membership_payments_details->payments_method['brand']:'';  }}</span> ends in <span>{{ !empty($membership_payments_details->payments_method['last_4'])?$membership_payments_details->payments_method['last_4']:''; }} </span>
@@ -132,7 +134,7 @@
             $('.Refund').click(function(){
                 url = $(this).attr('url');
                 Swal.fire({
-                      title: 'Are you sure!',
+                      title: 'Are you sure?',
                       showCancelButton: true,
                       confirmButtonText: 'yes',
                       confirmButtonColor: '#008000',

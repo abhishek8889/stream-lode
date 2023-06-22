@@ -41,7 +41,7 @@
                                 <h2>{{ $membership_details['name'] }}</h2>
                             @endif
                             @if(!empty($membership_details['amount']) || !empty($membership_details['interval']))
-                                <div class="price">${{ $membership_details['amount'] }} <span class="period">/ {{ $membership_details['interval'] }} </span></div>
+                                <div class="price">${{ number_format($membership_details['amount'],2) }} <span class="period">/ {{ $membership_details['interval'] }} </span></div>
                             @endif
                         </div>
                     </div>

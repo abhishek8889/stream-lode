@@ -3,44 +3,43 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stream-Lode|Admin</title>
+  <title>StreamLode|Admin</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
+  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
   <!-- iCheck -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
   <!-- JQVMap -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/jqvmap/jqvmap.min.css') }}">
+  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/jqvmap/jqvmap.min.css') }}">
   <!-- Theme style -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/dist/css/adminlte.min.css') }}">
+  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/dist/css/adminlte.min.css') }}">
   <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
   <!-- Daterange picker -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.css') }}">
+  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.css') }}">
   <!-- summernote -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.css') }}">
+  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.css') }}">
   <!-- <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <!-- @vite(['resources/css/app.css' , 'resources/js/adminapp.js']) -->
-
-  <link rel="stylesheet" href="http://127.0.0.1:5173/resources/css/app.css" />
-  <script type="module" src="http://127.0.0.1:5173/resources/js/app.js"></script>
+  <!-- vite(['resources/css/app.css' , 'resources/js/adminapp.js']) -->
+  <link rel="stylesheet" href="{{ url('public/build/assets/app-c59fe4ba.css') }}"/>
+    <script type="module" src="{{ url('public/build/assets/adminapp-c159236d.js') }}"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="{{ asset('Assets/site-logos/Stresmlode-logo.png') }}" alt="AdminLTELogo" height="80" width="220">
+    <img class="animation__shake" src="{{ asset('Assets/site-logos/Stresmlode-logo.svg') }}" alt="AdminLTELogo" height="80" width="220">
   </div>
 
   <!-- Navbar -->
@@ -57,27 +56,6 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <!-- Navbar Search -->
-      <!-- <li class="nav-item">
-        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-          <i class="fas fa-search"></i>
-        </a>
-        <div class="navbar-search-block">
-          <form class="form-inline">
-            <div class="input-group input-group-sm">
-              <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-              <div class="input-group-append">
-                <button class="btn btn-navbar" type="submit">
-                  <i class="fas fa-search"></i>
-                </button>
-                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </li> -->
       @php
         $messages = App\Models\Messages::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->orWhere([['type','=',1],['status','=',1]])->with('users')->get();
         $mnotification = App\Models\Messages::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->distinct('sender_id')->get()->toArray();
@@ -169,7 +147,7 @@
     <!-- Brand Logo -->
     <a href="{{ url('/admin/dashboard') }}" class="brand-link" style="height:57px;">
 
-      <img src="http://127.0.0.1:8000/streamlode-front-assets/images/logo.png" alt="AdminLTE Logo" class="brand-image" height="80" width="220">
+      <img src="{{ asset('streamlode-front-assets/images/logo.png') }}" alt="Admin Logo" class="brand-image" height="80" width="220">
      
     </a>
 
@@ -179,8 +157,8 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          @if(isset(auth()->user()->profile_image_url) || !empty(auth()->user()->profile_image_url))
-          <img src="{{ auth()->user()->profile_image_url }}" class="img-circle elevation-3" alt="User Image">
+          @if(isset(auth()->user()->profile_image_name) || !empty(auth()->user()->profile_image_name))
+          <img src="{{ asset('Assets/images/user-profile-images/'.auth()->user()->profile_image_name) }}" class="img-circle elevation-3" alt="User Image">
           @else
           <img src="{{ asset('Assets/images/default-avatar.jpg') }}" class="img-circle elevation-3" alt="User Image">
           @endif
@@ -258,6 +236,24 @@
               </li>
             </ul>
           </li>
+          <!-- Host Service Charge
+          <li class="nav-item ">
+            <a href="#" class="nav-link active">
+            <i class="nav-icon fa-solid fa-dollar-sign"></i>
+              <p>
+               Service charge
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Service Charge</p>
+                </a>
+              </li>
+            </ul>
+          </li> -->
           <!-- Discount Coupons  -->
           <li class="nav-item ">
             <a href="#" class="nav-link active">
@@ -352,6 +348,15 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item ">
+            <a href="{{ route('site-meta') }}" class="nav-link active">
+              <i class="nav-icon fas fa-cog"></i>
+              <p>
+                Site Settings
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
           
           <!-- Discount Code -->
           <!-- <li class="nav-item ">
@@ -408,7 +413,7 @@
     @yield('content')
   </div>
   <footer class="main-footer">
-  <strong>Copyright &copy; 2023 <a href="{{ URL::to('/') }}">Stream lode</a>.</strong>
+  <strong>Copyright &copy; 2023 <a href="{{ URL::to('/') }}">StreamLode</a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
       <b>Version</b> 1.0
@@ -424,39 +429,39 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
 <!-- jQuery UI 1.11.4 -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
 <!-- Bootstrap 4 -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- ChartJS -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/chart.js/Chart.min.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/chart.js/Chart.min.js') }}"></script>
 <!-- Sparkline -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/sparklines/sparkline.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/sparklines/sparkline.js') }}"></script>
 <!-- JQVMap -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
-<script src="{{ asset('AdminLTE-3.2.0/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
 <!-- jQuery Knob Chart -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
 <!-- daterangepicker -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/moment/moment.min.js') }}"></script>
-<script src="{{ asset('AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/moment/moment.min.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <!-- Tempusdominus Bootstrap 4 -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 <!-- Summernote -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.js') }}"></script>
 <!-- overlayScrollbars -->
-<script src="{{ asset('AdminLTE-3.2.0/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <!-- AdminLTE App -->
-<script src="{{ asset('AdminLTE-3.2.0/dist/js/adminlte.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/dist/js/adminlte.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="{{ asset('AdminLTE-3.2.0/dist/js/demo.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="{{ asset('AdminLTE-3.2.0/dist/js/pages/dashboard.js') }}"></script>
+<script src="{{ url('public/AdminLTE-3.2.0/dist/js/pages/dashboard.js') }}"></script>
 
 <link rel="stylesheet" type="text/css"  href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>

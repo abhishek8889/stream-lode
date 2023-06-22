@@ -9,7 +9,7 @@
       <div class="row banner-content">
         <div class="col-md-6 text_col">
           <div class="banner-heading">
-            <h1><span class="yellow">Stream</span><span class="blue">Lode</span> can Allow You to generate a Revenue Stream.</h1><span class="heading-pattern"><img src="{{ asset('streamlode-front-assets/images/star.png') }}"></span>
+            <h1><span class="yellow">Stream</span><span class="blue">Lode</span> can allow you to generate a revenue stream.</h1><span class="heading-pattern"><img src="{{ asset('streamlode-front-assets/images/star.png') }}"></span>
           </div>
           <div class="banner-text">
             <p>A revenue stream around your schedule, and your responsibilities, while working from home.</p><span class="text-pattern"><img src="{{ asset('streamlode-front-assets/images/text-star.png') }}"></span>
@@ -31,10 +31,10 @@
       <div class="dark-nav">
         <ul class="nav-list" id="filter-list">
           <li class="nav-list-item active" id="all" data-target="legal_content"><a href="#all">Legal</a></li>
-          <li class="nav-list-item" id="standar-tier" data-target="community_guidelines"><a href="#standar-tier" >Community guidelines</a></li>
-          <li class="nav-list-item" id="premium-tier" data-target="help_content"><a href="#premium-tier">Help</a></li>
-          <li class="nav-list-item" id="group-tier" data-target="suggestions_content"><a href="#group-tier" >Suggestions</a></li>
-          <li class="nav-list-item" id="group-tier" data-target="privacy_content"><a href="#group-tier">Privacy Policy</a></li>
+          <li class="nav-list-item" id="standar-tier" data-target="community_guidelines"><a href="#community-guidelines" >Community guidelines</a></li>
+          <li class="nav-list-item" id="premium-tier" data-target="help_content"><a href="#help-content">Help</a></li>
+          <li class="nav-list-item" id="group-tier" data-target="suggestions_content"><a href="#suggestions-content" >Suggestions</a></li>
+          <li class="nav-list-item" id="group-tier" data-target="privacy_content"><a href="#privacy-content">Privacy Policy</a></li>
         </ul>
       </div>
     </div>
@@ -117,40 +117,51 @@
         <div class="section-head text-center">
           <h2><span class="yellow">Get in</span><span class="blue"> touch</span></h2>
         </div>
+        <?php 
+          $admin_data =  App\Models\Sitemeta::first();
+          
+          ?> 
         <div class="about_module_wrapper">
           <div class="contact-nfo-wrapper">
             <div class="row contact-row">
               <div class="col-md-4 contact-address-col">
                 <div class="address-list">
                   <ul>
-                    <li><i class="fa-solid fa-envelope"></i> <a href="mailto:info@streamlode.com"> info@streamlode.com</a></li>
-                    <li><i class="fa-solid fa-house"></i> 621 Bingamon Road Independence, OH 44131</li>
+                    <li><i class="fa-solid fa-envelope"></i> <a href="mailto:{{ $admin_data['help_email'] ?? 'Support@streamlode.com' }}">{{ $admin_data['help_email'] ?? 'Support@streamlode.com' }}</a></li>
+                    <li><i class="fa-solid fa-house"></i> United States</li>
                   </ul>
                 </div>
               </div>
               <div class="col-md-8 contact-form-col">
-                <div class="form-part">
+                <form id="help-form" method="post" action="{{route('help-page')}}">    
+                   <div class="form-part">
                       <div class="form-group">
-                        <label for="fname">First And Last Name</label>
-                        <input class="form-control" type="text" id="fname" name="fname">
+                        @csrf
+                        <label for="fname">Full Name</label>
+                        <input class="form-control" type="text" id="fname" name="fname" maxlength="30">
+                        <span class="text-danger" id="fname_error"></span>
                       </div>
                       <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input class="form-control" type="text" id="email" name="email">
+                        <input class="form-control" type="email" id="email" name="email" maxlength ="50">
+                        <span class="text-danger" id="email_error"></span>
                       </div>
                       <div class="form-group">
                         <label for="email">Message</label>
                         <textarea class="form-control"id="message" name="message"></textarea>
+                        <span class="text-danger" id="message_error"></span>
                       </div>
-                      <div class="form-group check-group">
+                      <!-- <div class="form-group check-group">
                          <input type="checkbox" id="check_reminder">
                         <label for="check_reminder"> Remember Me</label>
-                      </div>
+                      </div> -->
 
                       <div class="button-wrapper">
-                          <button type="button" class="btn-main">Submit</button>
+                          <button type="submit" class="btn-main">Submit</button>
                       </div>
                     </div>
+                    </form>
+
               </div>
             </div>
           </div>
@@ -237,11 +248,50 @@
     <div class="marquee">
       <div class="marquee--inner">
         <span class="marquee-span">
-          <h2>We Have <span class="image"><img src="{{ asset('streamlode-front-assets/images/marque-image.png') }}"></span> <span class="yellow">A</span><span class="blue"> Great</span> Hosts For You!</h2>
+          <h2>We Have <span class="image"><img src="{{ asset('streamlode-front-assets/images/marque-image.png') }}"></span><span class="blue"> Great</span> Hosts For You!</h2>
         </span>
       </div>
     </div>
   </div>
   </div>
 </section>
+<script>
+  $('#help-form').on('submit',function(e){
+    e.preventDefault();
+    formdata = new FormData(this);
+    // console.log(formdata);
+    $.ajax({
+         method: 'post',
+         url: '{{route('help-page')}}',
+         data: formdata,
+         dataType: 'json',
+         contentType: false,
+         processData: false,
+         success: function(response)
+         {
+          swal({
+                title: "Success !",
+                text: "Successfully sent email to admin",
+                icon: "success",
+                button: "Dismiss",
+              });
+              $('#fname').val('');
+              $('#email').val('');
+              $('#message').val('');
+              $('#fname_error').html('');
+          $('#email_error').html('');
+          $('#message_error').html('');
+         },
+         error: function(error){
+
+          validation_error = JSON.parse(error.responseText).errors;
+          console.log(validation_error);
+          $('#fname_error').html(validation_error.fname);
+          $('#email_error').html(validation_error.email);
+          $('#message_error').html(validation_error.message);
+         }
+  });
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert"></script>
 @endsection

@@ -24,6 +24,7 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'email',
+        'help_email',
         'unique_id',
         'stripe_customer_id',
         'membership_id',
@@ -74,6 +75,9 @@ class User extends Authenticatable
     }
     public function streampayment(){
         return $this->hasMany(StreamPayment::class,'host_id','_id');
+    }
+    public function MembershipTier(){
+        return $this->hasOne(MembershipTier::class,'_id','membership_id');
     }
     
 }

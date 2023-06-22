@@ -25,7 +25,7 @@
               <div class="card-body box-profile">
                 <div class="text-center">
                     @if(isset($host_detail['profile_image_url']) || !empty($host_detail['profile_image_url']))
-                        <img class="profile-user-img img-fluid img-circle" src="{{ $host_detail['profile_image_url'] }}" alt="{{ $host_detail['profile_image_name'] }}">
+                        <img class="profile-user-img img-fluid img-circle" src="{{ url('public/Assets/images/user-profile-images') }}/{{ $host_detail['profile_image_name'] }}" alt="{{ $host_detail['profile_image_name'] }}">
                     @else
                         <img class="profile-user-img img-fluid img-circle" src="{{ asset('Assets/images/default-avatar.jpg') }}" alt="default image">
                     @endif
@@ -34,8 +34,6 @@
                 <h3 class="profile-username text-center">{{ $host_detail['first_name']. ' ' .$host_detail['last_name'] }}</h3>
                 @endif
                 <!-- profile occupation -->
-                <p class="text-muted text-center">Software Engineer</p>
-
                 <!-- <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
                     <b>Followers</b> <a class="float-right">1,322</a>
@@ -73,7 +71,7 @@
                             <input type="file" name="profile_img">
                           </div>
                           <div  class="mt-1">
-                          <button class="btn" >Upload</button>
+                          <button class="btn btn-primary mt-3">Upload</button>
                           </div>
                         </form>
                       </div>
@@ -139,7 +137,7 @@
               <div class="card-body">
                 <div class="tab-content">
                     <div class="tab-pane" id="settings">
-                        <form action="{{ url('/admin/host-generals-update') }}" method="POST" class="form-horizontal">
+                        <form action="{{ url('/admin/host-generals-update') }}" id="host_detail_form" method="POST" class="form-horizontal">
                         @csrf  
                         <input type="hidden" value="{{ $host_detail['_id'] }} " name="id">
                         <input type="hidden" value="{{ $host_detail['unique_id'] }} " name="unique_id">
@@ -159,7 +157,8 @@
                               <label for="email" class="col-sm-2 col-form-label">Email</label>
                               <div class="col-sm-10">
                               <input type="email" class="form-control" id="email" placeholder="Email" name="email" value="{{ isset($host_detail['email'])?$host_detail['email']:''; }}" />
-                              </div>
+                            <span class="text-danger" id="email_error"></span> 
+                            </div>
                           </div>
                           <div class="form-group row">
                               <label for="phone" class="col-sm-2 col-form-label">Phone</label>
@@ -176,19 +175,19 @@
                           <div class="form-group row">
                               <label for="instagram" class="col-sm-2 col-form-label">Instagram</label>
                               <div class="col-sm-10">
-                              <input type="text" class="form-control" id="instagram" placeholder="instagram" name="instagram" value="{{ isset($host_detail['instagram'])?$host_detail['instagram']:''; }}" />
+                              <input type="text" class="form-control" id="instagram" placeholder="Instagram" name="instagram" value="{{ isset($host_detail['instagram'])?$host_detail['instagram']:''; }}" />
                               </div>
                           </div>
                           <div class="form-group row">
-                              <label for="linkdin" class="col-sm-2 col-form-label">Linkdin</label>
+                              <label for="linkdin" class="col-sm-2 col-form-label">Linkedin</label>
                               <div class="col-sm-10">
-                              <input type="text" class="form-control" id="linkdin" placeholder="linkdin" name="linkdin" value="{{ isset($host_detail['linkdin'])?$host_detail['linkdin']:''; }}" />
+                              <input type="text" class="form-control" id="linkdin" placeholder="Linkedin" name="linkdin" value="{{ isset($host_detail['linkdin'])?$host_detail['linkdin']:''; }}" />
                               </div>
                           </div>
                           <div class="form-group row">
                               <label for="twitter" class="col-sm-2 col-form-label">Twitter</label>
                               <div class="col-sm-10">
-                              <input type="text" class="form-control" id="twitter" placeholder="twitter" name="twitter" value="{{ isset($host_detail['twitter'])?$host_detail['twitter']:''; }}" />
+                              <input type="text" class="form-control" id="twitter" placeholder="Twitter" name="twitter" value="{{ isset($host_detail['twitter'])?$host_detail['twitter']:''; }}" />
                               </div>
                           </div>
                           <div class="form-group row">
@@ -197,6 +196,9 @@
                               <input type="text" class="form-control" id="password" placeholder="New Password" name="newPassword" value="" />
                               <label for="password" class="text text-info">Enter text here only when you want to enter a new password</label>  
                             </div>
+                            @error('newPassword')
+                          <span class="text-danger">{{$message}}</span>
+                            @enderror
                           </div>
                           <div class="form-group row">
                               <label for="confirmPassword" class="col-sm-2 col-form-label">Confirm Password</label>
@@ -214,7 +216,7 @@
                                   @else
                                   <input type="checkbox" class="custom-control-input" id="customSwitches" name="hide_profile" checked>
                                   @endif
-                                  <label class="custom-control-label" for="customSwitches">By enable it you will make host's profile private and it will not visible to public.</label>
+                                  <label class="custom-control-label" for="customSwitches">When enabled,you will make host's profile private, and it will not visible to the public.</label>
                                   </div>
                               </div>
                           </div>
@@ -244,11 +246,11 @@
                         <div class="direct-chat-infos clearfix">
                           <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }else{ echo 'float-left'; }?>">{{$m['username']}}</span>
                           <?php
-                       $time = Date("Y-m-d H:i", strtotime("0 minutes", strtotime($m['created_at']))); 
+                       $time = Date("Y-m-d h:i A", strtotime("0 minutes", strtotime($m['created_at']))); 
                        ?>
                           <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-left'; }else{ echo 'float-right'; }?>">{{$time}}</span>
                         </div>
-                        <div class="direct-chat-text m-0" >
+                        <div class="direct-chat-text m-0 <?php if($m['sender_id'] == Auth()->user()->id){ echo 'message-sender'; }else{ echo 'message-reciever'; }?>"  >
                         {{$m['message']}}
                         </div>
                         <!-- /.direct-chat-text -->
@@ -296,10 +298,17 @@
             // alert('Please enter message')
             return false;
         }
+        const name = '{{ Auth()->user()->first_name }}';
+        const time = '<?php echo date('d-m-Y h:i A'); ?>';
+        const message = $('#messageinput').val();
+        $('#messages').append('<div class="direct-chat-msg" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+name+'</span><span class="direct-chat-name float-left">'+time+'</span></div><div class="direct-chat-text m-0 message-sender" >'+message+'</div></div>'); 
+        
         e.preventDefault();
        let formdata = new FormData(this);
+       $('#messageinput').val('');
+
         $.ajax({
-          method: 'post',
+                    method: 'post',
                     url: '{{url('/admin/message')}}',
                     data: formdata,
                     dataType: 'json',
@@ -308,9 +317,9 @@
                     success: function(response)
                     {
                       // console.log(response);
-                      $('#messageinput').val('');
-                    let timeString_ = moment(response.created_at).format("YYYY-MM-DD HH:mm");
-                      $('#messages').append('<div class="direct-chat-msg" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+response.username+'</span><span class="direct-chat-name float-left">'+timeString_+'</span></div><div class="direct-chat-text m-0" >'+response.message+'</div></div>'); 
+                      
+                    // let timeString_ = moment(response.created_at).format("YYYY-MM-DD HH:mm");
+                     
                     }
         });
       });
@@ -335,6 +344,23 @@
                     }
         });
     });
-
+    $(document).ready(function(){
+        $('#host_detail_form').on('submit',function(e){
+          // e.preventDefault();
+        
+            email = $('#email').val();
+         extension =  email.at(-4)+email.at(-3)+email.at(-2)+email.at(-1);
+        
+         if(extension == '.com'){
+          return true;
+          // $('#general_setting_form').submit();
+          // console.log('done');
+         }else{
+          $('#email_error').html('your email format is not valid');
+          return false;
+          // console.log('errror');
+         }
+        });
+    });
   </script>
 @endsection

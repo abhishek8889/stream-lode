@@ -10,7 +10,7 @@
   width: 100%;
     height: 100%;
     position: fixed;
-    z-index: 99;
+    z-index: 1100;
     background: #2455a6e0;
     top: 0px;
     height: 100vh;
@@ -20,7 +20,7 @@
   width: 30px;
   height: 30px;
   position: absolute;
-  z-index:3;
+  z-index:99;
   border: 4px solid #Fff;
   top: 50%;
   animation: loader 2s infinite ease;
@@ -135,7 +135,7 @@ $date = date('Y-m-d h:i');
       <div class="image-col col-md-6">
         <div class="image-box hover-zoom">
           @if(isset($host_details['profile_image_url']))
-            <img src="{{ $host_details['profile_image_url'] }}" alt="logo">
+            <img src="{{ asset('Assets/images/user-profile-images/') }}/{{ $host_details['profile_image_name'] }}" alt="logo">
           @else
             <img src="{{ asset('/Assets/images/default-avatar.jpg') }}" alt="unknown-avatar">
           @endif
@@ -158,12 +158,14 @@ $date = date('Y-m-d h:i');
                 $host_tags = App\Models\Tags::where('user_id',$host_id)->get(['name']);
                     
             ?>
+            <?php $x = 0; ?>
             @forelse($host_tags as $tag)
+            <?php $x = $x+1; ?>
+            <?php if($x != 1){ echo ',';} ?>
             <span>
-                {{ $tag['name']. ',' }}
+                 {{ $tag['name'] }}
             </span>
             @empty
-
             @endforelse
          </h3>
          @if(isset($host_details['description']))
@@ -174,12 +176,22 @@ $date = date('Y-m-d h:i');
          <div class="host-mail">
            <a href="mailto:{{ $host_details['email'] }}"><i class="fa-solid fa-envelope"></i> {{ $host_details['email'] }} </a>
          </div>
+         
          <ul class="host-social-links">
+          @if( isset($host_details['facebook']) )
           <li><a href="//{{ $host_details['facebook'] ?? '' }}"><i class="fa-brands fa-facebook-f"></i></a></li>
+          @endif
+          @if( isset($host_details['linkdin']) )
           <li><a href="//{{ $host_details['linkdin'] ?? '' }}"><i class="fa-brands fa-linkedin-in"></i></a></li>
+          @endif
+          @if( isset($host_details['instagram']))
            <li><a href="//{{ $host_details['instagram'] ?? '' }}"><i class="fa-brands fa-instagram"></i></a></li>
+          @endif
+          @if( isset($host_details['twitter']) )
           <li><a href="//{{ $host_details['twitter'] ?? '' }}"><i class="fa-brands fa-twitter"></i></a></li> 
+          @endif
          </ul>
+         
         </div>
       </div>
     </div>
@@ -226,9 +238,7 @@ $date = date('Y-m-d h:i');
                 <div class="available_txt text text-info">
                   Available between <span id="available_start" class="text text-dark "></span> to <span class="text text-dark" id="available_end"></span> on <span id="available_date" class="text text-dark"></span>
                 </div>
-
               </div>
-
               <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="calendarCloseBtn">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -239,11 +249,11 @@ $date = date('Y-m-d h:i');
                   <input type="hidden" name="user_login_status" id="user_login_status" user_id="{{ isset(auth()->user()->id)?auth()->user()->id:''; }}" value="{{ isset(auth()->user()->id)?1:0; }}">
                   <div class="form-group">
                     <label for="name">Enter your name</label>
-                    <input type="text" class="form-control" id="name"  placeholder="Enter your name" value="{{ Auth::user()->first_name ?? '' }}">
+                    <input type="text" class="form-control" id="name"  placeholder="Enter your name" value="{{ Auth::user()->first_name ?? '' }}"  maxlength="20">
                   </div>
                   <div class="form-group">
                     <label for="email">Enter your email</label>
-                    <input type="email" class="form-control" id="email"  placeholder="Enter your email" value="{{ Auth::user()->email ?? '' }}" @if(Auth::check()) disabled @endif>
+                    <input type="email" class="form-control" id="email"  placeholder="Enter your email" value="{{ Auth::user()->email ?? '' }}"  maxlength="50" @if(Auth::check()) disabled @endif>
                   </div>
                   <!-- Select Duration of time -->
                   <div class="form-group">
@@ -265,7 +275,7 @@ $date = date('Y-m-d h:i');
                 
                   <div class="form-group">
                     <label for="time">Meeting end time</label>
-                    <input type="datetime-local" class="form-control" id="end_time" placeholder="Meetimg time" value="" disabled/>
+                    <input type="datetime-local" class="form-control" id="end_time" placeholder="Meetimg time" value="" Disabled/>
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -387,7 +397,7 @@ $date = date('Y-m-d h:i');
   </div>
 </section>
  <!-- Questionarie modal -->
- <div class="modal fade" id="exampleModalCenterqueston" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+ <div class="modal fade" id="exampleModalCenterqueston" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
   <div class="modal-dialog mx-0 mx-sm-auto">
     <div class="modal-content">
       <div class="modal-header bg-primary">
@@ -402,7 +412,8 @@ $date = date('Y-m-d h:i');
         <form class="px-4" id="questionform" action="{{ url('questionnaire') }}" method="post">
           @csrf
          
-        <input type="hidden" name="host_id" value="{{ $host_details['_id'] ?? ''}}">   <!--appoinment_id -->
+        <input type="hidden" name="host_id" value="{{ $host_details['_id'] ?? ''}}">   <!--host_id -->
+        <input type="hidden" name="appointment_id" id="appoinment_id" value="">
           @foreach($HostQuestionnaire as $hq)
         <?php $count = $count+1; ?>
           <p class=""><strong>{{ $count }}.{{ $hq->question }}</strong></p>
@@ -411,19 +422,20 @@ $date = date('Y-m-d h:i');
               @foreach($hq->checkboxname as $checkbox)
                 <div class="form-check mb-2">
                  
-                  <input class="form-check-input" type="radio" name="answer{{ $count-1 }}" id="radio4Example1" value="{{ $checkbox }}" />
+                  <input class="form-check-input" type="radio" name="answer{{ $count-1 }}" id="radio4Example1" value="{{ $checkbox }}"
+                   />
                   <label class="form-check-label" for="radio4Example1">
                     {{ $checkbox }}
                   </label>
                 </div>
                 @endforeach
                 @else
-                <textarea class="form-control" id="form4Example4" rows="4" name="answer{{ $count-1 }}"></textarea>
+                <textarea class="form-control" id="form4Example4" rows="4" name="answer{{ $count-1 }}" maxlenght></textarea>
               @endif
               <hr />
          @endforeach
           <button type="submit" class="btn btn-primary">Submit</button>
-          <button type="button" class="btn btn-success" host-id = "{{ $host_details['_id'] ?? ''}}" id="deleteappoinment">Cancel Appoinment</button>
+          <button type="button" class="btn btn-success" id="deleteappoinment">Cancel Appoinment</button>
         </form>
         </div>
       </div>
@@ -461,8 +473,8 @@ $date = date('Y-m-d h:i');
                               // });
                               // $.fullCalendar.formatDate(event.start, "MM/dd/YYYY")
                               let available_date = $.fullCalendar.formatDate(event.start, "DD-MMM-YYYY");
-                              let available_start = $.fullCalendar.formatDate(event.start, "HH:mm");
-                              let available_end = $.fullCalendar.formatDate(event.end, "HH:mm");
+                              let available_start = $.fullCalendar.formatDate(event.start, "h:mm a");
+                              let available_end = $.fullCalendar.formatDate(event.end, "h:mm a");
                               
                               $("span#available_date").html('<u>'+ available_date+ '</u>');
                               $("span#available_start").html('<u>'+available_start+ '</u>');
@@ -500,6 +512,7 @@ $date = date('Y-m-d h:i');
                                     }).change(function(){
                                       var start_time_new = $("#start_time").val(); 
                                       var defaulttimestamp = moment(start_time_new, "YYYY-MM-DD HH:mm").add($(this).val(), 'minutes').format('YYYY-MM-DD HH:mm');
+                                      
                                       if(defaulttimestamp > event.end._i){
                                             swal({
                                               title: "Sorry !",
@@ -520,13 +533,16 @@ $date = date('Y-m-d h:i');
                                     // console.log(defaulttimestamp);
                                     $('#end_time').val(defaulttimestamp);
                                     $('#start_time').change(function(){
+                                    
                                       var meet_duration = $("#meeting_duration").val();
+                                      var end_error_time =  moment(event.end._i, "YYYY-MM-DD HH:mm").subtract(meet_duration, 'minutes').format('YYYY-MM-DD HH:mm');
+                                      // console.log(end_error_time);
                                       startdate = $('#start_time').val();
                                       //  console.log(startdate);
                                       newDateTime = moment(startdate, "YYYY-MM-DD HH:mm").add(meet_duration, 'minutes').format('YYYY-MM-DD HH:mm');
                                       // console.log(newDateTime);
                                       let dateString_ = moment(startdate).format("YYYY-MM-DD HH:mm");
-                                      if(dateString_ > event.end._i){
+                                      if(dateString_ > end_error_time){
                                         swal({
                                           title: "Sorry !",
                                           text: "This timestamp is not valid",
@@ -534,6 +550,7 @@ $date = date('Y-m-d h:i');
                                           button: "Dismiss",
                                         });
                                         $('#start_time').val(starttime);
+                                        $('$end_time').val(newDateTime);
                                       }
                                       //  console.log(dateString_);
                                       if(dateString_ < starttime){
@@ -544,6 +561,7 @@ $date = date('Y-m-d h:i');
                                           button: "Dismiss",
                                         });
                                         $('#start_time').val(starttime);
+                                        
                                       }else{
                                         $('#end_time').val(newDateTime);
                                         $('#end_time').change(function(){
@@ -601,6 +619,8 @@ $date = date('Y-m-d h:i');
                                   //  console.log(event.start._i);
                                   $("#scheduleMeetingForm").on('submit',function(e){
                                     e.preventDefault();
+                                  
+                                    
                                     $("#overlayer").fadeIn();
                                     $("#calendarModal").modal('hide');
                                     let user_login_status = $("#user_login_status").val();
@@ -636,7 +656,6 @@ $date = date('Y-m-d h:i');
                                                     $("#overlayer").fadeOut('100');
                                                   }
                                                     , 1000);
-                                    
                                                 swal({
                                                   title: "Slot is already booked.",
                                                   text: data.message,
@@ -644,10 +663,14 @@ $date = date('Y-m-d h:i');
                                                   button: "Dismiss",
                                                  });
                                                 }else{
+                                                  // console.log(data);
                                                 setTimeout(function(){
                                                   //  location.reload();
+                                                  
                                                   $('#exampleModalCenterqueston').modal({backdrop: 'static'});
                                                     $(".loader-wrapper").fadeOut('3000');
+                                                    $('#appoinment_id').val(data.appoinment);
+                                                    $('#deleteappoinment').attr("appoinment-id",data.appoinment);
                                                     $("#overlayer").fadeOut('3000');
                                                   }
                                                     , 3000);
@@ -742,10 +765,10 @@ $date = date('Y-m-d h:i');
             {
               // console.log(response);
               if(response.error){
-                $("#overlayer").fadeOut();
+                // $("#overlayer").fadeOut();
                   $('#errorspan').html(response.error);
               }else{
-                $("#overlayer").fadeOut();
+                // $("#overlayer").fadeOut();
                 // console.log(response);
                 // location.reload();
                 swal({
@@ -764,12 +787,12 @@ $date = date('Y-m-d h:i');
         $(document).ready(function(){
           $('#deleteappoinment').click(function(e){
             // e.preventDefault();
-          host_id = $(this).attr('host-id');
-            console.log(host_id);
+            appointment_id = $(this).attr('appoinment-id');
+            // console.log(host_id);
             $.ajax({
             method: 'post',
             url: '{{url('questionnaire')}}',
-            data: { host_id:host_id, task:'delete',_token:'{{ csrf_token() }}' },
+            data: { appointment_id:appointment_id, task:'delete',_token:'{{ csrf_token() }}' },
             dataType: 'json',
             success: function(response)
             {
@@ -782,14 +805,6 @@ $date = date('Y-m-d h:i');
     // for without question submit users
       </script>
     
-@if($questionrie_status)
-    @if($questionrie_status['questionrie_status'] == 0)
-    <script>
-      $(document).ready(function(){
-    $('#exampleModalCenterqueston').modal({backdrop: 'static'});
-      });
-    </script>
-    @endif
-@endif
+
 
 @endsection

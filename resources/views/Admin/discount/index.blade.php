@@ -33,7 +33,7 @@
                     <input type="hidden" name="id" value="">
                     <label for="name" class="col-sm-3 col-form-label">Name</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="name" placeholder="Name" name="name" value="">
+                        <input type="text" class="form-control" id="name" placeholder="Name" name="name" value="" maxlength="20"/>
                         @error('name')
                             <div class="text text-danger">{{ $message }}</div>
                         @enderror
@@ -42,7 +42,7 @@
                 <div class="form-group row">
                     <label for="couponCode" class="col-sm-3 col-form-label">Coupon Code</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="couponCode" placeholder="" name="coupon_code" value="" >
+                        <input type="text" class="form-control" id="couponCode" placeholder="" name="coupon_code" value="" maxlength="10" >
                         @error('coupon_code')
                             <div class="text text-danger">{{ $message }}</div>
                         @enderror
@@ -67,7 +67,7 @@
                 <div class="form-group row" id="prcent_amt">
                     <label for="perentage_off" class="col-sm-3 col-form-label">Percentage Off</label>
                     <div class="col-sm-9">
-                        <input type="text" id="perentage_off" class="form-control" name="percent_off" placeholder="Enter percentage"/>  
+                        <input type="number" id="perentage_off" class="form-control" name="percent_off" placeholder="Enter percentage" max="100" min="0"/>  
                     </div>
                 </div>
                 <!-- <div class="form-group row" id="discount_amt">

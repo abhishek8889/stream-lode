@@ -175,7 +175,7 @@ display: none;
                 </div>
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0" >
+              <div class="card-body table-responsive p-0" style="height: 450px;">
                 <table class="table table-head-fixed text-nowrap">
                   <thead class="text-center">
                     <tr>
@@ -188,13 +188,13 @@ display: none;
                       <th class="text-center">View</th>
                     </tr>
                   </thead>
-                  <?php  
-                   if($_GET){
-                          $count = ($_GET['page']-1)*10;
-                        }else{
-                          $count = 0;
-                        }
-                        ?>
+                  <?php 
+                  if($_GET){
+                    $count = ($_GET['page']-1)*10;
+                  }else{
+                    $count = 0;
+                  }
+                  ?>
                   <tbody class="text-center">
               <?php
               $current_date = date('Y-m-d H:i');
@@ -202,14 +202,12 @@ display: none;
                     @if($host_schedule)
                     @forelse ($host_schedule as $hs)
                       <tr>
-                        <?php 
-                     
-                        $count = $count+1; ?>
+                        <?php $count = $count+1; ?>
                         <td class="text-center">{{$count}}.</td>
                         <td>{{$hs->guest_name}}</td>
                         <?php 
-                        $startdate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->start)));
-                        $enddate =  Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->end)));
+                        $startdate =  Date("M/d/Y h:i a", strtotime("0 minutes", strtotime($hs->start)));
+                        $enddate =  Date("M/d/Y h:i a", strtotime("0 minutes", strtotime($hs->end)));
                         // $time = Date("M/d/Y H:i", strtotime("0 minutes", strtotime($hs->end)));
                         ?>
                         <td>{{$startdate}}</td>
@@ -218,12 +216,12 @@ display: none;
                         <td class="text-center">
                         @if($current_date < $hs->end)
                           @if($hs->video_link_name)
-                          <a href="{{ url('delete-appointment/'.$hs->id) }}" class="btn btn-danger"><i class="fa fa-trash "></i></a>
+                          <button href="{{ url('delete-appointment/'.$hs->id) }}" class="delete_appoinments btn btn-danger"><i class="fa fa-trash "></i></button>
                           <a class="videoconfrencelink btn btn-success" app-id="{{$hs->_id}}" data-id="{{$hs->video_link_name}}" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="View Room">
                             <i class="fa fa-video-camera" aria-hidden="true"></i>
                           </a>
                           @else
-                          <a href="{{ url('delete-appointment/'.$hs->id) }}" class="btn btn-danger"><i class="fa fa-trash "></i></a>
+                          <button href="{{ url('delete-appointment/'.$hs->id) }}" class="delete_appoinments btn btn-danger"><i class="fa fa-trash "></i></button>
                           <a class="videoconfrence btn btn-info" data-id="{{$hs->_id}}" style="cursor:pointer;"  data-toggle="tooltip" data-placement="top" title="Create Room">
                             <i class="fa fa-video-camera" aria-hidden="true"></i>
                           </a>
@@ -247,11 +245,8 @@ display: none;
                     @endforelse
                     @endif
                   </tbody>
-                 
                 </table>
-                <div class="card-footer">
-                {{ $host_schedule->onEachSide(5)->links() }}
-                </div>
+                {{ $host_schedule->links() }}
               </div>
               <!-- /.card-body -->
             </div>
@@ -301,9 +296,10 @@ display: none;
                                           <div class="col-12">
                                           <h4>    
                                             <small>
+                                              <?php  $created_at = Date("M/d/Y h:i a", strtotime("0 minutes", strtotime($hs->created_at)));  ?>
                                               Payment: @if($hs->payment_status == 1) <span class="badge badge-pill badge-success" >Success</span> @else <span class="badge badge-pill badge-danger" > pending</span> @endif
                                              </small>     
-                                              <small class="float-right">Date: {{ $hs->created_at ?? '' }}</small>
+                                              <small class="float-right">Date: {{ $created_at ?? '' }}</small>
                                           </h4>
                                           </div>
                                   </div>
@@ -311,8 +307,12 @@ display: none;
                                           <!-- /.col -->
                                           <div class="col-sm-6 invoice-col">
                                           <h5><b>Meeting Detail</b></h5>
-                                                      <b>Meeting started time: </b>{{ $hs->start ?? '' }}<br>
-                                                      <b>Meeting end time : </b>{{ $hs->end ?? '' }} <br>
+                                         <?php 
+                                         $meet_start_time = Date("M/d/Y h:i a", strtotime("0 minutes", strtotime($hs->start)));
+                                         $meet_end_time = Date("M/d/Y h:i a", strtotime("0 minutes", strtotime($hs->end)));
+                                         ?>
+                                                      <b>Meeting start on: </b>{{ $meet_start_time ?? '' }}<br>
+                                                      <b>Meeting end on : </b>{{ $meet_end_time ?? '' }} <br>
                                                       <b>Duration: </b>{{ $hs->duration_in_minutes ?? '' }} minutes  <br>
                                                       <b>Total Video Duration: </b>{{ $hs->total_duration ?? '00:00' }} minutes   
                                           </div>
@@ -321,7 +321,7 @@ display: none;
                                               <h5><b>Guest Detail</b></h5>
                                                   <div>
                                                           Guest name :{{ $hs->guest_name ?? '' }}<br>
-                                                          Guest email : {{ $hs->guest_email ?? '' }} <br>
+                                                          <!-- Guest email : {{ $hs->guest_email ?? '' }} <br> -->
                                                   </div>
                                           </div>
                                   </div>
@@ -364,10 +364,12 @@ display: none;
                               <?php 
                             for($i=0; $i<count($data[0]); $i++){ ?>
                                     <div class="card">
-                                      <div class="card-header" id="headingOne">
-                                          <button class="btn"  data-toggle="collapse" data-target="#collapseOne{{ $hs->_id }}{{ $i }}" aria-expanded="true" aria-controls="collapseOne">
+                                      <div class="card-header " id="headingOne" data-toggle="collapse" data-target="#collapseOne{{ $hs->_id }}{{ $i }}" aria-expanded="true" aria-controls="collapseOne"  data-bs-toggle="tooltip" data-bs-placement="top" title="Click for answer">
+                                      <span><i class="fa fa-sort-desc" aria-hidden="true"></i></span>    
+                                      <button class="btn">
                                           Q.{{ $i+1 }}. <?php print_r($data[0][$i]); ?> 
                                           </button>
+                                          
                                       </div>
 
                                       <div id="collapseOne{{ $hs->_id }}{{ $i }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion{{ $hs->_id }}">
@@ -384,7 +386,7 @@ display: none;
             </div>
         </div>
         @endforeach
-       
+
   <script>
     $(document).ready(function(){
      
@@ -448,7 +450,7 @@ display: none;
               $('#overlayer').fadeOut();
               $('#exampleModalCenter').addClass("show");
               $('#exampleModalCenter').css("display","block");
-                swal({
+              Swal.fire({
                           title: "success !",
                           text: response,
                           icon: "success",
@@ -488,10 +490,27 @@ $(document).ready(function(){
           console.log(response.length);
           $('#notificationcount').html(parseInt($('#notificationcount').html())-parseInt(response.length));
         }
-      })
-    })
+      });
+    });
+    
+    $('.delete_appoinments').click(function(e){
+        e.preventDefault();
+       link = $(this).attr('href');
+       Swal.fire({
+                      title: 'Do you want to delete this appointment ?',
+                      showCancelButton: true,
+                      confirmButtonText: 'yes',
+                      confirmButtonColor: '#008000',
+                      cancelButtonText: 'no',
+                      cancelButtonColor: '#d33',
 
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        window.location.href = link;
+                      } 
+                    });  
+      });
   </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @endsection

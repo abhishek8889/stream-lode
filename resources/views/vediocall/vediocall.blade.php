@@ -4,9 +4,9 @@
   <title>LiveStream|Streamlode</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="{{ asset('twilio-assets/site.css') }}">
+  <link rel="stylesheet" href="{{ url('public/twilio-assets/site.css') }}">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  @vite('resources/js/pingStatus.js')
+  <!-- vite('resources/js/pingStatus.js') -->
   <style>
 
    #couponcode{
@@ -68,10 +68,10 @@
       <!-- <div id="mute-icon" style="display:none;"><i class="fa-solid fa-microphone-slash"></i></div> -->
       <!-- <div id="local-media"></div> -->
       <div class="vedio-btn-wrapper">
-        <button id="button-mic" class="active"><i class="fa-solid fa-microphone"></i></button>
-        <button id="button-preview" class="active"><i class="fa-sharp fa-solid fa-video"></i></button>
-        <button id="button-message"><i class="fa-regular fa-comment"></i></button>
-        <button id="button-leave" class="btn btn-danger done-call" guest-email="{{$appoinment_details['guest_email'] ?? ''}}"><i class="fa-solid fa-phone"></i></button>
+        <button id="button-mic" class="active" data-toggle="tooltip" data-placement="bottom" title="Mute the call"><i class="fa-solid fa-microphone"></i></button>
+        <button id="button-preview" class="active" data-toggle="tooltip" data-placement="bottom" title="Hide your camera"><i class="fa-sharp fa-solid fa-video"></i></button>
+        <!-- <button id="button-message"><i class="fa-regular fa-comment"></i></button> -->
+        <button id="button-leave" class="btn btn-danger done-call" data-toggle="tooltip" data-placement="bottom" title="Leave the call" guest-email="{{$appoinment_details['guest_email'] ?? ''}}"><i class="fa-solid fa-phone"></i></button>
         <div id="user_type_div">
 
           <!-- //////////////////////////// payment modal \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
@@ -186,6 +186,29 @@
           </div>
         </div>
       </div>
+      <!-- Continue as which type of user  -->
+      <div class="modal fade" id="continueAs" tabindex="-1" role="dialog" aria-labelledby="continueAs" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Please choose one option</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="continueAsModalBody">
+            <div>
+              <a href="" class="btn btn-warning" id="contAsHost">Continue as Host</a> 
+              <button class="btn btn-warning" id="contAsGuest">Continue as Guest</button>
+            </div>
+            </div>
+            <div class="modal-footer">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End -->
     <!-- Ask for payment modal end -->
     <div class="alert-login" value="{{ auth()->user()->_id ?? ''}}"></div>
     <!-- <div id="log"></div> -->
@@ -202,7 +225,7 @@
 margin-right: auto;
 }
 </style>
-
+<!-- Coupon Functionality  -->
 <script>
     $(document).ready(function(){
       $('#couponcode').hide();
@@ -224,7 +247,7 @@ margin-right: auto;
        }
         $.ajax({
           method: 'post',
-          url: '{{ url('coupon-check') }}',
+          url: '{{ url("/coupon-check") }}',
           dataType: 'json',
           data: {amount:amount,coupon_code:coupon_code ,host_id:host_id, _token: '{{csrf_token()}}'},
           success: function(response){
@@ -249,6 +272,7 @@ margin-right: auto;
       });
     });
   </script>
+<!-- Stripe functionality  -->
 <script src="https://js.stripe.com/v3/"></script>
 <script>
     const stripe = Stripe('{{ env('STRIPE_PUB_KEY') }}');
@@ -296,109 +320,94 @@ margin-right: auto;
         }
     });
 </script>
-
+<!-- Login  -->
+<?php
+$current_time =  date('Y-m-d H:i'); 
+$appoinment_end_str = strtotime($appoinment_details['end']);
+$appoinment_end = date('Y-m-d H:i', strtotime('0 minutes',$appoinment_end_str));
+// dd($current_time . ' end' .$appoinment_end );
+?>
   <script>
+    // console.log({{$current_time}} + 'end time' + {{$appoinment_end}} );
     $(document).ready(function(){
       var user_type = $("#user_type").val();
-      if(user_type == 'host'){
+      @if($current_time > $appoinment_end)
+        console.log('errror');
         Swal.fire({
-        title: 'Are you ready for your session ?',
-        text : 'Please press yes for join your video session.',
-        icon: "info",
-        showDenyButton: true,
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        denyButtonText: 'No',
-        customClass: {
-          actions: 'my-actions',
-          cancelButton: 'order-1 right-gap',
-          confirmButton: 'order-2',
-          denyButton: 'order-3',
-        }
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // $("#paymentModal").modal('show');
-            var user_type = $("#user_type").val();
-            
-            if(user_type == "host"){
-              $("#user_type_div").attr('class','btn btn-success sendPaymentPingBtn');
-              $("#user_type_div").attr('data-toggle','tooltip');
-              $("#user_type_div").attr('data-placement','top');
-              $("#user_type_div").attr('title','Ask for payment');
-              $("#user_type_div").attr('type','host_box');
-              $("#user_type_div").html("<i class='fa-solid fa-dollar-sign'></i>");
-            }else{
-              $("#user_type_div").attr('type','guest_box');
-              @if($appoinment_details['payment_status'] == 0)
-                $("#paymentModal").modal({backdrop: 'static'});
-              @endif
-            }
-            startVedioCall();
-          }else if (result.isDenied) {
-            window.location.href = "{{ url('/') }}";
-          }
-        });
-      }else if(user_type == "notlogin"){
-      var  roomname = $('#room-name').val();
-                  Swal.fire({
-            title: 'Warning ?',
-            text: "Sorry we did not find you in our system. Please login first",
-            icon: 'warning',
-            showCancelButton: false,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'OK'
+                    title: 'Warning.',
+                    text: "Link is expired ",
+                    icon: 'warning',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      window.location.replace("/");
+                    }
+                  });
+      @else
+        if(user_type == 'host'){
+          Swal.fire({
+          title: 'Are you ready for your session ?',
+          text : 'Please press yes for join your video session.',
+          icon: "info",
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          denyButtonText: 'No',
+          customClass: {
+                        actions: 'my-actions',
+                        cancelButton: 'order-1 right-gap',
+                        confirmButton: 'order-2',
+                        denyButton: 'order-3',
+                      }
           }).then((result) => {
             if (result.isConfirmed) {
-              window.location.replace("/login?roomid=" + roomname);
+              // $("#paymentModal").modal('show');
+              var user_type = $("#user_type").val();
+              startVedioCall();
+            }else if (result.isDenied) {
+              window.location.href = "{{ url('/') }}";
             }
-          })
-      }else{
-        Swal.fire({
-        title: 'Are you ready for your session ?',
-        @if($appoinment_details['payment_status'] == 1)
-        text : 'Please press yes for join your video session.',
-        @else
-        text : 'Please press yes for payment for your video session.',
-        @endif
-        icon: "info",
-        showDenyButton: true,
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        denyButtonText: 'No',
-        customClass: {
-          actions: 'my-actions',
-          cancelButton: 'order-1 right-gap',
-          confirmButton: 'order-2',
-          denyButton: 'order-3',
-        }
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // $("#paymentModal").modal('show');
-            var user_type = $("#user_type").val();
-            if(user_type == "host"){
-              $("#user_type_div").attr('class','btn btn-success sendPaymentPingBtn');
-              $("#user_type_div").attr('data-toggle','tooltip');
-              $("#user_type_div").attr('data-placement','top');
-              $("#user_type_div").attr('title','Ask for payment');
-              $("#user_type_div").attr('type','host_box');
-              $("#user_type_div").html("<i class='fa-solid fa-dollar-sign'></i>");
-            }else{
-              $("#user_type_div").attr('type','guest_box');
-              @if($appoinment_details['payment_status'] == 0)
+          });
+        }else if(user_type == "notlogin"){
+            var  roomname = $('#room-name').val();
+            $("#continueAs").modal('show');
+            $("#contAsHost").attr('href','{{ url("/login") }}?roomid='+roomname);
+            $("#contAsGuest").on('click',function(){
+              $("#continueAs").modal('hide');
+              @if($appoinment_details['payment_status'] != 1)
                 $("#paymentModal").modal({backdrop: 'static'});
               @endif
-            }
-            @if ($appoinment_details['payment_status'] == 1)
-              startVedioCall();         // add start video call function here!
-            @endif
-            // startVedioCall();        // Comment start cideo call function from here!
-          }else if (result.isDenied) {
-            window.location.href = "{{ url('/') }}";
-          }
-        });
-      }
+            });
+            Swal.fire({
+              title: 'Are you ready for your session ?',
+              text : 'Please press yes for join your video session.',
+              icon: "info",
+              showDenyButton: true,
+              showCancelButton: true,
+              confirmButtonText: 'Yes',
+              denyButtonText: 'No',
+              customClass: {
+                actions: 'my-actions',
+                cancelButton: 'order-1 right-gap',
+                confirmButton: 'order-2',
+                denyButton: 'order-3',
+              }
+            }).then((result) => {
+                if(result.isConfirmed) {
+                  startVedioCall(); // add start video call function here!
+                }else if (result.isDenied) {
+                  window.location.href = "{{ url('/') }}";
+                };
+            });
+        }else{
+
+        }
+      @endif
     });
+
     $("#user_type_div").on('click',function(){
       if($(this).attr('type') == 'host_box'){
         $("#askForPayment").modal('show');
@@ -426,10 +435,9 @@ margin-right: auto;
       });
     });
 
-
 // Leave video call local storage null button
   </script>
-
+  
 
 <!-- script for save time duration of video call  -->
 
@@ -460,6 +468,6 @@ margin-right: auto;
   <script src="//sdk.twilio.com/js/video/releases/2.26.2/twilio-video.min.js"></script>
   <!-- <script src="//media.twiliocdn.com/sdk/js/video/releases/1.14.0/twilio-video.js"></script>  this is commented --> 
   <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> default jquery -->
-  <script src="{{ asset('twilio-assets/quickstart.js') }}"></script>
+  <script src="{{ url('public/twilio-assets/quickstart.js') }}"></script>
 </body>
 </html>

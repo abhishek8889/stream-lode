@@ -25,8 +25,7 @@ class HostPaymentMethodsController extends Controller
         return redirect()->back()->with('success','Your card is succesfully deleted');
     }
     public function streampayments(){
-        $stream_payments = StreamPayment::where('host_id',Auth()->user()->id)->with('appoinments')->orderBy('created_at','DSC')->get();
-        // dd($stream_payments);
+        $stream_payments = StreamPayment::where('host_id',Auth()->user()->id)->with('appoinments')->orderBy('created_at','DSC')->paginate(10);
         return view('Host/payment-methods.stream_payments',compact('stream_payments'));
     }
 }

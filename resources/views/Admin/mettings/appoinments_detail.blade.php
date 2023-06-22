@@ -44,8 +44,10 @@
                                 <td>{{ $d->guest_name }}</td>
                                 <td>{{ $d->guest_email }}</td>
                                 <td>{{ $d['user']->email }}</td>
-                                <td>{{ $d->start }}</td>
-                                <td>{{ $d->end }}</td>
+                                <?php $start_time = date("M/d/Y h:i:s A", strtotime($d->start)); ?>
+                                <td>{{ $start_time }}</td>
+                                <?php $end_time = date("M/d/Y h:i:s A", strtotime($d->end)); ?>
+                                <td>{{ $end_time }}</td>
                                 <td>{{ $d->duration_in_minutes }} minutes</td>
                                 <td class="text-center">
                                 @if($d->payment_status == 1)
@@ -57,9 +59,10 @@
                              </tr>
                         @endforeach
              </tbody>
+             
                 </table>
               </div>
-              
+              {!! $data->links() !!}
             </div>
  </div>
 @endsection

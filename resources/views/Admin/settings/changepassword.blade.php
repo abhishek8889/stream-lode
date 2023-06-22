@@ -32,18 +32,27 @@
                           <div class="col-sm-10">
                             <input type="password" class="form-control" id="current-password" name="current_password" placeholder="Your current password">
                           </div>
+                          @error('current_password')
+                            <div class="text text-danger">{{ $message }}</div>
+                          @enderror
                         </div>
                         <div class="form-group row">
                           <label for="new-password" class="col-sm-5 col-form-label">New Password</label>
                           <div class="col-sm-10">
                             <input type="password" class="form-control" id="new-password" name="new_password" placeholder="Your new password">
                           </div>
+                          @error('new_password')
+                            <div class="text text-danger">{{ $message }}</div>
+                          @enderror
                         </div>
                         <div class="form-group row">
                           <label for="confirm-new-password" class="col-sm-5 col-form-label">Confirm new Password</label>
                           <div class="col-sm-10">
                             <input type="password" class="form-control" id="confirm-new-password" name="confirm_new_password" placeholder="Confirm your new password">
                           </div>
+                          @error('confirm_new_password')
+                            <div class="text text-danger">{{ $message }}</div>
+                          @enderror
                         </div>
                         <div class="form-group row">
                           <div class="col-sm-10">

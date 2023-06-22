@@ -23,8 +23,8 @@
             <div class="card card-primary card-outline">
                 <div class="card-body box-profile">
                 <div class="text-center">
-                    @if(isset(auth()->user()->profile_image_url) || !empty(auth()->user()->profile_image_url))
-                        <img class="profile-user-img img-fluid img-circle" src="{{ auth()->user()->profile_image_url }}" alt="{{ auth()->user()->profile_image_name }}">
+                    @if(isset(auth()->user()->profile_image_name) || !empty(auth()->user()->profile_image_name))
+                        <img class="profile-user-img img-fluid img-circle" src="{{ asset('Assets/images/user-profile-images/'.auth()->user()->profile_image_name)  }}" alt="{{ auth()->user()->profile_image_name }}">
                     @else
                         <img class="profile-user-img img-fluid img-circle" src="{{ asset('Assets/images/default-avatar.jpg') }}" alt="default image">
                     @endif
@@ -33,7 +33,7 @@
                 <h3 class="profile-username text-center">{{ auth()->user()->first_name. ' ' .auth()->user()->last_name }}</h3>
                 @endif
                 <!-- profile occupation -->
-                <p class="text-muted text-center">Software Engineer</p>
+                <p class="text-muted text-center"></p>
 
                 <!-- <ul class="list-group list-group-unbordered mb-3">
                     <li class="list-group-item">
@@ -102,7 +102,7 @@
                 <div class="card-body">
                     <div class="tab-content">
                         <div class="active tab-pane" id="settings">
-                            <form action="{{ url('/admin/admin-update') }}" method="POST" class="form-horizontal">
+                            <form action="{{ url('/admin/admin-update') }}" id="general_setting_form" method="POST" class="form-horizontal">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ auth()->user()->id }}">
                                 <div class="form-group row">
@@ -121,14 +121,19 @@
                                     <label for="email" class="col-sm-2 col-form-label">Email</label>
                                     <div class="col-sm-10">
                                         <input type="email" class="form-control" id="email" placeholder="Email" name="email" value="{{ !empty(auth()->user()->email)?auth()->user()->email: ''; }}" />
+                                    
+                                    <span class="text-center" id="email_error"></span>
                                     </div>
                                     </div>
+                                  
                                     <div class="form-group row">
                                     <label for="phone" class="col-sm-2 col-form-label">Phone</label>
                                     <div class="col-sm-10">
                                         <input type="number" class="form-control" id="inputName2" placeholder="Phone" name="phone" value="{{ !empty(auth()->user()->phone)?auth()->user()->phone: ''; }}" />
                                     </div>
                                     </div>
+                                  
+                                   
                                 
                                     <div class="form-group row">
                                     <div class="offset-sm-2 col-sm-10">
@@ -179,4 +184,24 @@
         </div>
     </div>
 </section>
+<script>
+      $(document).ready(function(){
+        $('#general_setting_form').on('submit',function(e){
+          // e.preventDefault();
+        
+            email = $('#email').val();
+         extension =  email.at(-4)+email.at(-3)+email.at(-2)+email.at(-1);
+        
+         if(extension == '.com'){
+          return true;
+          // $('#general_setting_form').submit();
+          // console.log('done');
+         }else{
+          $('#email_error').html('your email format is not valid');
+          return false;
+          // console.log('errror');
+         }
+        });
+    });
+</script>
 @endsection

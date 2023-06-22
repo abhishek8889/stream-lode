@@ -4,7 +4,7 @@
 <div class="center">
     <div class="card card-primary col-md-6">
         <div class="card-header">
-            <h3 class="card-title">You have to pay ${{ $membership['amount'] }} for {{ $membership['name'] }} every {{ $membership['interval'] }}.</h3>
+            <h3 class="card-title">You have to pay ${{ number_format($membership['amount'],2) }} for {{ $membership['name'] }} every {{ $membership['interval'] }}.</h3>
         </div>
         <div>
             <form id="payment-form" class="paymentForm" action="{{ url(auth()->user()->unique_id.'/upgrade-to-new-subscription') }}" method="POST">

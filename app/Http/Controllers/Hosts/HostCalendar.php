@@ -17,7 +17,8 @@ class HostCalendar extends Controller
     //
     public function index(Request $request)
     {
-        $meeting_charges = MeetingCharge::where('host_id',Auth()->user()->id)->get();
+
+        $meeting_charges = MeetingCharge::where('host_id',Auth()->user()->id)->orderBy('duration_in_minutes','ASC')->get();
         $host_stripe_account_details = HostStripeAccount::where('host_id',auth()->user()->id)->first();
         // dd($host_stripe_account_details);
         $host_question = HostQuestionnaire::where('host_id',Auth()->user()->id)->get();
@@ -136,7 +137,7 @@ class HostCalendar extends Controller
       }
     }
     public function seenstatus(Request $request){
-      $data = HostAppointments::where([['host_id',Auth()->user()->id],['seen_status',0]])->get();
+      $data = HostAppointments::where([['host_id',Auth()->user()->id],['questionrie_status',1],['seen_status',0]])->get();
         foreach($data as $d){
             $update = HostAppointments::find($d->_id);
             $update->seen_status = 1;

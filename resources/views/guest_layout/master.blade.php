@@ -14,16 +14,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
-    <link rel="stylesheet" href="{{  asset('streamlode-front-assets/css/stylesheet.css') }}">
+    <link rel="stylesheet" href="{{  url('public/streamlode-front-assets/css/stylesheet.css') }}">
     
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script src="https://media.twiliocdn.com/sdk/js/video/v1/twilio-video.min.js"></script>
-    <!-- @vite(['resources/css/app.css' , 'resources/js/guestapp.js']) -->
+    <!-- vite(['resources/css/app.css' , 'resources/js/guestapp.js']) -->
+    <link rel="stylesheet" href="{{ url('public/build/assets/app-c59fe4ba.css') }}"/>
+    <script type="module" src="{{ url('public/build/assets/guestapp-a4043322.js') }}"></script> 
 
-    <link rel="stylesheet" href="http://127.0.0.1:5173/resources/css/app.css" />
-  <script type="module" src="http://127.0.0.1:5173/resources/js/app.js"></script>
+  
+   <!-- <link rel="stylesheet" href="https://192.64.115.190/resources/css/app.css" />
+ <script type="module" src="https://192.64.115.190/resources/js/guestapp.js"></script> -->
 
-    <title>Streamlode</title>
+
+    <title>StreamLode</title>
   </head>
 <body>
 <header class="site_header">
@@ -46,65 +50,24 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url('about-support') }}">Support</a>
           </li>
-          @if(Auth::check())
-          @if(Auth::user()->status == 0)
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url('scheduledmeeting') }}">Meeting</a>
-          </li>
-          @endif
-          @endif
-          @if(Auth::check())
-          @php
-        $messagess = App\Models\Messages::where([['status',1],['reciever_id',Auth::user()->id]])->get();
-        $mnotification = App\Models\Messages::where([['reciever_id','=',Auth()->user()->id],['status','=',1]])->distinct('sender_id')->get()->toArray();
-          
-        @endphp
         <input type="hidden" id="base-url" value="{{ url('') }}">
-          <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
-          <i class="far fa-bell"></i><span class="badge badge-warning navbar-badge messagecount">{{ count($messagess) ?? 0 }}</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;" id="guestmessage">
-         <input type="hidden" id="authid" value="{{Auth::user()->id}}">
-         @foreach($mnotification as $m)
-        @php
-        $user = App\Models\User::where('_id',$m[0])->with('adminmessage',function($response){ $response->where('reciever_id',Auth()->user()->id); })->first();
-        @endphp
-          <a href="{{ url('message/'.$user['unique_id']) }}" class="dropdown-item" id="{{ $m[0] }}" >
-            <div class="media">
-              <div class="media-body">
-                <p class="text-sm"><b>{{ count($user['adminmessage']) ?? '' }} new message from {{ $user['first_name'] ?? '' }}</b></p>
-              </div>
-            </div>
-          </a>
-          <div class="dropdown-divider"></div>
-        @endforeach
-        </div>
-      </li>
-      @endif
       </ul>
        
       </div>
       <div class="form-inline my-2 my-lg-0 login button-col">
-        @if(isset(auth()->user()->id) || !empty(auth()->user()->id))
-          <a href="{{ url('/logout') }}" class="cta cta-yellow"> <i class="fa-regular fa-user"></i> Logout </a>
-        @else
         <a href="{{ url('/login') }}" class="cta cta-yellow"> <i class="fa-regular fa-user"></i> Login </a>
-        @endif
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="bar bar-1"></span>
           <span class="bar bar-2"></span>
           <span class="bar bar-3"></span>
-      </button>
+        </button>
       </div>
     </nav>
   </div>
 </header>
 <!-- ##################################################################   -->
-
       <!-- body content -->
       @yield('content')
-
 <!--  ################################################################## -->
 
 <footer class="site_footer">
@@ -112,12 +75,12 @@
     <div class="container-fluid">
       <div class="row lets-talk-row align-items-center">
       <div class="col-md-8 text-col">
-        <h4>Have a question in mind?
-          Let's meet together!</h4>
+        <!-- <h4>Have a question in mind?
+          Let's meet together!</h4> -->
       </div>
       <div class="col-md-4 button-col">
-        <a href="#" class="round-cta">
-                <span class="cta__text">Lets Talk</span>
+        <a href="{{ url('membership') }}#membership-tiers" class="round-cta">
+                <span class="cta__text"> Want to be a host? Click here!</span>
                 <svg viewBox="-1 -1 202 102" preserveAspectRatio="none">
                     <ellipse class="ellipse" cx="100" cy="50" rx="100" ry="50" stroke-width="1" stroke="currentColor" fill="none"></ellipse>
                 </svg>
@@ -131,7 +94,7 @@
       <div class="footer-inner-wrapper">
         <div class="row menu-row">
           <div class="col-md-5 brand-col">
-            <a class="navbar-brand" href="index.html"><img src="{{ asset('streamlode-front-assets/images/logo.png') }}" alt="logo"></a>
+            <a class="navbar-brand" href="/"><img src="{{ asset('streamlode-front-assets/images/logo.png') }}" alt="logo"></a>
           </div>
           <div class="col-md-7 menu-col">
             <ul>
@@ -145,23 +108,26 @@
       </div>
     </div>
   </div>
-
+ <?php 
+    $admin_data =  App\Models\Sitemeta::first();
+  ?> 
   <div class="social-address-footer">
     <div class="container-fluid">
       <div class="row">
          <div class="col-md-5 address-col">
            <div class="address-box">
-             <p><a href="mailto:info@streamlode.com">info@streamlode.com</a></p>
-           <p>621 Bingamon Road Independence, OH 44131</p>
+             <p><a href="mailto:{{ $admin_data['help_email'] ?? 'support@streamlode.com'}}">{{ $admin_data['help_email'] ?? 'support@streamlode.com'}}</a></p>
+           <p>United states</p>
            </div>
          </div>
          <div class="col-md-7 social-col">
+         
            <h4>Follow Us:</h4>
            <ul class="social-list">
-             <li><a href="#"> Facebook</a></li>
-             <li><a href="#"> Instagram</a></li>
-             <li><a href="#"> LinkedIn</a></li>
-             <li><a href="#"> Twitter</a></li>
+            @if(isset($admin_data->facebook_link)) <li><a href="//{{ $admin_data->facebook_link ?? '' }}" target="_blank"> Facebook</a></li>@endif
+            @if(isset($admin_data->instagram_link))<li><a href="//{{ $admin_data->instagram_link ?? '' }}" target="_blank"> Instagram</a></li>@endif
+            @if(isset($admin_data->linkedin_link)) <li><a href="//{{ $admin_data->linkedin_link ?? '' }}" target="_blank"> LinkedIn</a></li>@endif
+            @if(isset($admin_data->twitter_link)) <li><a href="//{{ $admin_data->twitter_link ?? '' }}" target="_blank"> Twitter</a></li>@endif
            </ul>
          </div>
       </div>
@@ -174,7 +140,7 @@
           <p class="mb-0">© 2023 StreamLode  |  All Rights Reserved  |  <a href="#">Privacy Policy.</a></p>
         </div>
         <div class="col-md-7 image-col">
-          <img src="{{ asset('streamlode-front-assets/images/footer-pattern.png') }}" alt="logo"></a>
+          <img src="{{ url('public/streamlode-front-assets/images/footer-pattern.png') }}" alt="logo"></a>
         </div>
       </div>
     </div>
@@ -189,9 +155,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script> -->
-<script src="{{ asset('streamlode-front-assets/js/custom.js') }}"></script>
+<script src="{{ url('public/streamlode-front-assets/js/custom.js') }}"></script>
 
 </body>
 </html>

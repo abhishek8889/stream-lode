@@ -26,7 +26,7 @@
     <form action="{{ url('/admin/insert-membership-tier') }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
         @csrf
         <div class="row">
-            <div class="card-body col-md-6">
+            <div class="card-body col-md-9">
                 <div class="form-group row">
                     <label for="name" class="col-sm-3 col-form-label">Name</label>
                     <div class="col-sm-9">
@@ -46,9 +46,9 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Price</label>
+                    <label for="price" class="col-sm-3 col-form-label">Price</label>
                     <div class="col-sm-9">
-                        <input type="number" step="0.01" class="form-control" id="inputEmail3" placeholder="USD($)" name="price">
+                        <input type="number" step="0.01" class="form-control" id="price" placeholder="USD($)" name="price" >
                         @error('price')
                             <div class="text text-danger">{{ $message }}</div>
                         @enderror
@@ -77,6 +77,7 @@
                     <div class="col-sm-9">
                         <select id="" class="form-control" id="inputEmail3" name="interval_time">
                             <option value="month">Monthly</option>
+                            <!-- <option value="day">Daily</option>   -->
                             <!-- <option value="6 months">6 Months</option>
                             <option value="9 months">9 Months</option>
                             <option value="yearly">Yearly</option> -->
@@ -102,6 +103,17 @@
                    
                     </div>
                 </div>
+                <!-- host service charge  -->
+                <div class="form-group row">
+                    <label for="host_service_charge" class="col-sm-3 col-form-label">Host Stream Service Charge</label>
+                    <div class="col-sm-9">
+                        <input type="number" step="0.01" min="0"  class="form-control" id="host_service_charge" placeholder="USD($)" name="host_service_charge" >
+                        @error('host_service_charge')
+                            <div class="text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Description</label>
                     <div class="col-sm-9">
@@ -141,6 +153,15 @@
             $("#slug").val(slug);
            });
             
+        });
+
+        $('#price').on('change',function(){
+            var v = parseFloat($(this).val());
+    if (isNaN(v)) {
+        this.value = '';
+    } else {
+        this.value = v.toFixed(2);
+    }
         });
        
 </script>

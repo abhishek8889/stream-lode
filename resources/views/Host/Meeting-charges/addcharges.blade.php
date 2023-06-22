@@ -17,23 +17,26 @@
 <div class="container col-12">
       <div class="card card-info ">
               <div class="card-header">
-                <h3 class="card-title">Horizontal Form</h3>
+                <h3 class="card-title">Meeting Charges Form</h3>
               </div>
               <form action="{{ route('meeting-add',['id' => Auth()->user()->unique_id]) }}" method="POST" class="form-horizontal">
                 @csrf
-                <div class="card-body col-6">
+                <input type="hidden" name="id" value="{{ $meetingcharges['id'] ?? '' }}">
+                <div class="card-body col-8">
                   <div class="form-group row">
-                    <label for="duration" class="col-sm-2 col-form-label">Duration In Minutes</label>
-                    <div class="col-sm-10">
+                    <label for="duration" class="col-sm-3 col-form-label">Duration In Minutes</label>
+                    <div class="col-sm-9">
                       <input type="number" class="form-control" id="duration" name="duration" placeholder="Duration" value="{{ $meetingcharges['duration_in_minutes'] ?? '' }}">
+                      <div class="text text-danger" id="duration_error"></div>
                     </div>
+                   
                     @error('duration')
                             <div class="text text-danger">{{ $message }}</div>
                     @enderror
                   </div>
                   <div class="form-group row">
-                    <label for="duration" class="col-sm-2 col-form-label">Currency</label>
-                    <div class="col-sm-10">
+                    <label for="duration" class="col-sm-3 col-form-label">Currency</label>
+                    <div class="col-sm-9">
                       <select class="form-control" name="currency" id="">
                         <option value="usd">USD</option>
                       </select>
@@ -43,8 +46,8 @@
                     @enderror
                   </div>
                   <div class="form-group row">
-                    <label for="payment" class="col-sm-2 col-form-label">Amount</label>
-                    <div class="col-sm-10">
+                    <label for="payment" class="col-sm-3 col-form-label">Amount</label>
+                    <div class="col-sm-9">
                       <input type="number" class="form-control" id="payment" name="payment" placeholder="Payment" value="{{ $meetingcharges['amount'] ?? '' }}">
                     </div>
                     @error('payment')
@@ -68,6 +71,10 @@
           duration = parseInt($(this).val());
           if(duration < 30){
             $('#duration').val('30');
+          }
+          if(duration > 185){
+            $('#duration').val('185');
+            $("#duration_error").text('Meeting duration must be less than 185 minutes.');
           }
         });
     })

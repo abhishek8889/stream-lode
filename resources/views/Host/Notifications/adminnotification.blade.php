@@ -11,7 +11,7 @@
                                   <div class="direct-chat-infos clearfix">
                                     <span class="direct-chat-name">{{$d['username']}}</span>
                                     <?php
-                                    $time = Date("Y-m-d H:i", strtotime("0 minutes", strtotime($d['created_at']))); 
+                                    $time = Date("Y-m-d h:i A", strtotime("0 minutes", strtotime($d['created_at']))); 
                                     ?>
                                     <span class="direct-chat-name float-right">{{ $time }}</span>
                                   </div>

@@ -26,7 +26,9 @@
                 <div class="card-body">
                     @if(auth()->user()->active_status == 1)
                       @if($host_subscription_details['subscription_status'] == 'paused')
-                        <p class="alert alert-warning">Your subscription is paused and you cannot enjoy the video streaming features after {{ $host_subscription_details['next_invoice_generate_on']  }} so you can resume it for enjoy these features .</p>
+                      <?php $next_invoice_generate_on = date("M d Y h:i a", strtotime($host_subscription_details['next_invoice_generate_on']));   ?>
+                       
+                        <p class="alert alert-warning">Your subscription is paused and you cannot enjoy the video streaming features after {{ $next_invoice_generate_on }}. You can resume your subscription at anytime.</p>
                       @endif
                     @else
                       <p class="alert alert-warning">Your {{ $host_subscription_details['subscription_name'] }} (subscription) is canceled you have to purchase new subscription for video streaming. </p>
@@ -39,9 +41,11 @@
                             @if( $membership_tier_details['type']  == 'recurring')
                             <p class="text-muted"><b>Interval: </b> {{ $membership_tier_details['interval'] }} </p>
                             @endif
-                            <p class="text-muted"><b>Amount: </b> ${{ $membership_tier_details['amount'] }} </p>
-                            <p class="text-muted"><b>Created at:</b> {{$host_subscription_details['start_on']}} </p>
-                            <p class="text-muted"><b>Valid upto: </b> {{$host_subscription_details['next_invoice_generate_on']}}</p>  
+                            <p class="text-muted"><b>Amount: </b> ${{ number_format($membership_tier_details['amount'],2) }} </p>
+                          <?php  $started_on =  date("M/d/Y h:i A", strtotime($host_subscription_details['start_on']));  ?>
+                            <p class="text-muted"><b>Created at:</b> {{$started_on}} </p>
+                            <?php  $valid_upto =  date("M/d/Y h:i A", strtotime($host_subscription_details['next_invoice_generate_on']));  ?>
+                            <p class="text-muted"><b>Valid upto: </b> {{$valid_upto}}</p>  
                             @if(auth()->user()->active_status == 1)
                               <p class="text-muted"><b>Status: </b>  <span class="badge badge-success"><b> Active </b></span>  </p>  
                             @else
@@ -89,7 +93,7 @@
       $('#pause-membership').click(function(){
        link = $(this).attr('href');
        Swal.fire({
-                      title: 'Are you sure to pause membership!',
+                      title: 'Are you sure you want to pause your membership?',
                       showCancelButton: true,
                       confirmButtonText: 'yes',
                       confirmButtonColor: '#008000',
@@ -105,7 +109,7 @@
       $('#cancel-membership').click(function(){
        link = $(this).attr('href');
        Swal.fire({
-                      title: 'Are you sure to cancel membership!',
+                      title: 'Are you sure you want to cancel your membership?',
                       showCancelButton: true,
                       confirmButtonText: 'yes',
                       confirmButtonColor: '#008000',
@@ -121,7 +125,7 @@
       $('#upgrade-plan').click(function(){
        link = $(this).attr('href');
        Swal.fire({
-                      title: 'Do you want to Upgrade Plan!',
+                      title: 'Do you want to change your membership plan?',
                       showCancelButton: true,
                       confirmButtonText: 'yes',
                       confirmButtonColor: '#008000',

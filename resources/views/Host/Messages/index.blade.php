@@ -1,5 +1,6 @@
 @extends('host_layout.master')
 @section('content')
+
 <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -81,9 +82,8 @@
             @if($user->profile_image_name)
               <img class="direct-chat-img" src="{{ $user->profile_image_url }}" alt="message user image">
             @else
-               <img class="direct-chat-img" src="{{url('Assets/images/default-avatar.jpg')}}" alt="message user image">
+              <img class="direct-chat-img" src="{{asset('Assets/images/default-avatar.jpg')}}" alt="message user image">
             @endif
-
             <h5 class="m-2"><b>{{ $user->first_name ?? '' }} {{ $user->last_name ?? '' }}</b></h5>
             </div>
             <div class="card-body" >
@@ -91,16 +91,16 @@
                <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:380px;">
                     <div class="direct-chat-msg messagesappend" id="messages">
                         @foreach($messages as $m)
-                    <div class="direct-chat-msg <?php if($m['sender_id'] == Auth()->user()->id){ }?>">
+                    <div class="direct-chat-msg <?php if($m['sender_id'] == Auth()->user()->id){ }?>" >
                     <div class="direct-chat-infos clearfix">
-                      <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }else{ echo 'float-left'; }?>">{{$m['username']}}</span>
+                      <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-right'; }else{ echo 'float-left'; }?>" >{{$m['username']}}</span>
                         
                       <?php
-                       $time = Date("Y-m-d H:i", strtotime("0 minutes", strtotime($m['created_at']))); 
+                       $time = Date("Y-m-d h:i A", strtotime("0 minutes", strtotime($m['created_at']))); 
                        ?>
                       <span class="direct-chat-name <?php if($m['sender_id'] == Auth()->user()->id){ echo 'float-left'; }else{ echo 'float-right'; }?>">{{$time}}</span>
                     </div>
-                    <div class="direct-chat-text m-0" >
+                    <div class="direct-chat-text m-0 <?php if($m['sender_id'] == Auth()->user()->id){ echo 'message-sender'; }else{ echo 'message-reciever'; }?>" >
                       <?php echo $m['message']; ?>
                     </div>
                     <!-- /.direct-chat-text -->
@@ -156,8 +156,7 @@ $(document).ready(function(){
                     $('#messagecount').html(messagecount1-messagecount);
                     let span = parseInt($('.user'+reciever_id).html());
                     $('.user'+reciever_id).html(0);
-                    console.log(span);
-                    console.log(messagecount1);
+                    // console.log(messagecount1);
                     // $('#notificationcount').html(messagecount1-messagecount);
                     }
 
@@ -166,11 +165,18 @@ $(document).ready(function(){
 
 $(document).ready(function(){
       $('#message').on('submit',function(e){
+        
+        const name = '{{ Auth()->user()->first_name }}';
+        const time = '<?php echo date('d-m-Y h:i A'); ?>';
+        const message = $('#messageinput').val();
          if($('#messageinput').val() == ''){
             return false;
         }
+        // let timeString_ = moment(time).format("YYYY-MM-DD HH:mm");
+        $('#messages').append('<div class="direct-chat-msg" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+name+'</span><span class="direct-chat-name float-left">'+time+'</span></div><div class="direct-chat-text m-0 message-sender">'+message+'</div></div>');
         e.preventDefault();
         formdata = new FormData(this);
+        $('#messageinput').val('');
       //   console.log(formdata);
         $.ajax({
          method: 'post',
@@ -181,10 +187,9 @@ $(document).ready(function(){
          processData: false,
          success: function(response)
          {
-           console.log(response);
-           $('#messageinput').val('');
-           let timeString_ = moment(response.created_at).format("YYYY-MM-DD HH:mm");
-           $('#messages').append('<div class="direct-chat-msg" ><div class="direct-chat-infos clearfix"><span class="direct-chat-name float-right">'+response.username+'</span><span class="direct-chat-name float-left">'+timeString_+'</span></div><div class="direct-chat-text m-0">'+response.message+'</div></div>');
+          //  console.log(response);
+        
+           
            // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
          }
         });

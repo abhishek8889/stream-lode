@@ -9,7 +9,7 @@
           <h1>The income generating <span class="blue">conferencing</span> platform.</h1><span class="heading-pattern"><img src="{{ asset('streamlode-front-assets/images/star.png') }}"></span>
         </div>
         <div class="button-box">
-            <a href="#" class="round-cta">
+            <a href="{{ url('membership') }}#membership-tiers" class="round-cta">
                 <span class="cta__text">Get Started</span>
                 <svg viewBox="-1 -1 202 102" preserveAspectRatio="none">
                     <ellipse class="ellipse" cx="100" cy="50" rx="100" ry="50" stroke-width="1" stroke="currentColor" fill="none"></ellipse>
@@ -127,7 +127,7 @@
           </div>
         </div>
       </div>
-      <div class="image_box_wrapper d-flex align-items-center">
+      <!-- <div class="image_box_wrapper d-flex align-items-center">
         <div class="image-box hover-zoom radius-50">
           <img src="{{  asset('streamlode-front-assets/images/shutterstock_2072488901 1.png') }}">
         </div>
@@ -136,7 +136,7 @@
             <p>Multiple paying clients can be hosted during one session, allowing you to generate more revenue at a faster rate.</p>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </section>
@@ -147,7 +147,7 @@
     <div class="marquee">
       <div class="marquee--inner">
         <span class="marquee-span">
-          <h2>We Have <span class="image"><image src="{{  asset('streamlode-front-assets/images/marque-image.png') }}"></span> <span class="yellow">A</span><span class="blue"> Great</span> Hosts For You!</h2>
+          <h2>We Have <span class="image"><image src="{{  asset('streamlode-front-assets/images/marque-image.png') }}"></span><span class="blue"> Great</span> Hosts For You!</h2>
         </span>
       </div>
     </div>

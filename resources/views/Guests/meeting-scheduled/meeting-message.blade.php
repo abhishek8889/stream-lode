@@ -14,19 +14,21 @@
                 <div class="box-body">
                   
                   <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:350px; overflow: auto;">
-                <div class="direct-chat-msg"  id ="messages">
-                  @foreach($messages as $m)
-                    
-                    <div class="direct-chat-infos clearfix">
-                      <span class="direct-chat-name float-left">{{ $m->username }}</span>
-                      <span class="direct-chat-timestamp float-right">{{ $m->created_at }}</span>
+                  <div class="direct-chat-msg" id ="messages">
                     </div>
-                    <div class="direct-chat-text">
-                      <?php
-                     echo $m->message; ?>
-                      </div>
-                @endforeach
-                </div>
+                        @foreach($messages as $m)  
+                        <div class="direct-chat-text <?php if($m['sender_id'] == Auth()->user()->id){ echo 'message-sender'; }else{ echo 'message-reciever'; }?>">
+                            <?php
+                          echo $m->message; ?>
+                            </div>
+                          <div class="direct-chat-infos clearfix">
+                            <span class="direct-chat-name float-left">{{ $m->username }}</span>
+                            <?php $time = Date("Y-m-d h:i A", strtotime("0 minutes", strtotime($m['created_at'])));  ?>
+                            <span class="direct-chat-timestamp float-right">{{ $time }}</span>
+                          </div>
+                        
+                      @endforeach
+                     
                 </div>
                 <div class="box-footer">
                   <form id="message" action="{{ url('send-messages') }}" method="post">
@@ -74,8 +76,8 @@ $(document).ready(function(){
          {
            // console.log(response);
            $('#messageinput').val('');
-           let timeString_ = moment(response.created_at).format("YYYY-MM-DD HH:mm");
-           $('#messages').append('<div class="direct-chat-msg ml-0" id ="messages"><span class="direct-chat-name float-left">'+response.username+'</span><span class="direct-chat-name float-right">'+timeString_+'</span>:<div class="direct-chat-text">'+response.message+'</div></div>');
+           let timeString_ = moment(response.created_at).format("YYYY-MM-DD hh:mm A");
+           $('#messages').append('<div class="direct-chat-msg ml-0" id ="messages"><span class="direct-chat-name float-left">'+response.username+'</span><span class="direct-chat-name float-right">'+timeString_+'</span>:<div class="direct-chat-text message-sender">'+response.message+'</div></div>');
            // $(".direct-chat-messages").load(location.href + " .direct-chat-messages");
          }
         });

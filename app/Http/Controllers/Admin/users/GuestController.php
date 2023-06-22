@@ -12,7 +12,7 @@ class GuestController extends Controller
 {
     //
     public function guestlist(){
-        $guests = DB::table('users')->where('status', 0)->get();
+        $guests = DB::table('users')->where('status', 0)->paginate(10);
         return view('Admin.users.guestlist',compact('guests'));
     }
     public function hostdetail($id){
@@ -40,5 +40,10 @@ class GuestController extends Controller
     $guest_detail->update();
     return redirect()->back()->with('success','successfully updated user details');
         
+    }
+    public function guestdelete($id){
+        $guest = User::find($id)->delete();
+        return redirect()->back()->with('success','success deleted guest');
+
     }
 }

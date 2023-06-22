@@ -23,27 +23,16 @@ class MembershipController extends Controller
         return view('Admin.membership.add_membership_tier',compact('features'));
     }
     public function addMembershipTierProc(Request $req){
-        // dd($req->all());        
+           
         $validate = $req->validate([
             'name' => 'required',
             'slug' => 'required',
             'price'=> 'required',
+            'host_service_charge' => 'required',
             'description' => 'required',
             'membership_fetaures' => 'required',
         ]);
         $membership = new MembershipTier;
-        // $membership_logo_name = '';
-        // $membership_logo_url = '';
-
-        // if($req->hasfile('card_logo')){
-        //     $file = $req->file('card_logo');
-        //     $name = time().rand(1,100).'.'.$file->extension();
-        //     $file->move(public_path().'/Assets/images/membership-logo/', $name);
-        //     $membership_logo_name = $name;
-        //     $membership_logo_url = asset('Assets/images/membership-logo/'.$name);
-        // }
-        // dd($membership_logo_url);
-
         $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
 
         // Create product //////////////////////////////////
@@ -60,7 +49,8 @@ class MembershipController extends Controller
                 'unit_amount' => $req->price * 100,
                 'currency' => 'usd',
                     'recurring' => [
-                        'interval' => $req->interval_time, // product price charge interval 
+                        'interval' => $req->interval_time, // product price charge interval  day
+                        // 'interval' => 'day', // product price charge interval  day
                         'interval_count' => 1,  // 
                     ],
                 ]
@@ -84,10 +74,16 @@ class MembershipController extends Controller
         $membership->currency = $req->currency_code;
         $membership->type = $req->membership_type;
         if($req->membership_type == 'recurring'){
-            $membership->interval =  $req->interval_time;
+            $membership->interval =  $req->interval_time; 
+            // $membership->interval =  'day'; 
             $membership->interval_count = 1 ;
         }
         $membership->amount = $req->price;
+        if($req->host_service_charge < 0 ){
+            $membership->host_service_charge = 0;
+        }else{
+            $membership->host_service_charge = (float)$req->host_service_charge; // host service charge charged by admin
+        }
         $membership->membership_features = $req->membership_fetaures;
         $membership->status = 1; // 1 by default 1 (active) & 0 (inactive)
         if(!isset($req->description) || empty($req->description)){
@@ -95,6 +91,7 @@ class MembershipController extends Controller
         }else{
             $membership->description = $req->description;
         }
+        
         $membership->save();
 
         return redirect(url('/admin/add-membership-tier'))->with('success','You have succesfully create a new membership tier');
@@ -115,51 +112,82 @@ class MembershipController extends Controller
 
 
     // update stripe product 
+    // public function updateMembership(Request $req){
+    //     // dd($req->all());
+    //     $req->validate([
+    //         'membership_fetaures' => 'required',
+    //         'description' => 'required',
+    //         'host_service_charge' => 'required',
+    //     ]);
+    //     $data = MembershipTier::find($req->id);
+    //     // print_r($data);
+    //     $data->membership_features = $req->membership_fetaures;
+    //     $data->description = $req->description;
+    //     if($req->host_service_charge < 0 ){
+    //         $data->host_service_charge = 0;
+    //     }else{
+    //         $data->host_service_charge = (float)$req->host_service_charge;
+    //     }
+    //     $data->update();
+    //     return back()->with('success','successfully updated data');
+
+    // //    dd($req->all());
+    // //    $membership_tier_id = MembershipTier::find($req->id)->membership_tier_id;
+    // //    echo $membership_tier_id;
+    // //     $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+    //     //   dd($stripe);
+    //     //   $stripe->products->update(
+    //     //     'prod_NEBnBQa9OtMGKf',
+    //     //     ['metadata' => ['order_id' => '6735']]
+    //     //   );
+    // }
     public function updateMembership(Request $req){
+                $req->validate([
+                    'membership_fetaures' => 'required',
+                    'description' => 'required',
+                    'host_service_charge' => 'required',
+                    'price' => 'required'
+                ]);
         // dd($req->all());
-        $req->validate([
-            'membership_fetaures' => 'required',
-            'description' => 'required'
-        ]);
-        $data = MembershipTier::find($req->id);
-        echo '<pre>';
-        print_r($data);
-        echo '</pre>';
-        $stripe_product_price_id = $data->price_id;
-        $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
-        $price_status = $stripe->prices->update($stripe_product_price_id, ['active' => false]);
-        $price = $stripe->prices->create(
-            [
-            'product' => $data->membership_tier_id,
-            'unit_amount' => $req->price * 100,
-            'currency' => 'USD',
-            'recurring' => [
-                'interval' => 'month', // product price charge interval 
-                'interval_count' => 1,  // 
-            ],
-            ]
-        );
-
-        // print_r($data);
-        $data->membership_features = $req->membership_fetaures;
-        $data->description = $req->description;
-        $data->price_id = $price->id;
-        $data->price = $req->price;
-
-        $data->update();
-        // $data->update();
-        return back()->with('success','successfully updated data');
-
-    //    dd($req->all());
-    //    $membership_tier_id = MembershipTier::find($req->id)->membership_tier_id;
-    //    echo $membership_tier_id;
-    //     $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
-        //   dd($stripe);
-        //   $stripe->products->update(
-        //     'prod_NEBnBQa9OtMGKf',
-        //     ['metadata' => ['order_id' => '6735']]
-        //   );
+                $data = MembershipTier::find($req->id);
+                $stripe_product_price_id = $data->price_id;
+                if($req->price == $data->amount){
+                    
+                }else{
+                    $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+                    $price_status = $stripe->prices->update($stripe_product_price_id, ['active' => false]);
+                    $price = $stripe->prices->create(
+                        [
+                        'product' => $data->membership_tier_id,
+                        'unit_amount' => $req->price * 100,
+                        'currency' => $req->currency_code,
+                        'recurring' => [
+                            'interval' => $req->interval_time, // product price charge interval 
+                            'interval_count' => 1,  // 
+                        ],
+                        ]
+                    );
+                    $data->amount = $req->price;
+                    $data->price_id = $price->id;
+                    $data->currency = $req->currency_code;
+                    $data->type = $req->membership_type;
+                    $data->interval = $req->interval_time;
+                }
+                $data->membership_features = $req->membership_fetaures;
+                $data->description = $req->description;
+                if($req->host_service_charge < 0 ){
+                    $data->host_service_charge = 0;
+                }else{
+                    $data->host_service_charge = (float)$req->host_service_charge;
+                }
+                $data->update();
+                return back()->with('success','successfully updated data');
+    
+    
+    
     }
+
+
     public function deleteMembership(Request $req , $id){
         // echo $id;
         $membership_db = MembershipTier::where('_id',$id)->first();
@@ -196,6 +224,5 @@ class MembershipController extends Controller
         $membership_db->status = 1;
         $membership_db->update();
         return redirect(url('/admin/membership-list'))->with('success','You have succesfully activate membership tier.');
-
     }
 }

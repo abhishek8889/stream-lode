@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'Admin' => \App\Http\Middleware\EnsureAdmin::class,
         'Host' => \App\Http\Middleware\EnsureHost::class,
         'User' => \App\Http\Middleware\UserAndGuest::class,
+        'SiteAccessValidation' => \App\Http\Middleware\SiteAccessLimitation::class,
     ];
 }

@@ -7,7 +7,6 @@ var hour = 0;
 var minutes = 0;
 var seconds = 0;
 var timerIntervalId;
-
 function attachTracks(tracks, container) {
  
     container.appendChild(tracks.attach());
@@ -80,7 +79,7 @@ window.addEventListener('beforeunload', leaveRoomIfJoined);
 
 function startVedioCall(){
   
-  $.getJSON("http://127.0.0.1:8000/live-stream-token", function(data) {
+  $.getJSON("https://www.streamlode.com/live-stream-token", function(data) {
     console.log(data);
     identity = data.identity;
     // join room 
@@ -306,15 +305,17 @@ function roomJoined(room) {
     if (!localpreviewContainer.querySelector('video')) {
         attachTracks(previewTracks,localpreviewContainer);
         this.innerHTML = '<i class="fa-sharp fa-solid fa-video"></i>';
+        this.setAttribute('title','Hide your camera');
         previewTracks.enable();
-        handleRemoteParticipant(activeRoom.localParticipant,previewTracks);
+        // handleRemoteParticipant(activeRoom.localParticipant,previewTracks);
     }else{
         previewTracks.disable();
         previewTracks.detach().forEach(function(detachedElement) {
           detachedElement.remove();
         });
         this.innerHTML = '<i class="fa-solid fa-video-slash"></i>';
-        handleRemoteParticipant(activeRoom.localParticipant,previewTracks);
+        this.setAttribute('title','Unhide your camera');
+        // handleRemoteParticipant(activeRoom.localParticipant,previewTracks);
     }
   }, function(error) {
     console.error('Unable to access local media', error);
@@ -346,17 +347,19 @@ function roomJoined(room) {
     if (!localAudioContainer.querySelector('audio')) {
         attachTracks(audioTracks,localAudioContainer);
         this.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+        this.setAttribute('title','Mute the call');
         audioTracks.enable();
         console.log('audio is not there' + audioTracks);
-        handleRemoteParticipant(activeRoom.localParticipant,audioTracks);
+        // handleRemoteParticipant(activeRoom.localParticipant,audioTracks);
     }else{
         audioTracks.disable();
         audioTracks.detach().forEach(function(detachedElement) {
           detachedElement.remove();
         });
         this.innerHTML = '<i class="fa-solid fa-microphone-slash"></i>';
+        this.setAttribute('title','Unmute the call');
         console.log('audio'+audioTracks);
-        handleRemoteParticipant(activeRoom.localParticipant,audioTracks);
+        // handleRemoteParticipant(activeRoom.localParticipant,audioTracks);
     }
   };
 

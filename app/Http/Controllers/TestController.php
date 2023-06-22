@@ -6,7 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use DB;
 use App\Events\SendNotifications;
+use App\Models\HostAppointments;
 use App\Jobs\SendEmail;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WakeUpGuestItsMeetingTime;
+use App\Mail\WakeUpHostItsMeetingTime;
 class TestController extends Controller
 {
     //
@@ -28,7 +32,26 @@ class TestController extends Controller
         return "email sent succesfully";
     }
     public function test(){
-      echo 'statrt' . date('Y-M-d H:i:s','1681898320');
-      echo "end " . date('Y-M-d H:i:s','1684490320');
+        $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+        // $invoice = $stripe->invoices->retrieve( 
+        // 'in_1NEWhSACt8qMxlDkVvkSmbrT',
+        // []
+        // );
+        // dd($invoice);
+        // return $invoice;
+        // $pi = $stripe->paymentIntents->retrieve(
+        //     'pi_3NES7zACt8qMxlDk03SgMGui',[]
+        // );
+        
+        $date_string = "2023-Jun-06 08:22";
+        $stripe_date = 1686054452;
+        $object_created = date('Y-M-d H:i' ,$stripe_date);
+
+            if($date_string <= $object_created){
+                echo 'date string is lesser and data entry will be saved ';
+            }else{
+                echo 'date string is bigger';
+            }
+      
     }
 }

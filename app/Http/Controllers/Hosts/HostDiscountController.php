@@ -11,7 +11,7 @@ class HostDiscountController extends Controller
 {
     public function index(){
         
-        $discount_coupons = HostDiscount::orderBy('created_at','desc')->get();
+        $discount_coupons = HostDiscount::where('host_id',Auth()->user()->id)->orderBy('created_at','desc')->paginate(10);
         return view('Host.Discount.index',compact('discount_coupons'));
     }
     public function create($id,$idd = null){
@@ -19,7 +19,7 @@ class HostDiscountController extends Controller
         return view('Host.Discount.createcoupon',compact('coupon_data'));
     }
     public function createproc(Request $req){
-       
+    //    return $req;
         // print_r($req->all());
         // echo $req->expiredate;
         $middle = strtotime($req->expiredate);
@@ -28,7 +28,7 @@ class HostDiscountController extends Controller
              $req->validate([
             'coupon_name' => 'required',
             'coupon_code' => 'required|unique:host_discounts_coupons',
-            'percentage_off' => 'required',
+            'percentage_off' => 'required|numeric|gt:0|lt:100',
             'duration' => 'required',
         ]);
                 $data = new HostDiscount;

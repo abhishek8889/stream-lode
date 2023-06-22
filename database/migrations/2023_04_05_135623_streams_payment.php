@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('subtotal');
             $table->string('coupon_code');
             $table->string('discount_amount');
+            $table->string('payment_id');
             $table->string('total');
             $table->string('appoinment_id');
             $table->string('currency');

@@ -987,7 +987,7 @@ h6.host_tag {
 
 .dark-banner {
     background-color: #000000;
-    padding: 80px 0px;
+    padding: 25px 0px;
 }
 
 .dark-banner h1 {
@@ -1022,7 +1022,7 @@ ol.breadcrumb {
     color: #fff;
 }
 .host-intro-section {
-    padding: 145px 0px 50px;
+    padding: 80px 0px 50px;
 }
 
 
@@ -1492,6 +1492,7 @@ input[type=number] {
 .thanku-content h2 {
     font-size: 40px;
     margin: 0px 0px 20px;
+    word-break: unset;
 }
 
 .thanku-content p {
@@ -1637,7 +1638,7 @@ a.scroll-down-button {
 }
 
 h2 {
-    word-break: break-all;
+    word-break: unset;
     font-size: 55px;
     line-height: 1.2;
 }
@@ -1751,9 +1752,9 @@ h6.host_tag {
 .header-button-wrapper .button-box {min-width: 250px;}
 
 .round-cta {
-    padding: 22px 50px;
+    padding: 23px 42px;
     height: 100px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .home_banner h1,.inner_banner h1 {
@@ -2424,3 +2425,4 @@ span.step-name {
 }
 
 }
+div .message-reciever{ background-color: #aae2e569;} div.message-sender{ background-color: #00698005; }

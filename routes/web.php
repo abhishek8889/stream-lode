@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\StripeWebhookHandle;
 
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\FrontMembershipController;
@@ -26,7 +28,9 @@ use App\Http\Controllers\Admin\users\GuestController;
 use App\Http\Controllers\Admin\discount\DiscountController;
 use App\Http\Controllers\Admin\mettings\MeetingsController;
 use App\Http\Controllers\Admin\Streams\StreamPayments;
-
+// Add this new by rahul
+use App\Http\Controllers\Admin\Search\SearchController;
+// End
 
 
 use App\Http\Controllers\Hosts\HostDashController;
@@ -59,13 +63,26 @@ use App\Events\Message;
 | contains the "web" middleware group. Now create something great!
 |
 */
-// Route::get('vedio-call',[VedioChatController::class,'index']);
-// Route::get('create-room',[VedioChatController::class,'createRoom']);
-// Route::get('/vedio/{roomName}',[VedioChatController::class,'joinRoom']);
 
 // Route::get('/welcome', function () {
 //     return view('welcometest');
 // });
+
+///////////////// Coming soon page redirection ///////////////////////
+
+Route::get('coming-soon',function(){
+    return view('comming-soon/index');
+});
+
+// Route::group(['middleware'=> 'SiteAccessValidation'],function(){
+///////////////// Stripe webhook //////////////////////////////////////
+
+// Route::stripeWebhooks('stripe-webhooks');
+// Route::get('check-post-method',[StripeWebhookHandle::class,'checkPostMethod']);
+Route::post('/stripe/webhook',[StripeWebhookHandle::class,'index']);
+// Route::post('stripe-webhook',[StripeWebhookHandle::Class,'getSubscriptionRenewStatus']);
+
+///////////////// Stripe webhook //////////////////////////////////////
 
 Route::get('/live-stream/{room_name}',[VedioCallController::class,'index']);
 Route::get('live-stream-token',[VedioCallController::class,'passToken']);
@@ -73,10 +90,6 @@ Route::post('ping-for-payment',[VedioCallController::class,'pingForPayment']);
 Route::post('videocall-payment',[VedioCallController::class,'vedioCallPayment']);
 Route::post('/coupon-check',[VedioCallController::class,'CouponCheck']);
 Route::post('call_duration', [VedioCallController::class, 'call_duration']); // Make a Route for saving call duration in appointments table
-// Route::post('send-message',function (Request $request){
-//     event(new Message($request->username, $request->message));
-//     return ['success' => true];
-// });
 
 Route::get('/trycode',[HostController::class,'trycode']);
 
@@ -100,18 +113,26 @@ Route::get('logout',[AuthenticationController::class,'logout'])->name('logout');
 
 Route::get('forgotten-password',[AuthenticationController::class,'forgottenPassword']);
 Route::post('forgottenProc',[AuthenticationController::class,'ForgottenProcess']);
-Route::get('reset-password/{email}/{token}',[AuthenticationController::class,'newpassword']);
+Route::get('reset-password/{password_token}',[AuthenticationController::class,'newpassword']);
 
 // Front Routes 
-//  Add middelware for authentication admin and host for home 
+//  Add middelware for authentication admin and host for home
+Route::post('/helpproc',[FrontAboutController::class,'helpFormSubmit'])->name('help-page'); 
 Route::group(['middleware'=>['User','User']],function(){
-Route::get('/',[HomeController::class,'index'])->name('/');
+// Route::get('/',[HomeController::class,'index'])->name('/');
+Route::get('/',function(){
+    return view('comming-soon/index');
+});
+
+
+
 Route::get('/membership',[FrontMembershipController::class,'index'])->name('membership');
 Route::get('/membership-payment/{slug}',[FrontMembershipController::class,'membershipPayment']);
 Route::get('/registration-status',[FrontMembershipController::class,'registrationResponse']);
 
 
 Route::get('/about-support',[FrontAboutController::class,'index'])->name('about-support');
+
 Route::get('/search-host',[SearchHostController::class,'index'])->name('search-host');
 Route::get('/details/{id}',[SearchHostController::class,'hostDetail']);
 Route::post('/schedule-meeting',[SearchHostController::class,'scheduleMeeting']);
@@ -141,6 +162,12 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(AdminDashController::class)->group(function(){
             Route::get('/dashboard','index')->name('admin-dashboard');
         });
+        //Search route add by rahul
+        Route::controller(SearchController::class)->group(function(){
+            Route::post('/search','index')->name('search');
+        });
+        // End search  route
+
         // Host list
         Route::controller(HostController::class)->group(function(){
             Route::get('/host-list','hostList')->name('host-list');
@@ -170,9 +197,9 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(GuestController::class)->group(function(){
             Route::get('/guest-details/{id}','hostdetail')->name('host-details');
         });
-        // Route::controller(GuestController::class)->group(function(){
-        //     Route::get('/host-delete/{id}','hostDelete');
-        // });
+        Route::controller(GuestController::class)->group(function(){
+            Route::get('/guest-delete/{id}','guestdelete');
+        });
         Route::controller(GuestController::class)->group(function(){
             Route::post('/guest-generals-update','update')->name('guest-generals-update');
         });
@@ -272,6 +299,12 @@ Route::group(['middleware'=>['auth','Admin']],function(){
         Route::controller(SettingsController::class)->group(function(){
             Route::get('/changepassword','changepassword')->name('changepassword');
         });
+        Route::controller(SettingsController::class)->group(function(){
+            Route::get('/site-meta','sitemeta')->name('site-meta');
+        });
+        Route::controller(SettingsController::class)->group(function(){
+            Route::post('/sitemetaproc','sitemetaadd')->name('site-meta-add');
+        });
         
         
     });
@@ -316,8 +349,8 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('/{id}/register-account',[HostStripeAccountRegisteration::class,'index'])->name('register-account');
     Route::get('/{id}/edit-account',[HostStripeAccountRegisteration::class,'editAccount'])->name('edit-account');
     Route::post('/register-host-stripe-account',[HostStripeAccountRegisteration::class,'registerAccount']);
-    Route::post('/update-host-stripe-account', [HostStripeAccountRegisteration::class,'updateAccount']);
-    Route::post('/delete-host-stripe-account', [HostStripeAccountRegisteration::class,'deleteAccount']);
+    Route::post('update-host-stripe-account', [HostStripeAccountRegisteration::class,'updateAccount']);
+    Route::get('/delete-host-stripe-account/{id}', [HostStripeAccountRegisteration::class,'deleteAccount']);
     
 
     //Discount
@@ -388,5 +421,4 @@ Route::group(['middleware'=>['auth','Host']],function(){
     Route::get('{id}/stream-payments',[HostPaymentMethodsController::class,'streampayments'])->name('host-stream-payments');
     
 });
-
-// Email Template 
+// });

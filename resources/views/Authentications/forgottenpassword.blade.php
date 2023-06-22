@@ -16,8 +16,7 @@
 
   <!-- Register buttons -->
   <div class="text-center">
-    <p>Not a member? <a href="{{ route('register') }}">Register</a></p>
-    
+    <p>Not a member? <a href="{{ url('/membership') }}#all">Register</a></p>
   </div>
 </form>
 </div>

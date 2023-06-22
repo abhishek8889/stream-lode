@@ -18,6 +18,7 @@ use DB;
 use Session;
 use Illuminate\Support\Str;
 use App\Models\HostSubscriptions;
+use Carbon\Carbon;
 
 
 class AuthenticationController extends Controller
@@ -61,7 +62,7 @@ class AuthenticationController extends Controller
             'last_name' => 'required',
             'unique_id' => 'required|unique:users',
             'email' => 'required|email|unique:users',
-            'password'=>'required|min:6',
+            'password'=>'required|min:6|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@!$#%]).*$/',
             ],[
                 'first_name.required' => 'First name is required',
                 'last_name.required' => 'Last Name is required',
@@ -69,7 +70,8 @@ class AuthenticationController extends Controller
                 'unique_id.unique' => 'This name is already taken please choose another',
                 'email.required' => 'Email is required',
                 'email.unique' => 'This email is already taken please choose another',
-                'password' => 'Password must be required',
+                'password.required' => 'Password must be required',
+                'password.regex' => 'Your password should have minimum 6 characters which include alphabets, numbers and special characters e.g:Stream@123',
             ]);
                
             if(empty($validate['errors'])){
@@ -93,7 +95,8 @@ class AuthenticationController extends Controller
                 $createSubscription = '';
                 if(!empty($user_id)){
                     $createSubscription = $this->createSubscription($user_id,$req->membership_id,$name,$req->email,$req->token,$req->coupon_code);
-                    return redirect('registration-status')->with(['paymentStatus'=> $createSubscription[0]['paymentStatus'], 'message'=>$createSubscription[0]['response'],'membership_id' => $createSubscription[0]['membership_id']]);
+                    // dd($createSubscription);
+                    return redirect('registration-status')->with(['paymentStatus'=> $createSubscription['paymentStatus'], 'message'=>$createSubscription['response'],'membership_id' => $createSubscription['membership_id']]);
                 }else{
                     return redirect()->back()->with('error','Sorry error in registration process please try again.');
                 }
@@ -103,7 +106,6 @@ class AuthenticationController extends Controller
     public function createSubscription($user_id,$membership_id ,$name,$email,$token,$coupon_code){
        
         try{
-            // $current = Carbon::now()->format('Y,m,d');
             $stripe_coupon_id = '';
             if($coupon_code != null){
                 $stripe_coupon_id = AdminDiscount::where('coupon_code',$coupon_code)->get()->value('stripe_coupon_id');
@@ -148,10 +150,10 @@ class AuthenticationController extends Controller
                     'items' => [
                         [
                             'price' => $membership['price_id'],
-                            'recurring' => [
-                                'interval' => 'month', // Frequency at which bills are counted ||## day, week, month or year. ##||
-                                'interval_count' => 1, // Number of intervals between subscription billings.
-                            ]
+                            // 'recurring' => [
+                            //     'interval' => 'month', // Frequency at which bills are counted ||## day, week, month or year. ##||
+                            //     'interval_count' => 1, // Number of intervals between subscription billings.
+                            // ]
                         ],
                     ],
                     'coupon' => $stripe_coupon_id,
@@ -185,8 +187,7 @@ class AuthenticationController extends Controller
                 if($coupon_code != null){
                     $discount = (int)$invoice_details->total_discount_amounts[0]->amount / 100;
                 }
-                // send mail for user's email to get activation and payment done
-                
+               
                 // dd($mail);
             }
 
@@ -222,12 +223,27 @@ class AuthenticationController extends Controller
             $membership_payment->total = $total_excluding_discount ;// while we use discount then we fix this and diff beteween unused time charge and new charge from invoice 
             // prices end
             $membership_payment->payment_type = 'create_membership';
+            $susbcription_status = '';
             if($createMembership->status == 'active'){ // if subscription status == active then membership payment status == succesfull
                 $membership_payment->payment_status = 'succesfull'; // subscription status
-                $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf,'success'));
+                $susbcription_status = 'success';
+                // send mail for user's email to get activation and payment done
+                try {
+                    $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf,$susbcription_status));
+                } catch (\Throwable $th) {
+                   
+                }
+                
             }else{
                 $membership_payment->payment_status = $createMembership->status;
-                $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf,'pending'));
+                // send mail for user's email to get activation and payment done
+                $susbcription_status = 'pending';
+                try {
+                    $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf,$susbcription_status));
+                } catch (\Throwable $th) {
+                
+                }
+                
             }
             $membership_payment->save();
   
@@ -265,17 +281,20 @@ class AuthenticationController extends Controller
                 $user->active_status = 1;   // membership active // depend on subscription status 
                 // $user->subscription_status = $createMembership->status; // subscription status
                 $user->save();
-                return array(['paymentStatus'=>TRUE,'response'=>'Congratulations you got ' . $membership['name'] . ' for a ' . $membership['interval'],'membership_id'=> $membership_id]);
+                return array('paymentStatus'=>TRUE,'response'=>'Congratulations you got ' . $membership['name'] . ' for a ' . $membership['interval'],'membership_id'=> $membership_id);
             }else{
                 $user->active_status = 0;   // membership inactive // depend on subscription status 
                 // $user->subscription_status = $createMembership->status; // subscription status
                 $user->membership_id = null;
             }
           $user->save();
-        
-          return array(['paymentStatus'=> FALSE, 'response'=>'You are registered but for payment you will get invoice in your registered email ('.$email.') please pay from there and activate your subscription.','membership_id'=> $membership_id]);
+        //   $success_response =  array('paymentStatus'=> FALSE, 'response'=>'You are registered but for payment you will get invoice in your registered email ('.$email.') please pay from there and activate your subscription.','membership_id'=> $membership_id);
+          return  array('paymentStatus'=> FALSE, 'response'=>'You are registered but for payment you will get invoice in your registered email ('.$email.') please pay from there and activate your subscription.','membership_id'=> $membership_id);
+            // return  array('success' => true ,'response' => $success_response);
         }catch(\Exception $e){
-            return $e->getMessage();
+            $error =  $e->getMessage();
+            // return array('success' => false , 'response' => $error);
+            return $error;
         }
     }
     public function getInvoice($invoice_number){
@@ -307,84 +326,114 @@ class AuthenticationController extends Controller
     public function updatePassword(Request $req){
         $req->validate([
             'current_password' => 'required',
-            'new_password' => 'required|min:6',
+            'new_password' => 'required|min:6|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@!$#%]).*$/', 
             'confirm_new_password' => 'required_with:new_password|same:new_password|'
             ],[
                 'current_password.required' => 'Your current password must be required',
                 'new_password.required' => 'Your new password must be required',
                 'new_password.min:6' => 'Your new password must be atleast 6 character',
                 'confirm_new_password.required' => 'Your confirm new password must be required',
-                'confirm_new_password.same:new_password' => 'Your confirm new password must be same as new password'
+                'confirm_new_password.same:new_password' => 'Your confirm new password must be same as new password',
+                'new_password.regex' => 'Your password should have minimum 6 characters which include alphabets, numbers and special characters e.g:Stream@123'
             ] 
         );
         $matchPassword=  Hash::check($req->current_password, auth()->user()->password);
+        // if(auth()->user()->status == 1){
+        //     if($matchPassword == true){
+        //         $password_change_status = User::find(auth()->user()->id)->update(['password'=> Hash::make($req->confirm_new_password)]);
+        //         if($password_change_status == true){
+        //             // logout from other session remain
+        //             return redirect('/'.auth()->user()->unique_id.'/change-password')->with('success','Your password is changed succesfully.');
+        //         }
+        //     }else{
+        //         return redirect('/'.auth()->user()->unique_id.'/change-password')->with('error','Your old password is not matched.');
+        //     }
+        // }elseif(auth()->user()->status == 2){
+        //     if($matchPassword == true){
+        //         $password_change_status = User::find(auth()->user()->id)->update(['password'=> Hash::make($req->confirm_new_password)]);
+        //         if($password_change_status == true){
+        //             // logout from other session remain
+        //             return redirect('/'.auth()->user()->unique_id.'/change-password')->with('success','Your password is changed succesfully.');
+        //         }
+        //     }else{
+        //         return redirect('/'.auth()->user()->unique_id.'/change-password')->with('error','Your old password is not matched.');
+        //     }
+        // }else{
+        // }
         if($matchPassword == true){
             $password_change_status = User::find(auth()->user()->id)->update(['password'=> Hash::make($req->confirm_new_password)]);
             if($password_change_status == true){
                 // logout from other session remain
-                return redirect('/'.auth()->user()->unique_id.'/change-password')->with('success','Your password is changed succesfully.');
+                return redirect()->back()->with('success','Your password is changed succesfully.');
             }
         }else{
-            return redirect('/'.auth()->user()->unique_id.'/change-password')->with('error','Your old password is not matched.');
+            return redirect()->back()->with('error','Your old password is not matched.');
         }
+        
     }
     public function forgottenPassword(){
-       
         return view('Authentications.forgottenpassword');
     }
-    public function newpassword($token){
-        $time = date('y-m-d h:i');
-        // print_r(Session::get('time'));
-        // print_r($time);
-         if(Session::get('time') < $time){
-           Session::flush();
-         }
-        $email = request()->segment(2);
-        $token = request()->segment(3);
-        return view('Authentications.newpassword',compact('token','email'));
+    public function newpassword($password_token){
+      $email = base64_decode($password_token);
+        return view('Authentications.newpassword',compact('email','password_token'));
     }
 
     public function ForgottenProcess(Request $req){
+      
         if($req->email){
-        $find = User::where('email',$req->email)->first();
-       if($find){
-        $token = Str::random(64);
-        $set_time = date('y-m-d h:i'); 
-        $extra_time = Date("y-m-d h:i", strtotime("5 minutes", strtotime($set_time)));
-        Session::put('token', $token);
-        Session::put('time',$extra_time);
-        $mailData = [
-            'unique_id' => $find->unique_id,
-            'email' => $req->email,
-            'token' => $token,
-            'expire' => $extra_time
-        ];
-       $mail = Mail::to($req->email)->send(new ForgottenPassword($mailData));
-       return back()->with('success','check your email to regenrate your password');
-       }else{
-        return back()->with('error','There is no records of this email');
-       }
-    }
-    elseif($req->token){
-        if($req->token == Session::get('token')){
+            $find = User::where('email',$req->email)->first();
+            if($find){
+                $token = base64_encode($req->email);
+                // $token = Str::random(64);
+                // $set_time = date('y-m-d h:i'); 
+                // $default_time = date('y-m-d H:i'); 
+                // $extra_time = Date("M/d/Y h:i", strtotime("5 minutes", strtotime($set_time)));
+             
+                // Session::put('token', $token);
+                // Session::put('time',$extra_time);
+                // $am_or_pm = Date("a", strtotime("5 minutes", strtotime($default_time)));
+                $mailData = [
+                    'unique_id' => $find->unique_id,
+                    // 'email' => $req->email,
+                    'token' => $token,
+                    // 'expire' => $extra_time,
+                    // 'am_or_pm' => $am_or_pm,
+                ];
+                try {
+                    $mail = Mail::to($req->email)->send(new ForgottenPassword($mailData));
+                } catch (\Throwable $th) {
+                    
+                }
+                return back()->with('success','check your email to regenrate your password');
+            }else{
+                return back()->with('error','This email address cannot be found in our system.');
+            }
+        }
+        elseif($req->password_token){
+            // $confirm_token =md5($req->emaill);
             
-            $req->validate([
-                'password' => 'min:6',
-                'cpassword' => 'required_with:password|same:password|min:6'
-            ]);
+                 $req->validate([
+                    'password' => 'min:6|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@!$#%]).*$/',
+                    'cpassword' => 'required_with:password|same:password|min:6'
+                 ],[
+                    'password.regex' => 'Your password should have minimum 6 characters which include alphabets, numbers and special characters e.g:Stream@123',
+                    'cpassword.same' => 'Confirm Password are not matched with password'
+                    ]);
+            // // }
+            // // if($req->token == Hash::make($req->emaill)){
+                
             $password = Hash::make($req->password);
-           $update = User::where('email',$req->emaill)->update(['password' => $password]);
-           Session::flush();
-           return redirect('login')->with('success','successfully changed password');
+            $update = User::where('email',$req->emaill)->update(['password' => $password]);
+            if($update){
+                return redirect('login')->with('success','successfully changed password');
+            }else{
+                return back()->with('error','this link is not valid');
+            }
         }
         else{
-            return back()->with('error','Session is timedout');
+            return back();
         }
-    }
-    else{
-        return back();
-    }
-    
     }
 
     public function logout(){
