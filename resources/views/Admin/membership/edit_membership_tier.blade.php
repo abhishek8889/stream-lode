@@ -43,7 +43,7 @@
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Price</label>
                     <div class="col-sm-9">
-                        <input type="number" step="0.01" class="form-control" id="inputEmail3" placeholder="USD($)" name="price" value="{{ $membership_data['amount'] ?? '' }}" disabled>
+                        <input type="number" step="0.01" class="form-control" id="inputEmail3" placeholder="USD($)" name="price" value="{{ $membership_data['amount'] ?? '' }}" >
                     </div>
                 </div>
                 <!-- currency code -->

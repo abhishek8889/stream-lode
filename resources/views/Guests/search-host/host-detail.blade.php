@@ -265,7 +265,7 @@ $date = date('Y-m-d h:i');
                 
                   <div class="form-group">
                     <label for="time">Meeting end time</label>
-                    <input type="datetime-local" class="form-control" id="end_time" placeholder="Meetimg time" value=""/>
+                    <input type="datetime-local" class="form-control" id="end_time" placeholder="Meetimg time" value="" disabled/>
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -636,6 +636,7 @@ $date = date('Y-m-d h:i');
                                                     $("#overlayer").fadeOut('100');
                                                   }
                                                     , 1000);
+                                    
                                                 swal({
                                                   title: "Slot is already booked.",
                                                   text: data.message,
@@ -744,6 +745,7 @@ $date = date('Y-m-d h:i');
                 $("#overlayer").fadeOut();
                   $('#errorspan').html(response.error);
               }else{
+                $("#overlayer").fadeOut();
                 // console.log(response);
                 // location.reload();
                 swal({

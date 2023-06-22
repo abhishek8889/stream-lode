@@ -175,7 +175,7 @@ display: none;
                 </div>
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0" style="height: 450px;">
+              <div class="card-body table-responsive p-0" >
                 <table class="table table-head-fixed text-nowrap">
                   <thead class="text-center">
                     <tr>
@@ -188,7 +188,13 @@ display: none;
                       <th class="text-center">View</th>
                     </tr>
                   </thead>
-                  <?php $count = 0; ?>
+                  <?php  
+                   if($_GET){
+                          $count = ($_GET['page']-1)*10;
+                        }else{
+                          $count = 0;
+                        }
+                        ?>
                   <tbody class="text-center">
               <?php
               $current_date = date('Y-m-d H:i');
@@ -196,7 +202,9 @@ display: none;
                     @if($host_schedule)
                     @forelse ($host_schedule as $hs)
                       <tr>
-                        <?php $count = $count+1; ?>
+                        <?php 
+                     
+                        $count = $count+1; ?>
                         <td class="text-center">{{$count}}.</td>
                         <td>{{$hs->guest_name}}</td>
                         <?php 
@@ -239,7 +247,11 @@ display: none;
                     @endforelse
                     @endif
                   </tbody>
+                 
                 </table>
+                <div class="card-footer">
+                {{ $host_schedule->onEachSide(5)->links() }}
+                </div>
               </div>
               <!-- /.card-body -->
             </div>
@@ -372,7 +384,7 @@ display: none;
             </div>
         </div>
         @endforeach
-
+       
   <script>
     $(document).ready(function(){
      

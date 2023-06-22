@@ -27,9 +27,16 @@
                                                 <h4>Welcome <b>{{ isset($name)?$name:'';  }}</b> , to Stream Lode</h4>
                                             </td>
                                         </tr>
+                                        @if($status == 'success')
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                             <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                                                Thanks for purchase new subscription please pay with given below invoice link.  
+                                                Thanks for purchase new subscription ,Your Payment is successfully done enjoy your Subscription
+                                            </td>
+                                        </tr>
+                                        @else
+                                        <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                                            <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
+                                                Thanks for purchase new subscription please pay with given below invoice link.{{ $status }}  
                                             </td>
                                         </tr>
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -38,6 +45,7 @@
                                                 Confirm subscription payment</a>
                                             </td>
                                         </tr>
+                                        @endif
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                             <td class="content-block" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
                                                 For the download of invoice pdf. <a href="{{ isset($host_invoice_pdf)?$host_invoice_pdf:'#';  }}" class="text text-info"> Click here........ </a>

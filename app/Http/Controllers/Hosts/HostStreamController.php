@@ -164,14 +164,13 @@ class HostStreamController extends Controller
         return view('Host.Appoinments.join_room');
     }
     public function sendlink(Request $req){
-        
         $appoinments = HostAppointments::where('_id',$req->id)->with('user')->first();
         $mailData = [
             'host_name' => $appoinments->user['first_name'].' '.$appoinments->user['last_name'],
             'link' => $req->link,
         ];
         $mail = Mail::to($appoinments->guest_email)->send(new SendVideoLink($mailData));
-        event(new Message($appoinments->user,'<a href="'.$req->link.'">'.$req->link.'</a>',Auth()->user()->id,$appoinments->user_id));
+        
         $message = new Messages;
         $message->username = $appoinments->user['first_name'];
         $message->sender_id = Auth()->user()->id;
@@ -179,6 +178,7 @@ class HostStreamController extends Controller
         $message->reciever_id = $appoinments->user_id;
         $message->status = 1;
         $message->save();
+        event(new Message($appoinments->user,'<a href="'.$req->link.'">'.$req->link.'</a>',Auth()->user()->id,$appoinments->user_id,$message->created_at));
         return response()->json('successfully sent link');
     }
 }

@@ -78,8 +78,12 @@
         @if($idd)
       <div class="card direct-chat direct-chat-primary" >
             <div class="card-header">
-            
-            <img class="direct-chat-img" src="{{url('Assets/images/default-avatar.jpg')}}" alt="message user image">
+            @if($user->profile_image_name)
+              <img class="direct-chat-img" src="{{ $user->profile_image_url }}" alt="message user image">
+            @else
+               <img class="direct-chat-img" src="{{url('Assets/images/default-avatar.jpg')}}" alt="message user image">
+            @endif
+
             <h5 class="m-2"><b>{{ $user->first_name ?? '' }} {{ $user->last_name ?? '' }}</b></h5>
             </div>
             <div class="card-body" >
@@ -151,7 +155,9 @@ $(document).ready(function(){
                     let messagecount1 = parseInt($('#messagecount').html());
                     $('#messagecount').html(messagecount1-messagecount);
                     let span = parseInt($('.user'+reciever_id).html());
-                    $('.user'+reciever_id).html(messagecount1-span);
+                    $('.user'+reciever_id).html(0);
+                    console.log(span);
+                    console.log(messagecount1);
                     // $('#notificationcount').html(messagecount1-messagecount);
                     }
 

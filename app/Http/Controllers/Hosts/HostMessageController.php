@@ -56,10 +56,14 @@ class HostMessageController extends Controller
      return response()->json($query);
     }
     public function message(Request $req){
+      
       $sender_id = $req->sender_id;
       $reciever_id = $req->reciever_id;
       $username = Auth::user();
       $messages = $req->message;
+      $current_date = date('d-m-Y H:i:s');
+      event(new Message($username, $messages,$sender_id,$reciever_id,$current_date));
+
       $message = new Messages();
       $message->reciever_id = $req->reciever_id;
       $message->sender_id = $req->sender_id;
@@ -67,7 +71,7 @@ class HostMessageController extends Controller
       $message->message = $req->message;
       $message->status = 1;
       $message->save();
-      event(new Message($username, $messages,$sender_id,$reciever_id,$message->created_at));
+     
       return response()->json($message);
     }
     public function hostmessage($id,$uid){

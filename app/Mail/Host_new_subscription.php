@@ -18,7 +18,7 @@ class Host_new_subscription extends Mailable
      *
      * @return void
      */
-    public function __construct(private $name ,private $host_inovice_url,private $host_invoice_pdf)
+    public function __construct(private $name ,private $host_inovice_url,private $host_invoice_pdf,private $status)
     {
         //
     }
@@ -48,6 +48,7 @@ class Host_new_subscription extends Mailable
                     'name' => $this->name,
                     'host_inovice_url' => $this->host_inovice_url,
                     'host_invoice_pdf' => $this->host_invoice_pdf,
+                    'status' => $this->status,
                     ],
         );
     }

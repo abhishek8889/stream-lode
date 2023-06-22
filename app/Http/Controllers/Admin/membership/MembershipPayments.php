@@ -79,6 +79,7 @@ class MembershipPayments extends Controller
                 $membership_payment_data->refund_status = 1;
                 $membership_payment_data->stripe_refund_id = $refund_response->id;
                 $membership_payment_data->update();
+                
                 $refund_email_status = Mail::to($host_email)->send(new HostRefundMail($host_name,$host_membership_tier,$order_id,$amount));           
                 return redirect()->back()->with('success','You refund the host amount succesfully.');
             }else{

@@ -12,8 +12,10 @@ use App\Mail\SendGuestMeetinglink;
 class AppoinmentsController extends Controller
 {
     public function index(){   
-        
-        $host_schedule = HostAppointments::where([['host_id','=',Auth::user()->_id],['questionrie_status',1]])->with('usermessages',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); } )->with('answers')->orderBy('created_at','desc')->with('payments')->get();
+        $random_string = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        $payment_id = '#'.substr(str_shuffle($random_string),0,8);
+        // echo $payment_id;
+        $host_schedule = HostAppointments::where([['host_id','=',Auth::user()->_id],['questionrie_status',1]])->with('usermessages',function($response){ $response->where([['reciever_id',Auth::user()->id],['status',1]]); } )->with('answers')->orderBy('created_at','desc')->with('payments')->paginate(10);
         // dd($host_schedule);
         return view('Host.Appoinments.index',compact('host_schedule'));
     }

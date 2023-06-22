@@ -18,7 +18,7 @@ class HostMembershipUpdateMail extends Mailable
      *
      * @return void
      */
-    public function __construct(private $name ,private $new_membership_name, private $host_inovice_url,private $host_invoice_pdf)
+    public function __construct(private $name ,private $new_membership_name, private $host_inovice_url,private $host_invoice_pdf,private $status)
     {
         //
     }
@@ -49,6 +49,7 @@ class HostMembershipUpdateMail extends Mailable
                     'new_membership_name' => $this->new_membership_name,
                     'host_inovice_url' => $this->host_inovice_url,
                     'host_invoice_pdf' => $this->host_invoice_pdf,
+                    'status' => $this->status,
                     ],
         );
     }

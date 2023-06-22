@@ -18,9 +18,10 @@
     
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script src="https://media.twiliocdn.com/sdk/js/video/v1/twilio-video.min.js"></script>
-    @vite(['resources/css/app.css' , 'resources/js/guestapp.js'])
+    <!-- @vite(['resources/css/app.css' , 'resources/js/guestapp.js']) -->
 
-
+    <link rel="stylesheet" href="http://127.0.0.1:5173/resources/css/app.css" />
+  <script type="module" src="http://127.0.0.1:5173/resources/js/app.js"></script>
 
     <title>Streamlode</title>
   </head>

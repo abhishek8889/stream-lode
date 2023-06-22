@@ -246,7 +246,7 @@ class HostMembershipController extends Controller
               }
               // send mail for user's email to get activation and payment done
 
-              $mail = Mail::to($email)->send(new Host_new_subscription($name, $host_inovice_url , $host_invoice_pdf));
+              
               // dd($mail);
           }
           
@@ -279,8 +279,10 @@ class HostMembershipController extends Controller
           $membership_payment->payment_type = 'create_membership'; // payment type in db 
           if($createMembership->status == 'active'){ // succesfull
             $membership_payment->payment_status = 'succesfull'; // subscription status 
+            $mail = Mail::to($email)->send(new Host_new_subscription($name, $host_inovice_url , $host_invoice_pdf,'success'));
           }else{
             $membership_payment->payment_status = $createMembership->status; // subscription status
+            $mail = Mail::to($email)->send(new Host_new_subscription($name, $host_inovice_url , $host_invoice_pdf,'pending'));
           }
           $membership_payment->save();
 
@@ -448,7 +450,7 @@ class HostMembershipController extends Controller
                 $host_invoice_pdf = $invoice_details->invoice_pdf;
                 $name = auth()->user()->first_name . ' ' . auth()->user()->last_name;
                 // send mail for user's email to get activation and payment done
-                $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf));
+                
                 // dd($mail);
             }
             // ################# membership Payment data save ##########################
@@ -470,8 +472,10 @@ class HostMembershipController extends Controller
             // 
             if($subscription_update_response->status == 'active'){
               $membership_payment->payment_status = 'succesfull';
+              $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'success'));
             }else{
               $membership_payment->payment_status = $subscription_update_response->status;
+              $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'pending'));
             }
             $membership_payment->save();
           }
@@ -569,7 +573,7 @@ class HostMembershipController extends Controller
                 $host_invoice_pdf = $invoice_details->invoice_pdf;
                 $name = auth()->user()->first_name . ' ' . auth()->user()->last_name;
                 // send mail for user's email to get activation and payment done
-                $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf));
+                
                 // dd($mail);
             }
             $membership_payment->user_id =  auth()->user()->id;
@@ -590,8 +594,10 @@ class HostMembershipController extends Controller
 
             if($subscription_update_response->status == 'active'){ // status is active then payment must be succesfully done .
               $membership_payment->payment_status = 'succesfull';
+              $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'success'));
             }else{
               $membership_payment->payment_status = $subscription_update_response->status;
+              $mail = Mail::to(auth()->user()->email)->send(new HostMembershipUpdateMail($name , $membership_details['name'], $host_inovice_url , $host_invoice_pdf,'pending'));
             }
           
             $membership_payment->save();

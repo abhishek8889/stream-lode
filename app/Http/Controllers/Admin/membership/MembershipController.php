@@ -122,11 +122,32 @@ class MembershipController extends Controller
             'description' => 'required'
         ]);
         $data = MembershipTier::find($req->id);
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+        $stripe_product_price_id = $data->price_id;
+        $stripe = new \Stripe\StripeClient( env('STRIPE_SEC_KEY') );
+        $price_status = $stripe->prices->update($stripe_product_price_id, ['active' => false]);
+        $price = $stripe->prices->create(
+            [
+            'product' => $data->membership_tier_id,
+            'unit_amount' => $req->price * 100,
+            'currency' => 'USD',
+            'recurring' => [
+                'interval' => 'month', // product price charge interval 
+                'interval_count' => 1,  // 
+            ],
+            ]
+        );
+
         // print_r($data);
         $data->membership_features = $req->membership_fetaures;
         $data->description = $req->description;
-        
+        $data->price_id = $price->id;
+        $data->price = $req->price;
+
         $data->update();
+        // $data->update();
         return back()->with('success','successfully updated data');
 
     //    dd($req->all());

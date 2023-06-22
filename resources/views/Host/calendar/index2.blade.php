@@ -130,15 +130,25 @@ $(document).ready(function () {
                     selectable: true,
                     selectHelper: true,
                     select: function (start, end ,allDay) {
-                              
                         // var title = prompt('Event Title:');
                         $("#calendarModal").modal('show');
-                        // let startdateString = moment(start._d).format("YYYY-MM-DD HH:mm");
-                        // let enddateString = moment(start._d, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
-                        let startdateString = moment().format("YYYY-MM-DD HH:mm");
-                        let enddateString = moment().add(30, 'minutes').format('YYYY-MM-DD HH:mm');
+                        let startdateString = moment(start._d).format("YYYY-MM-DD HH:mm");
+                        let enddateString = moment(start._d, "YYYY-MM-DD HH:mm").add(30, 'minutes').format('YYYY-MM-DD HH:mm');
+                        let currentdateString = moment().format("YYYY-MM-DD HH:mm");
+                        let currentenddateString = moment().add(30, 'minutes').format('YYYY-MM-DD HH:mm');
+                        
                         $('#start_time').val(startdateString);
                         $('#end_time').val(enddateString);
+                        if(currentdateString > startdateString){
+                            $('#start_time').val(currentdateString);
+                            $('#end_time').val(currentenddateString);
+                        }
+                        $('#start_time').on('keyup',function(){
+                            if($(this).val() < currentdateString){
+                                $('#start_time').val(currentdateString);
+                                $('#end_time').val(currentenddateString);
+                        }
+                        });
                         $('#end_time').change(function(){
                             let starttime = moment($('#start_time').val()).format("YYYY-MM-DD HH:mm");
                             let endtime = moment($(this).val()).format("YYYY-MM-DD HH:mm");

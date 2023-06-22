@@ -13,19 +13,20 @@
               
                 <div class="box-body">
                   
-                  <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:350px; overflow: auto;" id ="messages">
-                @foreach($messages as $m)
-                    <div class="direct-chat-msg" >
+                  <div class="direct-chat-messages" style="display: flex; flex-direction: column-reverse; height:350px; overflow: auto;">
+                <div class="direct-chat-msg"  id ="messages">
+                  @foreach($messages as $m)
+                    
                     <div class="direct-chat-infos clearfix">
                       <span class="direct-chat-name float-left">{{ $m->username }}</span>
                       <span class="direct-chat-timestamp float-right">{{ $m->created_at }}</span>
                     </div>
-                    <div class="direct-chat-text ">
+                    <div class="direct-chat-text">
                       <?php
                      echo $m->message; ?>
                       </div>
-                    </div>
                 @endforeach
+                </div>
                 </div>
                 <div class="box-footer">
                   <form id="message" action="{{ url('send-messages') }}" method="post">

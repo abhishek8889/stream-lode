@@ -186,7 +186,7 @@ class AuthenticationController extends Controller
                     $discount = (int)$invoice_details->total_discount_amounts[0]->amount / 100;
                 }
                 // send mail for user's email to get activation and payment done
-                $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf));
+                
                 // dd($mail);
             }
 
@@ -224,8 +224,10 @@ class AuthenticationController extends Controller
             $membership_payment->payment_type = 'create_membership';
             if($createMembership->status == 'active'){ // if subscription status == active then membership payment status == succesfull
                 $membership_payment->payment_status = 'succesfull'; // subscription status
+                $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf,'success'));
             }else{
                 $membership_payment->payment_status = $createMembership->status;
+                $mail = Mail::to($email)->send(new HostRegisterMail($name, $host_inovice_url , $host_invoice_pdf,'pending'));
             }
             $membership_payment->save();
   

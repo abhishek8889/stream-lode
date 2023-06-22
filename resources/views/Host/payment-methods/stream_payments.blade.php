@@ -69,6 +69,8 @@ $data = array();
       
 </div>
 @endforeach
+
+                              
 <div class="container-fluid text-right">
     <div class="invoice p-3 mb-3">
         <div class="row">

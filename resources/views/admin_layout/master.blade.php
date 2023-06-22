@@ -30,7 +30,10 @@
   <!-- <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  @vite(['resources/css/app.css' , 'resources/js/adminapp.js'])
+  <!-- @vite(['resources/css/app.css' , 'resources/js/adminapp.js']) -->
+
+  <link rel="stylesheet" href="http://127.0.0.1:5173/resources/css/app.css" />
+  <script type="module" src="http://127.0.0.1:5173/resources/js/app.js"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
