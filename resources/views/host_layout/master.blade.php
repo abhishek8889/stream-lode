@@ -8,24 +8,24 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ url('/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
+  <link rel="stylesheet" href="{{ url('/AdminLTE-3.2.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
   <!-- iCheck -->
-  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{ url('/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
   <!-- JQVMap -->
-  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/jqvmap/jqvmap.min.css') }}">
+  <link rel="stylesheet" href="{{ url('/AdminLTE-3.2.0/plugins/jqvmap/jqvmap.min.css') }}">
   <!-- Theme style -->
-  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/dist/css/adminlte.min.css') }}">
+  <link rel="stylesheet" href="{{ url('/AdminLTE-3.2.0/dist/css/adminlte.min.css') }}">
   <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+  <link rel="stylesheet" href="{{ url('/AdminLTE-3.2.0/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
   <!-- Daterange picker -->
-  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.css') }}">
+  <link rel="stylesheet" href="{{ url('/AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.css') }}">
   <!-- summernote -->
-  <link rel="stylesheet" href="{{ url('public/AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.css') }}">
+  <link rel="stylesheet" href="{{ url('/AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.css') }}">
 <!-- Twilio css -->
 <link rel="stylesheet" href="{{ asset('twilio-assets/site.css') }}">
 
@@ -33,8 +33,8 @@
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <!-- vite(['resources/css/app.css' , 'resources/js/app.js']) -->
-<link rel="stylesheet" href="{{ url('public/build/assets/app-c59fe4ba.css') }}"/>
-    <script type="module" src="{{ url('public/build/assets/app-5c8075f8.js') }}"></script>
+<link rel="stylesheet" href="{{ url('/build/assets/app-c59fe4ba.css') }}"/>
+    <script type="module" src="{{ url('/build/assets/app-5c8075f8.js') }}"></script>
 
  
 </head>
@@ -579,39 +579,39 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
 <!-- jQuery UI 1.11.4 -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
 <!-- Bootstrap 4 -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- ChartJS -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/chart.js/Chart.min.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/chart.js/Chart.min.js') }}"></script>
 <!-- Sparkline -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/sparklines/sparkline.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/sparklines/sparkline.js') }}"></script>
 <!-- JQVMap -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
 <!-- jQuery Knob Chart -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
 <!-- daterangepicker -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/moment/moment.min.js') }}"></script>
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/moment/moment.min.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <!-- Tempusdominus Bootstrap 4 -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 <!-- Summernote -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.js') }}"></script>
 <!-- overlayScrollbars -->
-<script src="{{ url('public/AdminLTE-3.2.0/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <!-- AdminLTE App -->
-<script src="{{ url('public/AdminLTE-3.2.0/dist/js/adminlte.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/dist/js/adminlte.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="{{ url('public/AdminLTE-3.2.0/dist/js/demo.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="{{ url('public/AdminLTE-3.2.0/dist/js/pages/dashboard.js') }}"></script>
+<script src="{{ url('/AdminLTE-3.2.0/dist/js/pages/dashboard.js') }}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>

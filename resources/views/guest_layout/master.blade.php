@@ -14,13 +14,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
-    <link rel="stylesheet" href="{{  url('public/streamlode-front-assets/css/stylesheet.css') }}">
+    <link rel="stylesheet" href="{{  url('/streamlode-front-assets/css/stylesheet.css') }}">
     
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script src="https://media.twiliocdn.com/sdk/js/video/v1/twilio-video.min.js"></script>
     <!-- vite(['resources/css/app.css' , 'resources/js/guestapp.js']) -->
-    <link rel="stylesheet" href="{{ url('public/build/assets/app-c59fe4ba.css') }}"/>
-    <script type="module" src="{{ url('public/build/assets/guestapp-a4043322.js') }}"></script> 
+    <link rel="stylesheet" href="{{ url('build/assets/app-c59fe4ba.css') }}"/>
+    <script type="module" src="{{ url('build/assets/guestapp-a4043322.js') }}"></script> 
 
   
    <!-- <link rel="stylesheet" href="https://192.64.115.190/resources/css/app.css" />
@@ -155,7 +155,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-<script src="{{ url('public/streamlode-front-assets/js/custom.js') }}"></script>
+<script src="{{ url('streamlode-front-assets/js/custom.js') }}"></script>
 
 </body>
 </html>
