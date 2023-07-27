@@ -52,9 +52,9 @@
 
                                         <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                             <td class="content-block" style="text-align: left;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0;" valign="top">
-                                                <a class="navbar-brand" href="{{ url('') }}">
-                                                    <img src="{{ asset('Assets/site-logos/Stresmlode-logo.png') }}" height="34px" alt="logo">
-                                                </a>
+                                            <a href="#"><img class="email-logo"
+                                                                                src="https://demo2.wpopal.com/villax/wp-content/uploads/2022/11/logo.svg"
+                                                                                alt="logo"></a>
                                             </td>
                                         </tr>
                                     </tbody></table>

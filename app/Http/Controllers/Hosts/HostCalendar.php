@@ -46,6 +46,7 @@ class HostCalendar extends Controller
             'end'      =>  $schedule['end'],
             'status'   =>  $schedule['status'],
             'type'     =>  'available_host',
+            'className' => 'error',
             'color'    =>  '#6294a7',
             'allDay'   =>  false,
         );

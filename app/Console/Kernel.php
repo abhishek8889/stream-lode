@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('wakeupitsyourmeetingtime:cron')->everyMinute(); // cron job
+        $schedule->command('testscron:cron')->hourly();
         // $schedule->command('inspire')->hourly();
     }
 
